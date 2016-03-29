@@ -1,0 +1,98 @@
+OpenLDAP
+LDAP is sometimes referred to as “X.500 Lite”.
+OpenLDAP 2.4,
+uses the Mozilla implementation of Network Security Services (NSS)
+
+The OpenLDAP Project <http://www.openldap.org/>
+http://www.openldap.org/doc/admin23/
+
+entry
+A single unit within an LDAP directory. Each entry is identified by its unique Distinguished Name
+(DN).
+
+attribute
+Information directly associated with an entry.
+An attribute can either have a single value, or an unordered space-separated list of values.
+
+schema files directory
+/etc/openldap/slapd.d/cn=config/cn=schema/ 
+
+
+Distinguished Name (DN)
+Relative Distinguished Name (RDN)
+
+LDIF
+The LDAP Data Interchange Format (LDIF) is a plain text representation of an LDAP entry.
+
+OpenLDAP Server Setup
+
+
+1. Install the OpenLDAP suite.
+
+	yum install openldap openldap-clients openldap-servers
+		openldap-servers-sql
+		nss-pam-ldapd
+		mod_authz_ldap
+
+	chown -R ldap:ldap /var/lib/ldap
+
+2. Customize the configuration
+
+	/etc/openldap
+	/etc/openldap/ldap.conf
+	/etc/openldap/slapd.d/
+		old: /etc/openldap/slapd.conf
+		fix: slaptest -f /etc/openldap/slapd.conf -F /etc/openldap/slapd.d/
+	/etc/openldap/slapd.d/cn=config.ldif
+		olcAllows: bind_v2 bind_anon_cred bind_anon_dn updat_anon proxy_authz_anon
+		olcConnMaxPending: 100
+		olcConnMaxPendingAuth: 900 (default=1000)
+		olcDisallows: bind_anon bind_simple tls_2_anon tls_authc
+		olcIdleTimeout: 180 (default=0)
+		olcLogFile: /var/log/slapd.log
+		olcReferral: ldap://root.openldap.org
+		olcWriteTimeout: 180 (default=0)
+
+3. Start the slapd service
+4. Use the ldapadd utility to add entries to the LDAP directory.
+5. Use the ldapsearch utility to verify that the slapd service is accessing the information correctly.
+
+------------------------------------
+OpenLDAP server utilities
+Command 	Description
+slapacl 	Allows you to check the access to a list of attributes.
+slapadd* 	Allows you to add entries from an LDIF file to an LDAP directory.
+		(STOP slapd first)
+slapauth 	Allows you to check a list of IDs for authentication and
+		authorization permissions.
+slapcat* 	Allows you to pull entries from an LDAP directory in the default
+		format and save them in an LDIF file. (STOP slapd first)
+slapdn 		Allows you to check a list of Distinguished Names (DNs) based on
+		available schema syntax.
+slapindex* 	Allows you to re-index the slapd directory based on the current
+		content. Run this utility whenever you change indexing options in
+		the configuration file. (STOP slapd first)
+slappasswd 	Allows you to create an encrypted user password to be used with
+		the ldapmodify utility, or in the slapd configuration file.
+slapschema 	Allows you to check the compliance of a database with the
+		corresponding schema.
+slaptest 	Allows you to check the LDAP server configuration
+	* STOP slapd first before running these utilities
+
+------------------------------------
+OpenLDAP client utilities
+Command 	Description
+ldapadd 	Allows you to add entries to an LDAP directory, either from a file,
+		or from standard input. It is a symbolic link to ldapmodify -a.
+ldapcompare 	Allows you to compare given attribute with an LDAP directory
+		entry.
+ldapdelete 	Allows you to delete entries from an LDAP directory.
+ldapexop 	Allows you to perform extended LDAP operations.
+ldapmodify 	Allows you to modify entries in an LDAP directory, either from a
+		file, or from standard input.
+ldapmodrdn 	Allows you to modify the RDN value of an LDAP directory entry.
+ldappasswd 	Allows you to set or change the password for an LDAP user.
+ldapsearch 	Allows you to search LDAP directory entries.
+ldapurl 	Allows you to compose or decompose LDAP URLs.
+ldapwhoami 	Allows you to perform a whoami operation on an LDAP server.
+

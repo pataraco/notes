@@ -1,0 +1,143 @@
+AWS Commands and Stuff
+
+Install the AWS CLI Using pip
+
+	With Python and pip installed, use pip to install the AWS CLI:
+		$ sudo pip install awscli
+
+	To upgrade an existing AWS CLI installation, use the --upgrade option:
+		$ sudo pip install --upgrade awscli
+
+COMMANDS
+	# ec2metadata
+	# aws ec2 create-tags --resources $instanceID --tags Key=Creator,Value='DickButt'
+	# aws ec2 describe-images --image-ids ami-e54f5f84
+	# aws ec2 describe-images --image-ids ami-bfc7848f|egrep 'VirtualizationType|ImageId|RootDeviceType|"Name'
+		
+AUTOSCALING
+
+  /usr/local/bin/aws cloudwatch put-metric-data --dimensions webapp_type=${server_type} --namespace=R5 --metric-name=ScaleStatus --value 0
+  /usr/local/bin/aws cloudwatch put-metric-data --dimensions webapp_type=${server_type} --namespace=R5 --metric-name=ScaleStatus --value 1
+  /usr/local/bin/aws cloudwatch put-metric-data --dimensions webapp_type=${server_type} --namespace=R5 --metric-name=ScaleStatus --value 2
+  
+  read -a as_groups <<< \
+  $(/usr/local/bin/aws autoscaling describe-auto-scaling-groups | \
+    jsonpipe | grep '/AutoScalingGroups/.*/AutoScalingGroupName' | \
+    sed -e 's/"//g' | awk '{print $2}')
+
+	read -a as_groups <<< $(aws autoscaling describe-auto-scaling-groups | jsonpipe | grep '/AutoScalingGroups/.*/AutoScalingGroupName' | sed -e 's/"//g'|awk '{print $2}')
+		- OR -
+	read -a as_groups <<< $(aws autoscaling describe-auto-scaling-groups | grep AutoScalingGroupName | cut -d'"' -f4)
+	
+  read -a existing_alarms <<<  \
+   $(printf "%s\ %s\n" $(/usr/local/bin/aws cloudwatch describe-alarms | \
+     jsonpipe | grep '/MetricAlarms/.*/AlarmActions/' | sed -e 's/"//g' | \
+     awk '{print $2" "$3}'))
+	 
+  for asg in ${as_groups[@]}; do  
+    policyup=$(grep "autoScalingGroupName/$asg:policyName/Scale Up" \
+             $tmp_file | awk '{print $2" Up"}' | sed -e 's/"//g')
+    /usr/local/bin/aws cloudwatch put-metric-alarm --alarm-name Scale-up-${servertype} --alarm-actions "${policyup}" --metric-name ScaleStatus --namespace R5 --statistic Maximum --period 60 --evaluation-periods 2 --threshold 2 --comparison-operator GreaterThanOrEqualToThreshold --dimensions Name=webapp_type,Value=${servertype}
+	  
+    policydown=$(grep "autoScalingGroupName/$asg:policyName/Scale Down" \
+             $tmp_file | awk '{print $2" Down"}' | sed -e 's/"//g')
+    /usr/local/bin/aws cloudwatch put-metric-alarm --alarm-name Scale-down-${servertype} --alarm-actions "${policydown}" --metric-name ScaleStatus --namespace R5 --statistic Maximum --period 60 --evaluation-periods 2 --threshold 0 --comparison-operator LessThanOrEqualToThreshold --dimensions Name=webapp_type,Value=${servertype}
+		  
+
+ aws autoscaling suspend-processes --auto-scaling-group-name admin-asg --scaling-processes AlarmNotification
+ aws autoscaling suspend-processes --auto-scaling-group-name admin-asg --scaling-processes AlarmNotification --profile $PROFILE
+ 
+To suspend all Auto Scaling processes for the specified Auto Scaling group.
+	$ aws autoscaling suspend-processes --auto-scaling-group-name <ASG_NAME> [--profile $PROFILE]
+
+To suspend specific processes for the specified Auto Scaling group, use the --scaling-processes option:
+
+If you suspend AlarmNotification, Auto Scaling does not automatically execute policies that would be triggered by an alarm (i.e. based on min/max settings).
+	$ aws autoscaling suspend-processes --auto-scaling-group-name <ASG_NAME> --scaling-processes AlarmNotification [--profile <PROFILE>]
+
+If you suspend Launch, Auto Scaling does not automatically add new EC2 instances to the group.
+	$ aws autoscaling suspend-processes --auto-scaling-group-name <ASG_NAME> --scaling-processes Launch [--profile <PROFILE>]
+
+If you suspend Terminate, Auto Scaling does not automatically remove EC2 instances from the group.
+	$ aws autoscaling suspend-processes --auto-scaling-group-name <ASG_NAME> --scaling-processes Terminate [--profile <PROFILE>]
+
+If you suspend ReplaceUnhealthy, Auto Scaling does not automatically terminate EC2 instances marked as unhealthy from the group and subsequently create new instances to replace them.
+	$ aws autoscaling suspend-processes --auto-scaling-group-name <ASG_NAME> --scaling-processes ReplaceUnhealthy [--profile <PROFILE>]
+ 
+To resume all Auto Scaling processes for a specified Auto Scaling group
+	$ aws autoscaling resume-processes --auto-scaling-group-name <ASG_NAME> [--profile <PROFILE>]
+
+To resume specific processes for the specified Auto Scaling group, use the --scaling-processes option as above, for example, to resume just the AlarmNotificaion process use the following:
+	$ aws autoscaling resume-processes --auto-scaling-group-name <ASG_NAME> --scaling-processes AlarmNotification [--profile <PROFILE>]
+
+Additional Information (Links)
+	Auto Scaling Documentation		aws.amazon.com/documentation/autoscaling
+	Suspend and Resume Auto Scaling Processes		docs.aws.amazon.com/AutoScaling/latest/DeveloperGuide/US_SuspendResume.html
+ 
+aws autoscaling suspend-processes --auto-scaling-group-name my-asg
+aws autoscaling resume-processes --auto-scaling-group-name my-asg
+ 
+Turn ALL ASGs processes off
+	for asgn in $(aws --profile dtu autoscaling describe-auto-scaling-groups | grep AutoScalingGroupName | cut -d'"' -f4); do echo $asgn ; aws --profile dtu autoscaling suspend-processes --auto-scaling-group-name $asgn; done
+Turn ALL ASGs processes on
+	for asgn in $(aws --profile dtu autoscaling describe-auto-scaling-groups | grep AutoScalingGroupName | cut -d'"' -f4); do echo $asgn ; aws --profile dtu autoscaling resume-processes --auto-scaling-group-name $asgn; done
+
+# process of replacing launch configs
+	# replace-launch-configs.sh
+	./copy-configs.sh 			# create a new launch configuraton with temp "Copy" name
+	./update-to-copies.sh 		# update the ASG to use the new temp "Copy" launch configuration
+	./delete-launch-configs.sh 	# delete the old launch configuration
+	./launch-configs.sh 		# create the new launch config with correct name
+	./update-to-originals.sh 	# update the ASG to use the launch configuration with the correct name
+	./delete-copies.sh 			# delete the temp "Copy" launch configuration
+
+# copy-configs.sh			# create a new launch configuraton with temp "Copy" name
+	aws autoscaling create-launch-configuration --launch-configuration-name globaldataCopy-config --image-id ami-9587ada5 --security-groups sg-2f4f5343 sg-574f533b --key-name Red5DevTest --instance-type c3.large --user-data file://all-userdata/globaldata-userdata.txt
+# update-to-copies.sh		# update the ASG to use the new temp "Copy" launch configuration
+	aws autoscaling update-auto-scaling-group --auto-scaling-group-name globaldata-asg --launch-configuration-name globaldataCopy-config
+# delete-launch-configs.sh	# delete the old launch configuration
+	aws autoscaling delete-launch-configuration --launch-configuration-name globaldata-config
+# launch-configs.sh			# create the new launch config with correct name
+	aws autoscaling create-launch-configuration --launch-configuration-name globaldata-config --image-id ami-9587ada5 --security-groups sg-2f4f5343 sg-574f533b --key-name Red5DevTest --instance-type c3.large --user-data file://all-userdata/globaldata-userdata.txt
+# update-to-originals.sh	# update the ASG to use the launch configuration with the correct name
+	aws autoscaling update-auto-scaling-group --auto-scaling-group-name globaldata-asg --launch-configuration-name globaldata-config
+# delete-copies.sh			# delete the temp "Copy" launch configuration
+	aws autoscaling delete-launch-configuration --launch-configuration-name globaldataCopy-config
+
+
+# Examples
+aws autoscaling describe-auto-scaling-groups --profile dtu
+aws autoscaling describe-auto-scaling-groups --profile dtu|grep AutoScalingGroupName
+aws autoscaling describe-launch-configurations|egrep "LaunchConfigurationName|ami-9587ada5"
+
+
+Initial setup of config file (~/.aws/config)
+	$ aws configure
+		(the option "--profile $PROFILE" matches the profile names in ~/.aws/config)
+ 
+Additional Documetation
+	http://docs.aws.amazon.com/cli/latest/userguide/cli-chap-welcome.html
+	http://docs.aws.amazon.com/cli/latest/userguide/cli-chap-getting-started.html
+
+
+Additional Commands
+---------- --------
+aws [command] [sub-command ] help						# Help
+aws --version											# version information
+aws s3 ls [--profile <PROFILE>]							# list data buckets
+aws s3 ls s3://<BUCKET_NAME> [--profile <PROFILE>]		# list contents of a data bucket
+aws s3 cp s3://<BUCKET_NAME>/<FILE> [--profile <PROFILE>]		# copy file from bucket to .
+aws s3 sync --profile ptu s3://firefall-stabilization-build-1298-publictest/ /data/1298-download
+
+Glossary
+--------
+AMI - Amazon Machine Image (AMI) provides the information required to launch an instance
+EBS	- Elastic Block Storage
+
+EBS Volume - remote storage devices
+Instance Store Volume - virtual devices, physically attached to host - can only be attached as the instance is launched - 
+
+-------------- AMI's --------------------
+ami_ebs	ami-d1f308a6 Ubuntu 12.04.4 LTS (Precise Pangolin)            eu-west-1 64-bit ebs Launch ami-d1f308a6 ec2-run-instances ami-d1f308a6 -t t1.micro --region eu-west-1 --key ${EC2_KEYPAIR_EU_WEST_1}
+ami_hvm ami-60a10117 Ubuntu 12.04.5 LTS (Precise Pangolin) [20140927] eu-west-1 64-bit hvm Launch ami-60a10117 ec2-run-instances ami-60a10117 -t m3.medium --region eu-west-1 --key ${EC2_KEYPAIR_EU_WEST_1}
+ami_gss ami-903686e7 Ubuntu 14.04.1 LTS (Trusty Tahr)                 eu-west-1 64-bit ebs Launch ami-903686e7 ec2-run-instances ami-903686e7 -t t1.micro --region eu-west-1 --key ${EC2_KEYPAIR_EU_WEST_1}

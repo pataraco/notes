@@ -1,0 +1,227 @@
+ar_lock		arbanksvc	ardetail	ardoc		banktrans	
+ghp			gp_lock		gsi_header	hmagent		hotelname		
+listu		offmarket	outoforder	res			roomassigned			
+reslock		resrooms	rooms		blockedroom	ls_back_to_back
+-----------
+locks on rooms: listu , roomassigned, reslock
+=============
+SELECT * FROM quoted_room_rate WHERE resrooms_seq=4308710
+--------
+BEGIN WORK; 
+UPDATE quoted_room_rate SET sharewithnum=385281 
+WHERE resrooms_seq=4308710
+---- DATABASE COMMANDS --------------
+---- DATABASE COMMANDS (begin) --------------
+CREATE DATABASE movies;
+USE movies;
+SELECT DATABASE();
+---- DATABASE COMMANDS (end) --------------
+---- TABLE COMMANDS (begin) --------------
+CREATE TABLE movies (id INTEGER, name TEXT, genre TEXT, year INTEGER, rating REAL)
+---- TABLE COMMANDS (end) --------------
+------------------
+SELECT created_at,updated_at,deleted_at,hostname FROM instances WHERE node='node-344.domain.tld'
+SELECT sharewithnum FROM res WHERE guestnum IN (4797161,4797162)
+SELECT sharewithnum FROM resrooms WHERE guestnum IN (4797161,4797162)
+SELECT rowid,sharewithnum FROM sharewith WHERE guestnum IN (4797161,4797162)
+SELECT rowid,sharewithnum FROM sharewith WHERE sharewithnum=383114
+SELECT rowid,guestid FROM sharewith WHERE sharewithnum=383114
+BEGIN WORK; UPDATE sharewith SET sharewithnum='385281' WHERE rowid IN (1541,1548) 
+SELECT * FROM quoted_room_rate WHERE sharewithnum=383114
+BEGIN WORK; UPDATE quoted_room_rate SET sharewithnum=385281 WHERE resrooms_seq=4308710
+------------------
+SELECT hotelnum,intnum,intcode,connectiontype,portname,intlive
+FROM gsi_header ORDER BY hotelnum 
+---
+SELECT hotelnum,intnum,intcode,intname,connectiontype,portname,intlive
+FROM gsi_header ORDER BY hotelnum 
+------------------
+CREATE TABLE <table> (<column_name_1> <date_type_1>, <column_name_2> <date_type_2>, ...)
+CREATE TABLE movies (id INTEGER, name TEXT, genre TEXT, year INTEGER, rating REAL)
+------------------
+SELECT * FROM movies WHERE name LIKE 'Se_en'
+SELECT * FROM movies WHERE name LIKE 'S%n'
+SELECT * FROM movies WHERE name BETWEEN 'A' AND 'J'
+SELECT * FROM movies WHERE year BETWEEN 1990 AND 2000 AND genre = 'comedy'
+SELECT * FROM movies WHERE year < 1990 OR genre = 'comedy'
+SELECT * FROM movies ORDER BY rating DESC
+SELECT * FROM movies ORDER BY rating ASC LIMIT 5
+SELECT COUNT(year) FROM movies
+SELECT genre, COUNT(*) FROM movies GROUP BY genre
+SELECT SUM(rating) FROM movies
+---- TABLE fake_apps (id INTEGER, name TEXT, category TEXT, downloads INTEGER, price REAL) ----
+SELECT category, SUM(downloads) FROM fake_apps GROUP BY category
+SELECT *, MAX(downloads) FROM fake_apps
+SELECT * FROM fake_apps WHERE category = 'Travel'
+SELECT name, category, MAX(downloads) FROM fake_apps GROUP BY category
+SELECT name, category, MIN(downloads) FROM fake_apps GROUP BY category
+SELECT name, category, AVG(downloads) FROM fake_apps GROUP BY category
+SELECT price, ROUND(AVG(downloads),2) FROM fake_apps GROUP BY price;
+---- TABLEs : albums and artists
+SELECT * FROM albums LIMIT 5;
+CREATE TABLE artists(id INTEGER PRIMARY KEY, name TEXT)
+SELECT albums.name,albums.year,artists.name FROM albums,artists
+SELECT * FROM albums JOIN artists ON albums.artist_id = artists.id
+SELECT * FROM albums LEFT JOIN artists ON albums.artist_id = artists.id
+SELECT albums.name AS 'Album',albums.year,artists.name AS 'Artist' FROM albums JOIN artists ON albums.artist_id=artists.id WHERE albums.year>1980
+------------------
+INSERT INTO celebs (id, name, age) VALUES (1, 'Patrick Raco', 37)
+INSERT INTO movies (id, name, genre, year, rating) VALUES (1, 'The Princess Bride', 'Comedy', 1985, 5.0);
+------------------
+BEGIN WORK; 
+UPDATE arbanksvc 
+SET status='USED',docnum='7642' 
+WHERE custnum=9094 AND docnum IS NULL 
+------------------
+BEGIN WORK; 
+DELETE FROM banktrans 
+WHERE processcode='bkdep' AND processdate='06-02-2014' 
+------------------
+SELECT * FROM banktrans WHERE processcode='bkdep' AND processdate='06-02-2014' 
+-----------get unique values in column(s)-------
+SELECT DISTINCT <column> FROM <table>
+==== locks on rooms ========
+SELECT hotelnum,arnum,agentid,termnum,system,startdate,starttime FROM listu
+SELECT hotelnum,arnum,agentid,termnum,startdate,starttime FROM listu
+SELECT hotelnum,tport,guestnum,roomnum,blockeddate FROM roomassigned WHERE roomnum=XXXX
+SELECT hotelnum,usernum,guestnum FROM reslock
+termnum              char(20)                                yes
+userid               char(20)                                yes
+hotelnum             integer                                 yes
+guestnum             integer                                 yes
+guestname            char(30)                                yes
+sharewithnum         integer                                 yes
+usernum              char(8)                                 yes
+username             char(30)                                yes
+applsource           char(4)                                 yes
+phid                 integer                                 yes
+code                 char(8)                                 yes
+bdate                date                                    yes
+btime                char(8)                                 yes
+lockhotelnum         integer                                 yes
+ts_create            datetime year to second                 yes
+------------------
+SELECT hotelname,hotelnum,phone1
+FROM hotelname
+WHERE liveortrain='L'
+------------------
+SELECT guestnum 
+FROM res 
+WHERE status='CO'AND guestnum IN (SELECT guestnum FROM resrooms WHERE roomstatus='REG' AND hotelnum=NNN) 
+AND hotelnum=NNN
+------------------
+BEGIN work;  
+UPDATE resrooms 
+SET roomstatus='CO' 
+WHERE guestnum=XXX AND hotelnum=NNN
+------------------
+SELECT guestnum 
+FROM res 
+WHERE status='REG' 
+AND guestnum IN (SELECT guestnum FROM resrooms WHERE roomstatus='CO' AND hotelnum=NNN) 
+AND hotelnum=NNN
+------------------
+SELECT purgemolastvis,vispurgelststay,purgemocc,chgnlogmonths
+FROM ghp        
+WHERE hotelnum=1380
+------------------
+SELECT hotelnum,roomnum,fdstatus,hkstatus,instatus FROM rooms
+WHERE roomnum=XXXX AND hotelnum=YYYY
+------------------
+ALTER TABLE celebs
+ADD COLUMN twitter_handle TEXT
+------------------
+BEGIN work;
+UPDATE rooms 
+SET fdstatus ='VAC', hkstatus='VC', instatus='PASS'
+WHERE roomnum=XXXX AND hotelnum=YYYY
+------------------
+DELETE FROM ar_lock WHERE custnum=19530
+------------------
+SELECT hotelnum,roomnum,fromdate,todate,reasoncode 
+FROM offmarket
+WHERE hotelnum=1008 AND roomnum IN ('927','929')
+------------------
+BEGIN WORK;
+DELETE FROM blockedroom 
+WHERE hotelnum = 463 AND roomnum = 2811 AND blockeddate = today
+------------------
+SELECT guestnum,sharewithnum
+FROM res WHERE groupcode='MEF17A' AND sharewithnum IS NOT NULL
+------------------
+SELECT * FROM ls_back_to_back WHERE guestnum=305851
+------------------
+SELECT * FROM blockedroom WHERE roomnum=3405
+------------------
+SELECT * FROM roomassigned WHERE roomnum=234
+------------------
+SELECT * FROM resrooms WHERE guestnum=604213
+------------------
+BEGIN WORK;
+UPDATE resrooms SET roomnum='' WHERE guestnum=604213
+------------------
+SELECT * FROM hmagent WHERE agentid IS NULL
+------------------
+UPDATE nastat SET termnum=null
+WHERE nadate='07-08-14' AND schedule='sjv2' AND hotelnum=1187
+------------------
+SELECT * FROM software_update
+ORDER BY timestamp DESC 
+------------------
+taimi vave tuku ia moe ta'e
+uma hoku mui - kiss my butt
+------------------
+SELECT hotelnum,parttwo FROM hotelname
+------------------
+SELECT int_type, COUNT(*) FROM intf_err 
+WHERE hotelnum = 0 AND int_type = 'PTD' GROUP BY int_type
+
+--FINDING THE MINIMUM ROWID 
+--(note that I found the day with the issue and then removed for that day, 
+--the audit could handle the rest of the rows):
+SELECT MIN(rowid) FROM intf_err WHERE int_type = 'PTD' AND hotelnum = 0 AND err_dt = '08-07-2013'
+	
+--FINDING THE MAXIMUM ROWID:
+SELECT MAX(rowid) FROM intf_err WHERE int_type = 'PTD' AND err_dt = '08-07-2013'
+DELETE FROM intf_err WHERE int_type = 'PTD' AND err_dt = '08-07-2013' AND rowid < 700000 
+------------------
+SELECT roomnum,accomcode FROM rooms WHERE hotelnum ='xxx' AND hkstation IS NULL 
+------------------
+BEGIN WORK; DELETE FROM ardetail WHERE custnum=145660 AND docnum=4860964 AND seq=3 
+---
+[eci] /home/eci     > cd /eci/dbatools 
+[eci] /eci/dbatools > sqr ardocbal dev 
+===================
+SELECT ghid,guestnum FROM ghvisit WHERE guestnum IN (1191724)
+==== can't print from spooler ==
+SET ISOLATION TO DIRTY READ;
+DELETE FROM ecispoolterm
+WHERE hotelnum = xxx
+------------------
+BEGIN WORK;
+UPDATE resrooms
+SET roomstatus='CO',
+ckoutagent='AGENTID',ckoutdate='MM-DD-YYYY',ckouttime='HH:MM'
+WHERE roomnum='NNNN' AND guestnum='NNNNNNN' AND hotelnum=NNNN;
+--
+UPDATE res
+SET status='CO', 
+actdepartdate='MM-DD-YYYY',actdeparttime='HH:MM'
+WHERE guestnum='NNNNNNN' AND hotelnum=NNNN;
+--
+UPDATE rooms
+SET fdstatus ='VAC', hkstatus='VC', instatus='PASS'
+WHERE roomnum=NNNN AND hotelnum=NNNN
+------------------
+SELECT COUNT(*) hotelnum,guestnum,roomnum
+FROM resrooms WHERE roomnum is not NULL
+GROUP BY hotelnum,guestnum,roomnum
+HAVING COUNT(*) >1
+------------------
+SELECT * FROM ls_hotelconfig WHERE hotelnum=NNNN 
+AND parameter='util_mail_folio_pdf_logo'
+---
+BEGIN WORK; 
+UPDATE ls_hotelconfig 
+SET param_value='/opt/jboss/lightspeed/configuration/logos/sanjoseairporthotel.jpg' 
+WHERE hotelnum=NNNN AND parameter='util_mail_folio_pdf_logo'

@@ -1,0 +1,1039 @@
+﻿			===============================
+			Linux Tips & Tricks and Notes
+			===============================
+
+############################## -|   Web Sites   |- #############################
+
+http://www.tldp.org/			# The Linux Documentation Project
+http://www.openpgp.org			# PGP
+http://www.pathname.com/fhs		# FHS
+https://fedoraproject.org/wiki/SELinux
+
+############################## -|  Tips/Tricks  |- #############################
+ubuntu - turn off/on gnome destktop manager
+	[sudo] update-rc.d -f gdm|lightdm remove
+	[sudo] update-rc.d -f gdm|lightdm defaults
+	startx	# start it if disabled
+############################## -|   Misc Info   |- #############################
+MAGNETIC TAPE DRIVE OPERATION
+  mt "status" bits
+	BOT	- Tape positioned at beginning of first file (Begin of Tape)
+	CLN	- Drive requires CLEANING
+	D_6250 | D_1600 | D_800
+		- This "generic" status info reports current density setting
+		  for 9-track 1/2 inch tape drives only. 
+	DR_OPEN	- Door is OPEN. (tape may be 'in the drive', but is not loaded)
+		  Depending on the type of drive, this usually means that
+		  the drive does not have a tape in place.
+	EOD	- Tape is positioned at the end of recorded data. DDS specific.
+		  Tape is mounted and positioned at End of Data
+		  (i.e. has been read to 'the end')
+	EOF	- The tape is positioned just after a file-mark (End Of File). 
+	EOT	- A tape operation has reached the physical End Of Tape. 
+	IM_REP_EN
+		- Immediate report mode. Drive immediate reply enabled.
+		  This bit is set if there are no guarantees that the data
+		  has been physically written to the tape when the write
+		  call returns. It is set to zero only when the driver does
+		  not buffer data and the drive is set not to buffer data. 
+	ONLINE	- The drive has a tape in place and ready for operation.
+		  Tape is mounted and ONLINE
+		  (effectively a mounted cartridge is 'READY')
+	SM	- The tape is currently positioned at a setmark. DDS specific. 
+	WR_PROT	- The tape (or drive) is write-protected. 
+		  For some drives this can also mean that the drive does
+		  not support writing on the current medium type.
+		  Tape is mounted and WRITE PROTECTED, normally a mechanical
+		  lock on the cartridge
+	imklog X.X.X, log source = /proc/kmsg
+stty -a
+	speed 38400 baud; rows 40; columns 90; line = 0;
+	intr = ^C; quit = ^\; erase = ^?; kill = ^U; eof = ^D; eol = <undef>;
+	eol2 = <undef>; swtch = <undef>; start = ^Q; stop = ^S; susp = ^Z;
+	rprnt = ^R; werase = ^W; lnext = ^V; flush = ^O; min = 1; time = 0;
+	-parenb -parodd cs8 -hupcl -cstopb cread -clocal -crtscts -cdtrdsr
+	-ignbrk -brkint -ignpar -parmrk -inpck -istrip -inlcr -igncr icrnl
+	ixon -ixoff -iuclc -ixany -imaxbel -iutf8 opost -olcuc -ocrnl onlcr
+	-onocr -onlret -ofill -ofdel nl0 cr0 tab0 bs0 vt0 ff0 isig icanon
+	iexten echo echoe echok -echonl -noflsh -xcase -tostop -echoprt
+	echoctl echoke
+beeping the pc speaker
+	# echo -ne "\a" > /dev/console	# as root
+	# echo -ne "\a" > /dev/tty5	# any unused TTY
+############################## -|    Files      |- #############################
+~root/anaconda-ks.cfg	# Kickstart file
+/boot/config-`uname -r`	# kernel configuration file
+/boot/grub/grub.conf	# timestamp of /etc/grub.conf shows install date
+/boot/grub/grub.cfg
+/etc/grub.d
+/boot/initramfs*	# Initial RAM disk
+/dev/cdrom -> /dev/hda	# soft link to optical drive
+/dev/disk		# directories of installed disks
+/dev/dm-?		# drive block files
+/dev/mapper/vg00-usr -> ../dm-6
+/dev/scd0 -> /dev/sr0	# soft link to optical drive
+/dev/shm				# tmpfs - shared memory - uses virtual memory
+	# mount -o remount,size=8G /dev/shm
+/etc/apt/sources.list	# apt-get repositories
+/etc/auto.master		# master Map for automounter
+/etc/auto.misc
+/etc/auto.smb
+/etc/autofs_ldap_auth.conf
+/etc/bashrc				# system wide bashrc file
+/etc/cron.allow
+/etc/cron.daily/logrotate
+/etc/cron.daily/makewhatis.cron
+/etc/cron.daily/mlocate.cron
+/etc/cron.deny
+/etc/crypttab		# LUKS 
+	# shared /dev/mapper/LUKSFSNAME none
+/etc/default/grub	# ubuntu - configures /boot/grub/grub.cfg - run update-grub
+/etc/environment	# environment settings for all
+/etc/exports		# NFS server export table - exported (shared) filesystems
+/etc/fstab		# static information about the filesystems - filesystems to mount
+	LABEL=elasticsearch    /mnt/elasticsearch      ext4   defaults       0       0
+/etc/group		# user group file
+/etc/grub.conf -> /boot/grub/grub.conf
+	# timestamp of /etc/grub.conf shows install date
+/etc/gshadow		# shadowed group file
+/etc/init		# Upstart files
+/etc/init/*plymouth*	# startup/shutdown splash screen scripts
+/etc/inittab		# default run level
+/etc/issue		# pre-login message and identification file
+/etc/hosts.allow	# TCP wrapping
+/etc/hosts.deny		# TCP wrapping
+/etc/httpd/conf/httpd.conf	# Apache config file
+/etc/ldap.conf		# LDAP config
+/etc/logrotate.conf	# log rotation configuration
+/etc/login.defs		# shadow password suite configuration
+/etc/lvm/archive/	# directory containing lvm scripts
+	# /etc/lvm/archive/vg01_00047-1534171304.vg
+/etc/lvm/backup/vg01	# vg script
+/etc/lvm/lvm.conf	# configuration file for LVM2
+/etc/mtab		# how filesystems are actually mounted
+/etc/network/interfaces
+/etc/nsswitch.conf	# order of resolving lookups
+/etc/ntp.conf		# NTP config file
+/etc/openldap/ldap.conf
+/etc/pam.d/su		# controls who can su to root
+/etc/pam_ldap.conf
+/etc/passwd		# passwords file
+/etc/pki/rpm-gpg	# RPM package verification GPG keys
+/etc/printcap		# printer config file
+/etc/profile		# system wide profile file
+/etc/profile.d		# default profile scripts run by /etc/profile
+/etc/rc.d/rc.sysinit	# run by init during boot up
+/etc/rc?.d		# startup/shutdown scripts
+/etc/redhat-release	# version of o.s.
+/etc/resolv.conf	# DNS resolution
+/etc/rsyslog.conf	# rsyslogd(8) configuration file
+/etc/samba/smb.conf	# samba config file
+/etc/samba/smb.creds2
+/etc/samba/lmhosts	# samba hosts
+/etc/samba/smbusers	# samba users
+/etc/securetty		# tty's/consoles root allowed to log in to
+/etc/security/access.conf	# the login access control table file
+/etc/selinux/targeted/setrans.conf
+/etc/selinux/targeted/contexts/files/file_contexts
+/etc/services
+/etc/shadow		# encrypted passwd file
+/etc/skel
+/etc/sudoers		# users that can sudo
+/etc/sysconfig/autofs	# default options for autofs
+/etc/sysconfig/clock	# timezone
+/etc/sysconfig/init	# features of the Upstart process
+/etc/sysconfig/iptables	# firewall rules
+/etc/sysconfig/network-scripts/ifcfg-eth0
+/etc/sysconfig/network	# networking config file
+/etc/sysconfig/nfs	# NFS config file
+/etc/sysconfig/selinux	# SELinux config file
+/etc/sysctl.conf	# sysctl config file (kernel parameters)
+/etc/system-release	# link to redhat-release
+/etc/udev/rules.d	# custom - dynamic device management (see: /lib/udev)
+	# /etc/udev/rules.d/70-persistent-net.rules
+/etc/vsftpd/vsftpd.conf
+/etc/yum.conf		# basic yum config file
+/etc/yum.repos.d	# yum repositories
+/lib/udev/rules.d	# defaults - dynamic device management (see: /etc/udev)
+/media/[iso]/repodata
+/proc/cpuinfo
+	flags
+	: lm	- Long Mode (x86-64:amd64, aka Intel64, i.e. 64-bit capable cpu)
+	: vmx	- Hardware Virtualization
+	: ht	- Hyper-Threading
+/proc/driver/cciss/cciss*	# RAID array controller devices
+/proc/partitions		# partitions table
+/proc/scsi/scsi			# SCSI bus devices
+/proc/swaps			# swap space
+/proc/sys/dev/cdrom/info	# cdrom/dvd device info
+/proc/sys/net/ipv4/ip_forward	# turn on/off ip forwarding
+/proc/sys/kernel/hostname	# hostname
+/proc/sys/kernel/osrelease	# os release version
+/root/anaconda-ks.cfg		# kickstart file of original installation
+/root/install.log		# install packages during RHEL install
+/selinux/booleans		# SELinux booleans
+/selinux/enforce		# enforce boolean
+/sys/block			# symbolic links to installed drives
+/usr/share/info			# info files
+/usr/share/doc			# info files
+/var/cache/yum			# cache dir for yum installs
+/var/ftp/pub			# default ftp root dir
+/var/lib/apt/lists		# 
+/var/lib/libvirt/images		# KVM images
+/var/lib/nfs/etab		# master table of exports - exports tab
+/var/lib/nfs/rmtab		# table of clients accessing server's exports
+/var/log/audit/audit.log	# SELinux log file
+/var/log/dmesg			# boot messages (also: `dmesg`)
+/var/log/messages		# see /etc/rsyslog.conf
+/var/log/secure			# see /etc/rsyslog.conf
+/var/run/autofs.pid		# PID of automount
+/var/www/html			# default Apache root dir
+
+############################## -|   Services    |- #############################
+
+/etc/init.d/autofs				# automounter daemon/service
+/etc/init.d/crond [start|stop|restart]	# cron daemon/service
+/etc/init.d/libvirtd				# KVM daemon
+/etc/init.d/lpd					# printer daemon/service
+/etc/init.d/network [start|stop|restart]	# networking/NIC daemon/service
+/etc/init.d/nfs					# NFS daemon/service
+
+############################## -|   Commands    |- #############################
+
+a2p				- awk to perl converter
+alternatives	- maintain symbolic links determining default commands
+	# alternatives --display mta
+	# alternatives --config mta
+apropos			- search the whatis database for strings (aka: man -k)
+apt-get			- APT package handling utility -- command-line interface
+	# apt-get dist-upgrade		# upgrade the full distro and dependencies
+	# apt-get install PACKAGE
+	# apt-get update			# update the package DB - resync pkg indices
+	# apt-get upgrade			# install newest versions of installed pkgs
+	# apt-get [install|remove] PKG
+apt-cache		- query the APT cache
+	# apt-cache search PATTERN
+	# apt-cache show PACKAGE
+arch			- print machine hardware name (same as uname -m)
+arp				- manipulate the system ARP cache
+at				- (at, batch, atq, atrm) queue, examine, del jobs for execution
+	# at -cm now + $SAVEOLD days <<EOF
+	# if [ "$srcsrv" != "$DSTSRV" ]
+	# then				# servers are different; use "rsh"
+	# 	/usr/ucb/rsh $srcsrv rm -r $dir
+	# else
+	# 	rm -r $dir
+	# fi
+	# /usr/bin/echo "$srcsrv:$dir has successfully been removed"
+	# /usr/bin/echo "$srcsrv:$dir has successfully been removed"|/usr/ucb/mail -s "$srcsrv:$dir has been removed automagically" $RANBY
+	# EOF
+authconfig		- an interface for configuring system authentication resources
+	# authconfig --test
+	# authconfig --enableshadow --enablemd5
+	# authconfig \
+	#  --enableldap \
+	#  --enableldapauth \
+	#  --ldapserver=dlp.server.world \
+	#  --ldapbasedn="dc=server,dc=world" \
+	#  --enablemkhomedir \
+	#  --enableldaptls
+	#  --ldaploadcacert=ftp://ca_server.example.com/ca.pem
+	#  --[update|test]
+automount		- manage autofs mount points
+ausearch		- a tool to query audit daemon logs (SELinux)
+	# ausearch -m avc -c sudo
+awk				- (gawk) pattern scanning and processing language	
+	# www.gnu.org/software/gawk/manual/gawk.html
+aws 
+	# aws s3 sync --profile ptu s3://firefall-stabilization-build-1310-publictest/ /data/1310-download/
+badblocks		- search a device for bad blocks
+	# badblocks -c 10240 -s -w -t random -v /dev/sda1
+bc				- An arbitrary precision calculator language
+	# echo "$GL_Debit - $GL_Credit + $GL_Xfr_to_AR" | bc -q
+	# echo "$GL_Debit > $GL_Credit" | bc -q
+	# dec=.1;ul=15;ll=10; while ((`echo "$ul >= $ll"|bc`));do echo "ul=$ul"; ul=`echo "$ul - $dec" |bc`; done
+bind		- bash built-in - set up macros/keyboard shortcuts
+	# bind Space:magic-space
+blkid			- command-line utility to locate/print block device attributes
+bzcat			- decompresses files to stdout
+bzip2, bunzip2	- a block-sorting file compressor, v1.0.4
+bzip2recover	- recovers data from damaged bzip2 files
+cal				- displays a calendar
+cancel			- remove jobs from the line printer spooling queue
+chage			- change user password expiry information
+chattr			- change file attributes on a Linux file system (see: lsattr)
+chcon			- change file SELinux security context
+chkconfig		- updates and queries runlevel information for system services
+	# chkconfig --add|del SERVICE
+	# chkconfig --list [SERVICE]
+	# chkconfig SERVICE on
+	# chkconfig --level N SERVICE on|off
+chroot		- run command or interactive shell with special root directory
+compress	- compress data
+column		- columnate lists
+cksum		- checksum and count the bytes in a file
+createrepo	- Create repomd (xml-rpm-metadata) repository
+cryptsetup	- setup cryptographic volumes for dm-crypt (also LUKS extension)
+	# cryptsetup luksFormat /dev/sda1
+	# cryptsetup luksUUID /dev/sda1 [> sda1uuid]
+	# cryptsetup luksOpen /dev/sda1 `cat sda1uuid`
+ctags		- Generate tag files for source code
+curl		- transfer a URL
+date		- print or set the system date and time
+	# date -ud @1299287328
+	# date --date "$dbst" +'%d%m%y(%H:%M:%S)'` # convert to DDMMYY(HH:MM:SS)
+dd		- convert and copy a file
+	# dd if=/dev/scd0 bs=2k of=/dev/null
+	# dd if=/dev/scd0 bs=2k count="TARGET-NUM" 2>$tmpfile | md5sum
+	# dd if=/dev/scd0 bs=2k count="TARGET-NUM" of=/dev/null
+	## get CD volume name or	`volname [/dev/cdrom]`
+	# dd if=/dev/cdrom bs=1 skip=32808 count=32
+	## fill of with random data
+	# dd if=/dev/urandom of=/dev/sda1
+df		- report file system disk space usage
+	# df -h /maint
+dhclient	- Dynamic Host Configuration Protocol Client
+	# dhclient eth0
+dig 		- DNS lookup utility
+	# dig "zone"
+	# dig -x "IP"
+dirs		- bash built-in - display list of remembered directories
+dircolors	- color setup for ls
+dmesg		- print or control the kernel ring buffer
+dmidecode	- DMI (SMBIOS) table decoder
+	# dmidecode [-t TYPE]
+	#  (bios, system, baseboard, chassis, processor,
+	#   memory, cache, connector, slot)
+	# dmidecode [-s KEYWORD]
+	#  (bios-release-date, system-product-name)
+dpkg			- package manager for Debian
+	# dpkg --get-selections
+	# dpkg -i|--install DEB_PACKAGE
+	# dpkg -r|--remove PACKAGE_NAME
+	# dpkg-query -S /usr/bin/sftp	# search for which package contains file
+dracut			- create initial ramdisk images for preloading modules
+du				- estimate file space usage
+	# du -hsx
+	# du -hs * | sort -h
+dumpe2fs		- dump ext2/ext3/ext4 filesystem information
+e2fsadm	(8)		- ext2 filesystem / LVM administration
+e2fsck (8)		- check a Linux second extended file system
+	# e2fsck -f /dev/vg01/lvol6
+	# e2fsck -f /dev/vdb
+e2label			- Change the label on an ext2/ext3/ext4 filesystem
+	# e2label /dev/vdb elasticsearch 	# Usage: e2label device [newlabel]
+eject			- eject removable media
+	# eject /dev/hdb
+elinks			- lynx-like alternative character mode WWW browser
+ethtool			- Display or change ethernet card settings
+	# ethtool -i eth0
+exec			- shell builtin - execute a command
+exportfs		- maintain table of exported NFS file systems
+faillog -> /sbin/pam_tally2
+fdisk			- Partition table manipulator for Linux
+find			- search for files in a directory hierarchy (operators, options, tests, actions)
+	# find RPMS/ -type f -name '*.rpm'		# find regular files
+	# find /usr -type l -ls				# find symbolic links
+	# find $dir -name core -print -exec rm {} \;
+	# find . -mtime +3 -exec rm {} \;
+	# find -exec COMMAND {} \;		# perform command in current dir
+	# find -execdir COMMAND {} \;	# perform command in found file's dir
+finger			- user information lookup program
+free			- Display amount of free and used memory in the system
+fsck			- check and repair a Linux file system
+fsck.ext[2|3|4] - check a Linux ext2/ext3/ext4 file system (e2fsck)
+fuser		- identify processes using files or sockets
+	# fuser -vm /maint
+gem 
+	# gem list test-kitchen -i
+getenforce		- get the current mode of SELinux
+getfacl			- get file access control lists (see also: setfacl)
+getopts			- bash built-in; parse positional parameters
+	# while getopts ":ab:c" opt; do
+	# case $opt in
+getsebool		- get SELinux boolean value(s) (semanage boolean -l)
+gpg2			- OpenPGP encryption and signing tool
+grep			- grep, egrep, fgrep - print lines matching a pattern
+	# grep "-q" = no - "-q" option not portable
+	# grep -qE '[[:space:]]lm([[:space:]]|$)'
+	# grep -vE '^[[:space:]]*(#|$)'
+	# char classes: alnum, alpha, blank, cntrl, digit, graph [see wctype(3)]
+	# char classes: lower, print, punct, space, upper, xdigit
+groupadd		- create a new group
+grub-md5-crypt	- Encrypt a password in MD5 format
+grub-install	- install GRUB on your drive
+grubby			- command line tool for configuring grub, lilo, and elilo
+	# grubby --bootloader-probe
+	# grubby --default-kernel
+gunzip			- gzip, gunzip, zcat - compress or expand files
+gzip			- gzip, gunzip, zcat - compress or expand files
+hash			- remember or report utility locations
+	# hash -r 	# Forget all previously remembered utility locations
+	( bash builtin - disable with `set +h`
+hdparm			- get/set hard disk parameters
+	# hdparm -i /dev/hdb
+	# hdparm -E 24 /dev/hda		# change drive speed
+host			- DNS lookup utility
+hpacu			- HP Array Configuration Utility
+hpacucli		- HP Array Configuration Utility (ACU) Command Line Interface (CLI)
+	# hpacucli ctrl|controller all show config
+	# hpacucli ctrl slot=0 modify rp=high					# modify the "Rebuild Priority"
+	# hpacucli ctrl all show config | grep -i drive | grep -v OK
+	# hpacucli ctrl all show config detail
+	# hpacucli ctrl all show config detail | grep Status | grep -vE 'Status: (OK|Initialization Complete|Disabled|LOCKED)'
+	# hpacucli ctrl slot=0 ld 1 add drives=1I:1:1
+	# hpacucli ctrl slot=0 array A add drives=1I:1:1
+	# hpacucli ctrl slot=0 ld 1 modify raid=1
+	# hpacucli ctrl slot=0 ld 1 modify size=max
+		Cache Board Present, Battery Pack Count
+hpadu			- HP Array Diagnostic Utility
+hpaducli		- HP Array Diagnostic Utility (ADU) Command Line Interface (CLI)
+		(jump1:/tech/hpdiag/  ([RHEL6]jump1:/tech/hpdiag/rhel6/) (hpadu-8.26-1.noarch.rpm)
+		(rpm --nodeps -UVh hpadu-8.26.1.noarch.rpm)	# package has bad dependencies
+		(with `hpadu` (HP Array Diagnostic Utility) to generate report(s))
+    # hpaducli -z -f "outputfile"		# e.g. outputfile="hpadu-'siteid'.zip"
+hpasm			- HP Advanced System Management / Application & Insight Management Agents
+hpasmcli		- HP Advanced System Management (ASM) Command Line Interface (CLI)
+	# hpasmcli -s "clear iml"
+	# hpasmcli -s "show server"
+	# hpasmcli -s "show dimm"
+hplog			- HP ProLiant Integrated Management Logging (IML) utility
+	# hplog -v [f|p|t]
+	# hplog -v | perl -n -e 'if (/^\d\d\d\d\s/) { chomp; print "$_ "; $n=1; next; } if ($n) { print; $n=0; }' | grep -E 'Critical'
+	# hplog -v | perl -n -e 'if (/^\d\d\d\d\s/) {chomp;print "$_ ";$n=1;next;} if ($n) {print;$n=0;}' | grep "Critical"
+htpasswd		- Manage user files for basic authentication (authentication of HTTP users)
+	# htpasswd -c htfile
+hwclock			- query or set the hardware clock (RTC)
+	# hwclock -r|-s|-w	# read | set system to hw | set hw to system
+id				- print real and effective user and group IDs
+ifconfig		- configure a network interface
+	# ifconfig eth0 192.168.122.150 netmask 255.255.255.0
+	# ifconfig eth0 [up|down]
+ifdown			- take a network interface down
+ifup			- bring a network interface up
+init			- Upstart process management daemon
+iostat			- Report Central Processing Unit (CPU) statistics and
+		  input/output statistics for devices, partitions and
+		  network filesystems (NFS).
+ip				- show / manipulate routing, devices, policy routing and tunnels
+iperf			- Internet Protocol bandwidth measuring tool
+iptables		- administration tool for IPv4 packet filtering and NAT
+	# iptables -t tabletype <action direction> <packet pattern> -j <what to do>
+iptables-save	- dump iptables rules to stdout
+isosize			- outputs the length of an iso9660 file system
+	# isosize /dev/scd0
+kill			- terminate a process
+killall			- kill processes by name
+	# killall -TERM /usr/sbin/named
+last,lastb		- show listing of last (and bad) logged in users
+lftp			- Sophisticated file transfer program
+ln				- make links between files
+lpc				- line printer control program
+	# lpc printcap PRINTER
+	# lpc move FROM_PRINTER [QUEUE_#|all] TO_PRINTER
+	# lpc redirect (PRINTER[@host] | all) (printer@host | off)
+lpq				- spool queue examination program
+lpr				- off line print
+lprm			- remove jobs from the line printer spooling queue
+lpstat			- compatibility program to get information about printers
+locate			- find files by name (mlocate)
+logger			- a shell command interface to the syslog(3) system log module
+ls				- list directory contents
+lsattr (chattr)	- list file attributes on a Linux second extended file system
+lsblk			- list block devices
+lsmod			- program to show the status of modules in the Linux Kernel
+lsof			- list open files
+	# lsof -i -P -n
+	# lsof -i :PORT		# list processes using a port
+	# lsof -t -i :3000 | xargs ps -fp
+lspci			- list all PCI devices
+	# lspci -vv | grep -i raid
+	# lspci | grep Ethernet | egrep 'Intel|BCM5703' 
+	# lspci | grep -i scsi
+lspnp	(8)		- list Plug and Play BIOS device nodes and resources
+lsusb	(8)		- list all USB devices
+lvchange (8)	- change attributes of a logical volume
+lvconvert (8)	- convert a logical volume from linear to mirror or snapshot
+lvcreate (8)	- create a logical volume in an existing volume group
+	# lvcreate -L592M -s -n dbbackup /dev/ops/databases (to creat a snapshot)
+lvdisplay (8)	- display attributes of a logical volume
+lvextend (8)	- extend the size of a logical volume
+	# lvextend -L +2G /dev/vg01/lvol6
+lvm			(8)	- Linux Logical Volume Manager
+	# lvm dumpconfig
+lvmchange (8)	- change attributes of the logical volume manager
+lvreduce (8)	- reduce the size of a logical volume
+lvremove (8)	- remove a logical volume
+lvrename (8)	- rename a logical volume
+lvresize (8)	- resize a logical volume
+lvs	 (8)		- report information about logical volumes
+	# lvs --separator , -o vg_name,lv_name,lv_path,lv_kernel_major,lv_kernel_minor --noheading
+lvscan	(8)		- scan (all disks) for logical volumes
+man
+	# man -f | whatis
+	# man -k | apropos
+md5sum	(1)		- compute and check MD5 message digest
+	# dd if=/dev/scd0 bs=2k count="TARGET-NUM" 2>$tmpfile | md5sum
+	# find -exec md5sum {} \; > .md5sum.checklist
+	# md5sum --check --status .md5sum.checklist
+mesg			- control write access to you terminal
+mkdir			- make directories
+	# mkdir -p RPMS/{noarch,i386,i686,x86_64}
+mke2fs			- create an ext2/ext3/ext4 filesystem (format)
+mkfs			- build a Linux file system (format the partition)
+mkfs.ext[2|3|4]	- create an ext2/ext3/ext4 filesystem (mke2fs)
+	# mkfs.ext4 /dev/vdb
+mktemp			- create a temporary file or directory
+	# mktemp -qd /tmp/tempdir.XXXXX
+modprobe		- program to add and remove modules from the Linux Kernel
+	# modprobe kvm | kvm_[intel|amd] | dm_crypt
+mount			- mount a filesystem
+	# mount /maint
+	# mount -t iso9660 -r /dev/cdrom /mnt/cdrom
+	# mount -o ro /dev/scd0 /mnt/test
+	# mount -o ro LABEL=
+	# mount -o remount,size=4096m /r5
+modprobe		- program to add and remove modules from the Linux Kernel
+	# modprobe dm_crypt | kvm | kvm_intel/amd
+mt				- control magnetic tape drive operation
+	# mt -f /dev/st0 status (rewind|fsf|eject|offline)
+mtr				- a network diagnostic tool
+mtx				- control SCSI media changer devices 
+	# mtx [-f <scsi-generic-device>] [nobarcode] [invert] [noattach] command [ command ... ]
+mutt			- The Mutt Mail User Agent
+named			- Internet domain name server
+	# named -v
+nc (netcat)		- arbitrary TCP and UDP connections and listens
+	# nc -Z SERVER PORT
+netstat			- Print network connections, routing tables, interface stats,
+		masquerade connections, and multicast memberships
+		(obsolete - see `ss`)
+	# netstat -atunp	# all, tcp/ucp, number, PID
+	# netstat -a|l		# all|listening-only ports (TCP/UDP)
+	# netstat -a[t|u]	# all TCP|UDP connections
+	# netstat -s[t|u]	# statistics	
+	# netstat -p		# show program/pid
+	# netstat -r		# routing table - obsolete: see `ip route`
+	# netstat -i[e]		# netwrk intrfces table-obslte: see `ip -s link`
+	# netstat -g		# multicast group membership info-obslte: see `ip maddr`
+	# netstat -[a|l]np | grep -w :80
+nice			- run a program with modified scheduling priority
+nfs4_editfacl	- manipulate NFSv4 file/directory access control lists
+nfs4_getfacl	- get NFSv4 file/directory access control lists
+nfs4_setfacl	- manipulate NFSv4 file/directory access control lists
+nmap			- Network exploration tool and security / port scanner
+nslookup		- query Internet name servers interactively
+	# nslookup is deprecated in Linux
+	# /usr/sbin/nslookup -sil	# get rid of deprecated message?
+	# > set all|set debug|set domain=NAME|set type=VALUE|server DOMAIN|host [server]
+ntpdate			- set the date and time via NTP
+	# ntpdate -q ntphost1.star
+	# ntpdate -u
+openssl			- OpenSSL command line tool
+	# openssl enc -e -in $file -out $file.enc -pass file:/home/praco/key-aes-pass.bin -aes-256-cbc
+	# openssl enc -d -in $file.enc -out $file -pass file:/home/praco/key-aes-pass.bin -aes-256-cbc
+	# echo | openssl s_client -showcerts -connect HOST:443
+	# echo | openssl s_client -connect clientapi-v01-sna01.r5test.com:443 | openssl x509 -noout -dates
+	# echo | openssl s_client -servername firefall.com -connect clientapi-v01-sna01.r5test.com:443 | openssl x509 -noout -dates
+	# ls /etc/ssl/{certs,private}
+	# openssl req -text -noout -verify -in ca.csr
+	# openssl rsa -in ca.key -check
+	# openssl x509 -in ca.crt -text -noout
+pam_tally2		- The login counter (tallying) module
+parted			- GNU Parted - a partition manipulation program
+passwd			- update user's authentication tokens
+	# passwd -[l|u] "userid"	# lock|un-lock account
+	# passwd -S "userid"		# get short information about the password status for account
+pgrep			- look up processes based on name and other attributes
+	# pgrep -[a]fl "pattern"
+pkill			- signal processes based on name and other attributes
+ping, ping6		- send ICMP ECHO_REQUEST to network hosts
+popd			- bash built-in - make working directory top of stack
+printf			- format and print data
+	# printf "%d\n" 0x5630c
+	# 353036
+	# printf -v pool_id "%02d" $i
+pstree			- display a tree of processes
+pushd			- push directory onto stack and set working directory
+pvchange (8)	- change attributes of a physical volume
+pvcreate		- initialize a disk or partition for use by LVM
+pvdata	 (8)	- shows debugging information about a physical volume
+pvdisplay (8)	- display attributes of a physical volume
+pvs (8)			- report information about physical volumes
+pvscan (8)		- scan all disks for physical volumes
+python			- an interpreted, interactive, object-oriented programming lang
+	# python -c 'import crypt; print(crypt.crypt("My Password", "$6$My Salt"))'
+qemu-img		- QEMU disk image utility
+raw				- bind a Linux raw character device
+	# raw -qa
+	# raw /dev/raw/raw21 0 0
+readlink [-m]	- print value of a symbolic link or canonical file name
+renice			- alter priority of running processes
+resize2fs	(8)	- ext2 file system resizer	
+	# resize2fs /dev/vdb
+	# resize2fs /dev/vg01/lvol6
+restorecon		- restore file(s) default SELinux security contexts.
+	# restorecon -R [/usr/local | /opt | /home]
+rhash			- calculate/check CRC32, MD5, SHA1, GOST, TTH, BTIH or other hash sums.
+rndc			- name server control utility 
+	# rndc [halt|querylog|reload|retransfer|stats|status|stop]
+	# rndc reload "zone"
+rndc-confgen	- rndc key generation tool
+	# rndc-confgen -a
+route			- show / manipulate the IP routing table
+	# route add default gw 10.72.216.1
+rpm				- RPM - Red Hat Package Manager (www.rpm.org)
+	#$pkg=[ NET OnLine informix-audit jboss lightspeed ls-support-files UX ]
+	#	$specfile=rpmrepack.spec
+	# rpm -e kernel-2.6.32-220.el6.x86_64	# erase command
+	# rpm -e gpg-pubkey-2fa658e0-45700c69	# erase keys after importing
+	# rpm -i PKG_FILE 			# install command
+	# rpm -K 				# verify signature (key)
+	# rpm -q kernel				# query command
+	# rpm -q --queryformat "%{INSTALLPREFIX}" $pkg
+	# rpm -q --queryformat "%{ARCH}" $pkg
+	# rpm -q --queryformat "\n%%description\n%{DESCRIPTION}\n" $pkg
+	# rpm -q --queryformat "Name: %{NAME}\nVersion: %{VERSION}\nRelease: %{RELEASE}\nSummary: %{SUMMARY}\nCopyright: %{COPYRIGHT}\nURL: %{URL}\nGroup: %{GROUP}\n" $pkg
+	# rpm -qa
+	# rpm -qa gpg-pubkey*	# all currently imported public keys
+	# rpm -qa --last	# list all installed & sort by install date/time
+	# rpm -qa kernel	# list kernels installed
+	# rpm -qf /usr/bin/passwd
+	# rpm -qi gpg-pubkey-2fa658e0-45700c69	# public key details
+	# rpm -ql $pkg			# list files installed with package
+	# rpm -qpi
+	# rpm -V 			# verify integrity (files)
+	# rpm --checksig PACKAGE.rpm
+	# rpm --nodeps -ivh ${rpmlist}	# no dependency check, verb & print hash marks
+	# rpm --querytags
+	# rpm --showrc		# show options & values set in rpmrc & macros 
+rpmbuild		- Build RPM Package(s)
+	# rpmbuild -bb --target=$arch $specfile
+	#/usr/lib/rpm/find-requires "\$@" | grep -vE '^lib(if|4s|mq|imq)' | grep -vE '^:'
+rsync			- a fast, versatile, remote (and local) file-copying tool
+	# rsync -vcrlDz --existing SRC DST		# verbose,checksums,recursive,symlinks,specials,compress
+	# rsync -e ssh -av --checksum --progress Server_patch_1012_1013 10.248.0.14:/data/chedegaard/
+rsyslogd		- reliable and extended syslogd
+runlevel		- output previous and current runlevel
+s3cmd
+	# s3cmd --recursive put . s3://firefall-stabilization-build-1310-production/
+	# s3cmd --recursive sync . s3://firefall-stabilization-build-1310-production/
+sar				- Collect, report, or save system activity information.
+scp				- secure copy (remote file copy program)
+	# scp -qB $RUPRESRC $USER@$server:$RUSDEST
+	# scp -qB shmctl.sh ecisupp@h2005:/tmp/shmctl.sh
+screen			- screen manager with VT100/ANSI terminal emulation
+	# screen -r|-ls
+script			- make typescript of terminal session
+	# script -q -c "scp server:/file /tmp/" > /tmp/test.txt
+sealert			- setroubleshoot client tool (SELinux)
+securetty		- add a tty to /etc/securetty
+secon			- See an SELinux context, from a file, program or user input.
+sed				- stream editor
+	# sed "/'\/'${user}'	'/d" /etc/exports ">" /tmp/exports.new
+	# sed -e ${lineno}s:$srcsrv:$DSTSRV: -e ${lineno}s:$uhomedir:$DSTDIR/$user: /etc/auto.eshome ">" /tmp/auto.eshome.new
+	# sed -e ${lineno}s:$srcsrv:${DSTSRV}-'\$'NET: -e ${lineno}s:$uhomedir:$DSTDIR/$user: /etc/auto.eshome ">" /tmp/auto.eshome.new
+	# sed -e ${lineno}s:${srcsrv}-'\$'NET:$DSTSRV: -e ${lineno}s:$uhomedir:$DSTDIR/$user: /etc/auto.eshome ">" /tmp/auto.eshome.new
+	# sed -e ${lineno}s:$srcsrv:$DSTSRV: -e ${lineno}s:$uhomedir:$DSTDIR/$user: /etc/auto.eshome ">" /tmp/auto.eshome.new
+	# sed "1,/$month.*$lastyear$/d" $LOGFILE | sed "1,/^========/d" > $LOGFILE.new
+	# sed -n 1,${lineno}p $NISDIR/$file2edit > $pwtop
+    # sed -n ${lineno},\$p $NISDIR/$file2edit > $pwbot
+semanage		- SELinux Policy Management tool
+	## (subjects:processes / objects:files / actions:subjects->objects)
+	# semanage login -a -s user_u LOGIN
+	# semanage login -d LOGIN
+	# semanage login -l
+seq (1)			- print a sequence of numbers
+	# seq -f "%05g" 10 15
+service			- run a System V init script
+	# service SCRIPT COMMAND [OPTIONS]
+	# service < option > | --status-all | [ service_name [ command | --full-restart ] ]
+sestatus		- SELinux status tool
+set				- bash built-in - set shell variables and options
+	# set [-|+]o [shell variable]
+	# set -o vi
+setenforce		- modify the mode SELinux is running in.
+setfacl			- set file access control lists (see also: getfacl)
+	# setfacl -m u:root:rwx scripts	# modify
+	# setfacl -x u:root scripts	# remove
+	# setfacl -b scripts		# remove all ACL entries
+setpnp	 (8)	- modify Plug and Play BIOS device resources
+setsebool		- set SELinux boolean value (semanage boolean -l)
+sfdisk			- Partition table manipulator for Linux
+	# sfdisk -uB -l ${drive}
+	# sfdisk -l ${drive}
+sftp			- secure file transfer program
+	# sftp -o Identityfile=$keyfile -b $batchfile $user@$host > $outputfile
+	#(-o ssh option, -b batchfile; ls, get, put, rmdir, mkdir, rm)
+sg				- execute command as different group ID
+shasum			- Print or Check SHA Checksums
+sha1sum			- compute and check SHA1 message digest
+shopt (built-in)- Toggle values of variables controlling optional shell behavior
+showmount		- show mount information for an NFS server
+shuf			- generate random permutations
+smartctl		- Control and Monitor Utility for SMART Disks
+	# smartctl -i /dev/$DRIVE
+smbpasswd		- change a user's SMB password
+	# smbpasswd -a $USER
+sort			- sort lines of text files
+	# sort [-n|g|r|h|k#]
+ss				- another utility to investigate sockets
+	# ss -lnp	# show listen only, with port numbers and the pid/program
+	# ss -ap	# show all and the pid/program
+ssh				- OpenSSH SSH client (remote login program)
+ssh-copy-id		- use locally available keys to authorise logins on a remote machine
+	# ssh-copy-id $HOSTNAME
+ssh-keygen		- authentication key generation, management and conversion
+	# ssh-keygen -t rsa -b 4096 -C "$(whoami)@$(hostname)-$(date -I)"
+	# ssh-keygen -t rsa
+	# ssh-keygen -q -f /tmp/ssh-key
+	# ssh-keygen -f ~/.ssh/id_rsa -p	# change the passphrase w/o changing the key
+	# ssh-keygen -lf Red5DevTest.pub	# get the fingerprint from a public key
+ssh-keyscan		- gather ssh public keys
+	# ssh-keyscan 10.72.216.2 >> ~/.ssh/known_hosts	(/usr/bin/)
+star			- unique standard tape archiver
+stat			- display file or file system status
+	# stat -c %y $FILE
+stinint			- initialize SCSI magnetic tape drives
+strings			- print the strings of printable characters in files.
+strace			- trace system calls and signals
+su				- run a shell with substitute user and group IDs
+	# su "user" <<ENDOFSU
+	#>	ls
+	#>	whoami
+	#>ENDOFSU
+	# su -c - eci 'loader dev $newsmsz'
+	# su "user" -c 'command(s) to run'
+sudo			- execute a command as another user
+sum				- checksum and count the blocks in a file
+sync			- flush file system buffers
+sysctl			- configure kernel parameters at runtime
+	# sysctl -w net.ipv4.ip_forward = 1	# write/change value
+	# sysctl net.ipv4.ip_forward		# read value
+system-config-authentication		# authconfig
+system-config-firewall
+system-config-firewall-tui
+system-config-lvm
+system-config-services
+systemctl restart/start/stop/condrestart/reload SERVICE		# smb.service
+sysv-rc-conf
+tac				- concatenate and print files in reverse
+tar				- GNU tar saves many files together into a single archive
+	# tar -cf archive.tar foo bar	# Create archive.tar from files foo & bar.
+	# tar -tvf archive.tar		# List all files in archive.tar verbosely.
+	# tar -xf archive.tar		# Extract all files from archive.tar
+	# tar czvf ${dir}/root.tgz root/
+	# tar czvf ${dir}/etc.tgz etc/
+	# tar czvf ${dir}/install.tgz install/
+	# tar czvf ${dir}/usr.tgz $list
+	# tar czvf ${dir}/var.tgz var/spool/cron var/mqm
+	# tar clf - . | ( cd /opt/jboss-eap-6.2 && tar xspf - )
+	# tar xvf node-v4.3.1-linux-x64.tar.xz --strip-components=1 -C ./node
+tcpdump			- dump traffic on a network
+	# tcpdump -i ethX		# capture packets from specific interface
+	# tcpdump -c N -i ethX	# capture only N packets
+	# tcpdump -D			# display available interfaces
+	# tcpdump -A -i ethX	# display in ASCII	
+	# tcpdump -XX -i ethX	# display in HEX and ASCII
+	# tcpdump -w /tmp/out.pcap -i ethX	# output to file
+	# tcpdump -r /tmp/out.pcap # read captured packets from file
+	# tcpdump -n -i ethX	# capture IP address packets
+	# tcpdump -i ethX tcp	# capture IP address packets
+	# tcpdump -i ethX port 22	# capture from specific port
+	# tcpdump -i ethX src 192.156.152.152	# capture from source IP
+	# tcpdump -i ethX dst 192.156.152.152	# capture from destination IP
+telinit			- change system runlevel
+telnet			- user interface to the TELNET protocol
+tmux			- terminal multiplexer
+	# tmux new-session -d -s session_name do_something.sh -o remain-on-exit
+	# tmux list-sessions
+	# tmux set-window-option remain-on-exit on
+togglesebool	- flip the current value of a SELinux boolean
+top				- display Linux tasks
+tput, reset		- initialize a terminal or query terminfo database
+	# tput [blink|bold|sgr0]
+	# blink=`tput blink`
+tracepath		- traces path to a network host discovering MTU along this path
+trap			- bash built-in - trap interupt signals and execute commands
+	# trap [-lp] [[arg] sigspec ...]
+tune2fs (8)		- adjust tuneable filesystem params on second extended filesystems
+ufw				- program for managing a netfilter firewall
+	# ufw allow in on eth0 to any
+	# ufs status
+uuidgen			- command-line utility to create a new UUID value
+umask [-p] [-S] [mode]				- set the user file-creation mask
+umount			- unmount file systems
+uname			- print system information
+uncompress		- expand data
+uniq			- report or omit repeated lines
+unzip			- list, test and extract compressed files in a ZIP archive
+	# unzip -l zipfile
+update-grub		- stub for grub-mkconfig
+update-rc.d		- install and remove System-V style  init script links
+	# not encouraged to be used by humans - check out `sysv-rc-conf`
+	# update-rc.d <service> defaults
+	# update-rc.d <service> start 20 3 4 5
+	# update-rc.d -f <service>  remove
+usbmodules (8)	- List kernel driver modules avail for a plugged in USB device
+useradd			- create a new user or update default new user information
+usermod			- modify a user account
+utmpdump		- dump UTMP and WTMP files in raw format
+	# utmpdump /var/log/wtmp | less
+uudecode		- decode a binary file
+uuencode		- encode a binary file
+vgcfgbackup (8)	- backup volume group descriptor area
+vgcfgrestore(8)	- restore volume group descriptor area
+vgchange (8)	- change attributes of a volume group
+vgck	 (8)	- check volume group descriptor area
+vgcreate (8)	- create a volume group
+vgdisplay (8)	- display attributes of volume groups
+	# vgdisplay /dev/vgNN | grep Free
+vgexport (8)	- make volume groups unknown to the system
+vgextend (8)	- add physical volumes to a volume group
+vgimport (8)	- make volume groups known to the system
+vgmerge	 (8)	- merge two volume groups
+vgmknodes (8)	- create volume group directory and special files
+vgreduce (8)	- reduce a volume group
+vgremove (8)	- remove a volume group
+vgrename (8)	- rename a volume group
+vgs	 (8)	- report information about volume groups
+vgscan	 (8)	- scan all disks for volume groups, build /etc/lvmtab & /etc/lvmtab.d
+vgsplit	 (8)	- split a volume groups
+vim		- Vi IMproved, a programmers text editor
+	# vimdiff [-o]/vim -do
+vipw,vigr,visudo- vi password, group, or sudoers files
+virt-clone		- clone existing virtual machine images
+virt-install	- provision new virtual machines
+virt-manager	- display the virtual machine desktop management tool
+virsh			- management user interface
+	# virsh list --all | autostart VM | start VM | destroy VM | create
+volname	 (1)	- return volume name
+w				- Show who is logged on and what they are doing.
+watch			- execute a program periodically, showing output fullscreen
+wget			- The non-interactive network downloader.
+whatis			- search the whatis database for complete words. (aka: man -f)
+who				- show who is logged on
+	# who -r		# display the current run level
+whoami		- print effective userid
+xargs			- build and execute command lines from standard input
+	# xargs -n1 [-t] [-p]
+	# grep LOGFILE nohup.out | tail -n1 |cut -d= -f2 | xargs tail -f
+xhost - server access control program for X
+	# xhost -
+yum		- Yellowdog Updater Modified
+	# yum [-y] [-q] install hp-health hpacucli
+	# yum -y -q install hp-health hpacucli	# quiet and assume "yes"
+	# yum groupinstall "NFS file server"
+	# yum provides "*/dig"			# find packages containing
+	# yum update [hp-health hpacucli]
+yumdownloader	- a program for downloading RPMs from Yum repositories
+yum-config-manager - manage yum configuration options and yum repositories
+zcat			- expand data (identical to `uncompress -c`)
+zip				- package and compress (archive) files
+	# zip -ru "zipfile" "files"	# update and recursive
+############################## -|   Glossary    |- #############################
+AJAJ	# Asynchronous JavaScript and JSON
+AJAX	# Asynchronous JavaScript and XML
+APT		# Advanced Package Tool
+CSS		# Cascading Style Sheets
+dpkg	# Debian package
+DSA		# Digital Signature Algorithm
+FHS		# Filesystem Hierarchy Standard
+GNU		# GNU's Not Unix - Unix-like operating system - www.gnu.org
+GPG		# GNU Privacy Guard	- www.gnupg.org
+JSON	# JavaScript Object Notation	(applications/json, text/json, text/javascript)
+LUKS	# Linux Unified Key Setup
+LVM		# Logical Volume Manager
+MIME	# Multipurpose Internet Mail Extensions
+NFS		# Network File System
+PAM		# Pluggable Authentication Modules
+PGP		# Pretty Good Privacy: encryption for messages, sigs, certs, keys
+PKI		# Public Key Infrastructure
+REST	# REpresentational State Transfer
+RSA		# Rivest, Shamir and Adleman - Algorithm
+SEO		# Search Engine Optimization
+URI		# Uniform Resource Identifier
+UUID	# Universally Unique Identifier
+VPC		# Virtual Private Cloud
+VRRP	# Virtual Router Redundancy Protocol
+XML		# Extensible Markup Language
+XMPP	# Extensible Messaging and Presence Protocol
+YAML	# YAML Ain't Markup Language (Yet Another Markup Language)
+############################## -| Need to Learn |- #############################
+
+TODO - Need to learn this stuff
+ # df -h /maint
+ # fuser -vm /maint
+ # umount /maint
+ # e2fsck -f /dev/vgNN/lvolN
+ # lvextend -L +1.5G /dev/vgNN/lvolN
+ # resize2fs /dev/vgNN/lvolN
+ # mount /maint
+ # df -h /maint
+ # vgdisplay /dev/vgNN|grep Free
+ - SELinux - https://fedoraproject.org/wiki/SELinux
+ - kickstart files
+ - authconfig - system authentication resources
+ - (SELinux) Security Contexts - https://fedoraproject.org/wiki/Security_context
+ - grubby 
+ # chcon
+ # tcpdump
+ # strace
+ ----
+/tech/ProlLiant/BIOS ML350G5/SmartArray-E200-v1.84-CP011557.scexe
+SSHFS: http://www.cyberciti.biz/faq/how-to-mount-remote-directory-filesystems-with-sshfs-on-linux/
+############################## -| Stuff to Try  |- #############################
+cat <<'EOF' - test.html | /usr/sbin/sendmail -t
+To: to@address
+Subject: hello
+Content-Type: text/html
+
+EOF
+############################## -|  Networking   |- #############################
+netstat				/etc/sysconfig/network-scripts/ifcfg-eth0
+ifconfig			/etc/sysconfig/network
+ss				/etc/networks
+ip, dig				/etc/protocols
+route				/etc/resolv.conf
+ping, ping6, arp		/etc/rpc
+dhclient			/etc/services
+ifup, ifdown			/etc/init.d/network
+hostname			/etc/hosts, /etc/nsswitch.conf
+ubuntu
+	/etc/init.d/networking start|stop
+	/etc/init.d/networking restart	# deprecated
+	service network-manager restart
+	ifconfig ethN up|down
+	ifup|ifdown ethN
+	/etc/init.d/networking restart
+	ip link set ethN up|down
+	service networking restart
+	
+############################## -|  Performance  |- #############################
+
+############################## -| File Sharing  |- #############################
+smbclient			/etc/samba/smb.conf	smb
+showmount, portreserve		/etc/samba/smbusers	nfsd
+showmount -e SERVER
+/etc/init.d/nfs, nfslock	/etc/sysconfig/nfs	NFSv4, NFSv3
+/etc/init.d/rpcbind		/etc/fstab,idmapd.conf	rpc.rquotad, rpc.nfsd
+exportfs, nfsiostat, nfsstat	/etc/exports		rpc.statd, rpc.mountd, rpc.svcgssd
+mount.nfs, mount.nfs4		/var/lib/nfs/etab	# master table of exports - exports tab
+mount -t nfs SERVER:/PATH MOUNT_POINT 
+umount.nfs, umount.nfs4		/var/lib/nfs/rmtab	# table of clients accessing server's exports
+############################## -| File Systems  |- #############################
+fdisk, sfdisk, cfdisk, parted, partprobe, kpartx	/etc/fstab		
+mkfs, mkfs.ext[2|3|4], mke2fs, mkswap, mkdosfs
+fsck, fsck.ext[2|3|4], e2fsck
+lvextend, resize2fs, df, mount, umount	ext3, ext4, swap
+badblocks, dumpe2fs, tune2fs		tmpfs, sysfs, proc
+lvm,
+mkswap, swapon, raw				/dev/raw/raw<N>
+pvcreate, vgcreate, vgextend, lvcreate			devpts
+lvmconf, lvmdiskscan, lvmdump, lvremove		
+vgdisplay, vgextend, resize2fs
+fdisk -> pvcreate -> vgcreate|vgextend -> lvcreate|lvextend -> mkfs
+  $ lvcreate -L 10G -n /dev/vg01/data vg01
+  $ mkdir /data
+  $ vi /etc/fstab
+  $ mkfs /dev/mapper/vg01-data
+  $ mount /data
+############################## -|  Automounter  |- #############################
+/etc/init.d/autofs		/etc/sysconfig/autofs, /misc, /net		automount
+showmount			/etc/auto.master, /etc/auto.misc, /etc/auto.net
+ports: 892,982,32803,32903	/etc/auto.smb
+############################## -| Directory Srv |- #############################
+authconfig			/etc/pam_ldap.conf
+system-config-authentication	/etc/ldap.conf
+				/etc/openldap/ldap.conf
+############################## -|  Email Admin  |- #############################
+
+############################## -|  Apache Admin |- #############################
+/etc/httpd/conf/httpd.conf
+(in httpd.conf) DocumentRoot "/var/www/html"	# location of the root dir served
+
+############################## -| Device Admin  |- #############################
+udev				/dev/input/mice
+				/dev/disk [by-id|by-path|by-uuid]
+				/dev/cciss
+				/lib/udev/rules.d, /etc/udev/rules.d
+############################## -| Boot Process  |- #############################
+POST -> BIOS/UEFI -> BOOTLOADER (GRUB) -> KERNEL -> SERVICES
+grub> find | root | cat | kernel | boot
+/etc/init/rc.conf -> /etc/rc -> /etc/rc.d/rc -> /etc/rc?.d/S* -> /etc/init.d/*
+############################## -|  FTP    Admin |- #############################
+/etc/vsftpd/vsftpd.conf
+anony user uses ftp user - # home directory - root directory
+
+############################## -| Security Admn |- #############################
+getenforce, setenforce		/etc/selinux, /etc/sysconfig/selinux
+semanage, sestatus		/selinux, /var/log/audit/audit.log
+secon, chcon, restorecon
+sealert, ausearch		# logs info
+getsebool, setsebool, togglesebool	/selinux/booleans
+ls -Z, ps -Z, id -Z
+############################## -| Services Admn |- #############################
+
+
+############################## -| Package Mgmnt |- #############################
+	/etc/grub.conf -> /boot/grub/grub.conf
+added packages:
+ bind-utils
+ cryptsetup-luks
+ e2fsprogs
+ flash-plugin
+ groupinstall "NFS file server"
+ kernel-doc
+ lftp
+ lvm2
+ mlocate
+ nfs4-acl-tools
+ nmap
+ nss-pam-ldapd
+ openldap
+ openldap-clients
+ policycoreutils-gui
+ policycoreutils-python
+ portreserve
+ quota
+ setroubleshoot
+ smartmontools
+ sysstat
+ system-config-firewall
+ system-config-firewall-tui
+ telnet
+ thunderbird
+ tigervnc
+ tigervnc-server
+ tree
+ unzip
+ vim-common
+ vinagre
+############################## -|  User Admin   |- #############################
+w, who, whoami, id			/etc/passwd, /etc/group
+vipw, vigr, visudo, passwd, gpasswd	/etc/shadow, /etc/gshadow
+useradd, groupadd, userdel, groupdel	/etc/login.defs, /etc/skel, /etc/shells
+newusers, su, sg, sudo, exit	 	/var/log/wtmp
+usermod, groupmod			/etc/default/useradd
+last, ac, login, logout			/etc/security/access.conf
+chfn, chsh, chage			/etc/sudoers, /etc/securetty
+umask					.bashrc, .bash_logout, .bash_profile
+motd					/etc/bashrc, /etc/profile, /etc/profile.d
+					/etc/nologin.txt, /etc/motd
+############################## -|  Applications |- #############################
+Awesomium
+FogBugz
+Mercurial
+Kiln
+Nagios
+Icinga
+Pingdom
+AWS
+Git
+XenForo
+Lua
+Stripe
+Ruby, RubyGems, gem
+VirtualBox
+############################## -|   Hardware  |- #############################
+AMD SeaMicro SM15000

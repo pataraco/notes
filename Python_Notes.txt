@@ -1,0 +1,157 @@
+Python Notes
+------------
+
+------------ Links---------------
+http://www.astro.ufl.edu/~warner/prog/python.html
+
+------------ Documentation ---------------
+Progression: Learning Python -> Programming Python
+Bookmark   : Learning Python (5th Ed)		: Chapter 6		<-------------
+Bookmark   : Programming Python (4th Ed)	: Part I/The Beginning/pg. 1(43)
+
+---- Learning Python - Fast Path ----
+If interested in starting out with a quick Python tour, suggested:
+!	- Chapter 1
+	- Chapter 4
+	- Chapter 10
+	- Chapter 28
+	- Cahpter 26 (perhaps) - a short survey
+---- Learning Python - Fast Path ----
+
+------------ Documentation ---------------
+
+Programs -> Modules -> Statements -> Expressions -> Objects
+
+---- help ---- help ----
+>>> dir(N)
+	import os
+	dir(os)
+>>> help(N.function)
+	import os
+	help(os.getcwd)
+>>> help
+>>> exec(open('script1.py').read())	
+---- help ---- help ----
+
+-------- To learn ----------
+- pdb
+- python -i
+-------- To learn ----------
+
+PEPs = Python Enhancement Proposals
+
+naming conventions: https://www.python.org/dev/peps/pep-0008/#prescriptive-naming-conventions
+
+---------------- PIP -----------------
+pip searches through PyPi, the Python Package Index
+$ pip --version
+$ pip install <PACKAGE>
+$ pip uninstall <PACKAGE>
+
+---------------- PIP -----------------
+
+--------------- /usr/bin/jsonpipe -------------------
+#!/usr/bin/python
+# EASY-INSTALL-ENTRY-SCRIPT: 'jsonpipe==0.0.8','console_scripts','jsonpipe'
+__requires__ = 'jsonpipe==0.0.8'
+import sys
+from pkg_resources import load_entry_point
+
+if __name__ == '__main__':
+    sys.exit(
+        load_entry_point('jsonpipe==0.0.8', 'console_scripts', 'jsonpipe')()
+    )
+--------------- /usr/bin/jsonpipe -------------------
+
+------------ Parsing the command line arguments ---------------
+import argparse
+parser = argparse.ArgumentParser()
+parser.add_argument("number", help="display a square of a given number", type=int)
+args = parser.parse_args()
+print(args.number**2)
+------------ Parsing the command line arguments ---------------
+
+---------------- str Methods ---------------
+s.lower(), s.upper()	# returns the lowercase or uppercase version of the string
+s.strip()				# returns a string with whitespace removed from the start and end
+s.isalpha()			 	# tests if all the string chars are in the various character classes
+s.isdigit()			 	# tests if all the string chars are in the various character classes
+s.isspace()			 	# tests if all the string chars are in the various character classes
+s.startswith('other') 	# tests if the string starts with the given other string
+s.endswith('other')		# tests if the string ends with the given other string
+s.find('other')			# searches for the given other string (not a regular expression) within s,						# and returns the first index where it begins or -1 if not found
+s.replace('old', 'new')	# returns a string where all occurrences of 'old' have been replaced by 'new'
+s.split('delim')		# returns a list of substrings separated by the given delimiter.						# The delimiter is not a regular expression, it's just text.						# 'aaa,bbb,ccc'.split(',') -> ['aaa', 'bbb', 'ccc'].						# s.split() (with no arguments) splits on all whitespace chars.
+s.join(list)			# joins the elements in the given list together using the string as the delim						# '---'.join(['aaa', 'bbb', 'ccc']) -> aaa---bbb---ccc
+---------------- list Methods ---------------
+l.append(elem)			# adds a single element to the end of the list
+						# Common error: does not return the new list, just modifies the original
+l.insert(index, elem)	# inserts the element at the given index, shifting elements to the right
+l.extend(list2)			# adds the elements in list2 to the end of the list
+						# Using + or += on a list is similar to using extend()
+l.index(elem)			# searches for elem from the start of the list and returns its index.						# Throws a ValueError if elem not found (use "in" to avoid a ValueError)
+l.remove(elem)			# searches for first inst of elem & remove it (ValueError if not found)
+l.sort()				# sorts the list in place (does not return it). (use sorted())
+l.reverse()				# reverses the list in place (does not return it)
+l.pop(index)			# removes and returns the element at the given index.						# Returns rightmost element if index omitted (~ opposite of append()).
+---------------- dict Methods ---------------
+d.keys(), d.values(), d.items()
+d.pop(key[,default]), d.popitem(), d.update([other])
+---------------- Regular Expressions Methods ---------------
+match = re.search(r'pattern', string, flags=0)		# find anywhere in the string
+match = re.match(r'pattern', string, flags=0)		# find at the beginning of the string
+match = re.findall(r'pattern', string, flags=0)		# returns a list of all matches
+match = re.split(r'pattern', string, maxsplit=0, flags=0)	# splits string by pattern
+>>> "they're bill's books".title()
+"They'Re Bill'S Books"
+>>> def titlecase(s):
+...   return re.sub(r"[A-Za-z]+('[A-Za-z]+)?",
+...                 lambda m: m.group(0)[0].upper() + m.group(0)[1:].lower(),...                 s)
+>>> titlecase("they're bill's books")
+"They're Bill's Books"
+>>> re.sub(r'([\w.-]+)@([\w.-]+)', r'\1@tcs.com', 'praco@sun.com')
+'praco@tcs.com'
+-----
+>>> f = open('test.txt', 'r')
+>>> found_strings_list = re.findall(r'pattern', f.read())
+-----
+>>> html = '<b>foo</b> and <i>bar</i>'
+>>> re.findall(r'<.*?>', html)		# the '?' stops '.*' from being greedy
+['<b>', '</b>', '<i>', '</i>']
+>>> re.findall(r'<[^>]*>', html)
+['<b>', '</b>', '<i>', '</i>']
+---------------- dict Example ---------------
+dict = {'key1':val1, 'key2':val2}
+print "here is value of dict['key1'] %(key1)s and of dict.['key2']: %(key2)s!" % dict
+---------------- list comprehensions Example ---------------
+nums = [1, 2, 3, 4]
+squares = [ n * n for n in nums ]					#-> [1, 4, 9, 16]
+strs = ['hello', 'and', 'goodbye']
+shouting = [ s.upper() + '!!!' for s in strs ]		#-> ['HELLO!!!', 'AND!!!', 'GOODBYE!!!']
+nums = [2, 8, 1, 6]
+small = [ n for n in nums if n <= 2 ]				#-> [2, 1]
+fruits = ['apple', 'cherry', 'bannana', 'lemon']
+afruits = [ s.upper() for s in fruits if 'a' in s ]	#-> ['APPLE', 'BANNANA']
+---------------- defaultdict() Example ---------------
+from collections import defaultdict
+stats["cats"] += 1
+stats["dogs"] += 1
+stats["dogs"] += 1
+print stats
+defaultdict(<type 'int'>, {'cats': 1, 'dogs': 2})
+---------------- join() example --------------
+>>> print '-'.join(["hello","world",'fred'])
+hello-world-fred
+---------------- rsplit() example --------------
+>>> key = "first.second.third.forth"
+>>> key.rsplit('.',1)
+['first.second.third', 'forth']
+>>> key.rsplit('.',2)
+['first.second', 'third', 'forth']
+---------------- sorted() example --------------
+sorted(list)
+sorted(list, reverse=True)
+sorted(list, key=len)
+def last(x):
+  return x[-1]
+sorted(list, key=last)

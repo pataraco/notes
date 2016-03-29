@@ -1,0 +1,215 @@
+AUTOSCALER NOTES
+----------------
+----------------
+
+----
+TODO
+----
+
+IN PROG	-	Enable autoscaling of stats
+PEND	-	Try to get rid on double `chef-client` runs when creating (inside the user-data file)
+PEND	-	WTF is up with CMS?
+PEND	-	Why so many characters?
+PEND	-	Make settings less aggressive
+
+------------
+PACKER notes
+------------
+
+0. get and install `packer` https://www.packer.io/
+1. get the red5-validator.pem file from the chef server and save in <REPOS>/AWS-Deploy-Tools/packer
+1+ create autoscaler user on chef-server
+	# chef-server-ctl user-create autoscaler AutoScaler ProdUSEast autoscaler@red5studios.com SomeAWESOMEps --filename /tmp/autoscaler.pem
+	# chef-server-ctl org-user-add red5 autoscaler --admin
+
+2. get your trusted cert for the chef server and copy it to <REPOS>/AWS-Deploy-Tools/packer
+3. edit the packer config ruby (JSON) file in <REPOS>/AWS-Deploy-Tools/packer
+4. update/verify the values (specifically for the following):
+	access_key (user: autoscaling in AWS console)
+	secret_key (user: autoscaling in AWS console)
+	source_ami (get/find the latest/greatest AMI to use - https://cloud-images.ubuntu.com/locator/ec2/)
+	server_url
+5. make sure this file is configured for the chef server
+	~/.chef/knife.rb 
+5. validate
+	packer validate us-east-prod-packer.rb
+6. build
+	packer build us-east-prod-packer.rb
+7. get/save the newly created ami: us-east-1: ami-9ce7bdf6
+	you need this for the autoscaling configs (below)
+
+	-----
+
+ 2056  mkdir packer:w
+ 
+ 2057  cd packer
+ 2058  ls
+ 2059  wget https://dl.bintray.com/mitchellh/packer/0.3.6_linux_386.zip
+ 2060  ls
+ 2061  echo "https://releases.hashicorp.com/packer/0.8.6/packer_0.8.6_linux_amd64.zip# "
+ 2062  echo "https://releases.hashicorp.com/packer/0.8.6/packer_0.8.6_linux_amd64.zip"
+ 2063  wget https://releases.hashicorp.com/packer/0.8.6/packer_0.8.6_linux_amd64.zip
+ 2064  ll
+ 2065  rm 0.3.6_linux_386.zip
+ 2066  sudo unzip packer_0.8.6_linux_amd64.zip
+ 2067  ls
+ 2068  ll
+ 2069  echo $PATH
+ 2070  pwd
+ 2071  export PATH=$PATH:/home/praco/repos/packages/packer
+ 
+packer validate eu-prod-packer.rb
+packer build eu-prod-packer.rb
+ 
+ 
+installed the validation.pem in /etc/chef
+kept the validator line in the client.rb in /etc/chef
+	validation_client_name "red5-validator"
+ran `knife ssl fetch -c client.rb`
+chef-client - FAILED
+
+------------------------
+- have to use /etc/chef as staging directory becuz the chef cookbooks rely on this - on of the cookbooks fails otherwise
+- packer is removing /etc/chef (staging dir) at the end, but we need this to stay
+
+    amazon-ebs: Creating configuration file 'knife.rb'
+==> amazon-ebs: Cleaning up chef node...
+    amazon-ebs: Deleted node[autoscaler]
+==> amazon-ebs: Cleaning up chef client...
+    amazon-ebs: Deleted client[autoscaler]
+    amazon-ebs: Removing directory: /etc/chef
+	
+knife node run_list add $nodeName $newRole -c /etc/chef/client.rb
+
+
+1 - when createing the chef server - save the validation pem
+
+-----
+try
+
+first autoscaler.knife.rb 
+	root@webapp-wallet-ff99ae74:/etc/chef# cat autoscaler.rb
+	log_level :info
+	log_location STDOUT
+	chef_server_url "https://10.120.0.15/organizations/red5"
+	node_name "autoscaler"
+	client_key "/etc/chef/autoscaler.pem"
+- installing autoscaler's pem in /etc/chef: autoscaler.pem
+- node_name autoscaler
+- knife ssl fetch -c autoscaler.rb
+---------------
+in the knife.rb file, try this option:
+The following list describes all of the optional settings that can be added to the configuration file:
+---
+knife[:hints] = 'ec2'
+knife[:hints] ["ec2"]
+---
+mkdir -p /etc/chef/ohai/hints
+echo "{}" > /etc/chef/ohai/hints/ec2.json
+--------
+Ohai configuration settings can be added to the client.rb file.
+Ohai::Config[:hints_path]
+The path to the file that contains hints for Ohai.
+
+------------------
+chef-run out put -> /chef-client-output.txt
+
+-----------------------
+    {
+      "type": "file",
+      "source": "/home/praco/repos/.chef/.certs/validation.prodew.pem",
+      "destination": "/tmp/validation.pem"
+    },
+    {
+      "type": "file",
+      "source": "/home/praco/repos/.chef/trusted_certs/10_120_0_15.crt",
+      "destination": "/tmp/10_120_0_15.crt"
+    },
+    {
+      "type": "shell",
+      "inline": [
+        "sudo /bin/mkdir -p /etc/chef/trusted_certs",
+        "sudo /bin/mv /tmp/10_120_0_15.crt /etc/chef/trusted_certs/",
+        "sudo /bin/mv /tmp/validation.pem /etc/chef/"
+      ]
+    },
+	
+##################  debugging #################
+
+successful
+
+    amazon-ebs: [2016-01-13T01:10:14+00:00] INFO: Setting the run_list to ["role[production]", "role[vpc01]", "role[eu_west_1]", "role[aws_production]", "role[web]", "recipe[postfix]"] from CLI options
+    amazon-ebs: [2016-01-13T01:10:14+00:00] INFO: Run List is [role[production], role[vpc01], role[eu_west_1], role[aws_production], role[web], recipe[postfix]]
+    amazon-ebs: [2016-01-13T01:10:14+00:00] INFO: Run List expands to [icinga::client, fluentd, fluentd::syslog, r5_base, webdeploy::install_boto, fluentd::stats, logrotate, rsyslog, statsd, collectd_plugins::statsd, postfix]
+	
+failed
+--------------- related data bag --------------
+icinga/autoscaler-settings.json
+servers not autoscaled (configured in dbag above):
+        "webapp-admin",
+        "webapp-toolsauth",
+        "webapp-cartographer",
+        "webapp-stats"
+-------- processes turned off ----
+-- US --
+	deprecated:	athena, community, queueapi
+	temporary:	redhanded
+	broken:		forums
+-- US --
+	deprecated:	athena, community, queueapi
+	temporary:	redhanded
+	not used:	forums, forumservice
+	
+	
+  "NOTE": "Absolute min/max defined in ROLES"
+    :autoscaler => {
+    :min_servers => '2',
+    :max_servers => '10'
+-----------------------------------------------
+
+################# this needs to be done manually ################
+	mkdir -p /etc/chef/ohai/hints
+	echo "{}" > /etc/chef/ohai/hints/ec2.json
+	
+DONE - Added to user-data files in launch configs
+#################################################################
+
+aws autoscaling scripts (joel) notes
+	- inside the script (/usr/bin/population_scale.sh) there is an absolute max set 
+		- currently 10
+		- compares with recommended max which is current load + 3
+		=========== failing hosts =================
+		
+forums
+
+============================user data changes ===========
+-   printf "log_level :info\nlog_location STDOUT\nchef_server_url \"$chefURL\"\nvalidation_client_name \"red5-validator\"\nnode_name \"$nodeName\"" >> "$file"
++   printf "log_level :info\nlog_location STDOUT\nchef_server_url \"$chefURL\"\nvalidation_client_name \"red5-validator\"\nnode_name \"$nodeName\"\n" >> "$file"
+
++   mkdir -p /etc/chef/ohai/hints
++   echo "{}" > /etc/chef/ohai/hints/ec2.json
++
+
+================== changes to make =================
+/usr/lib/nagios/plugins/autoscale/nettest.sh
+	- fix the comments
+	- replace:
+		all_matching_entries=$(grep "^${server_type}-" /var/log/collectd_values.txt)
+		webapps_servers=$(echo "$all_matching_entries" | awk -F'/' '{print $1}' |sort | uniq)
+	- with		webapps_servers=`grep "^webapp-wallet-" /var/log/collectd_values.txt|cut -d'/' -f1|sort -u`
+/usr/lib/nagios/plugins/autoscale/sessiontest.sh
+	- the way it's getting the list of servers is goofy - change
+/usr/lib/nagios/plugins/autoscale/cputest.sh
+	- fix the comments
+	- replace:
+		all_matching_entries=$(grep "^${server_type}-" /var/log/collectd_values.txt)
+		webapps_servers=$(echo "$all_matching_entries" | awk -F'/' '{print $1}' |sort | uniq)
+	- with		webapps_servers=`grep "^webapp-wallet-" /var/log/collectd_values.txt|cut -d'/' -f1|sort -u`
+	- get rid of average and sum values in calculations
+		<cpus=$(grep "^${server}.*cpu-idle" /var/log/collectd_values.txt)
+		>cpus=$(grep "^${server}.*/cpu-./cpu-idle" /var/log/collectd_values.txt)
+	- OR better yet use the average
+		<cpus=$(grep "^${server}.*cpu-idle" /var/log/collectd_values.txt)
+		>cpus=$(grep "^${server}.*/aggregation-cpuaggr-average/cpu-idle" /var/log/collectd_values.txt)
+/usr/lib/nagios/plugins/autoscale/conntest.sh
+	- fix the comments

@@ -1,0 +1,55 @@
+-----------------
+- Ansible Notes -
+-----------------
+
+Community: galaxy.ansible.com - Ansible Galaxy; hub for finding, reusing, and sharing the best Ansible content.
+
+Installation
+------------
+- Latest Released - use package managers, otherwise use `pip`
+	- Control Machine	  Requirements
+		- Python 2.6/2.7
+	  Install
+		- AWS - create a RHEL instance	# ansible-control
+		- change hostname
+		- python 2.7.5 already installed
+		- yum update
+		- yum install git
+		- git clone git://github.com/ansible/ansible.git --recursive
+		- yum install wget
+		- install EPEL repo (/etc/yum.repos.d/epel.repo)
+			- wget https://dl.fedoraproject.org/pub/epel/7/x86_64/e/epel-release-7-5.noarch.rpm
+			- rpm -Uvh epel-release-7-5.noarch.rpm
+				OR
+			- rpm -ivh https://dl.fedoraproject.org/pub/epel/7/x86_64/e/epel-release-7-5.noarch.rpm
+		  From Source
+			- cd ansible
+			- source ./hacking/env-setup
+			- source ./hacking/env-setup -q	# to suppress spurious warnings/errors
+			- yum install python-pip (need EPEL repo)
+			(NOT Complete)
+		 >From package (needs EPEL)
+			- yum install wget
+			- yum install ansible
+		  Build and install from package
+			- cd ansible
+			- make rpm
+			(NOT Complete)
+	- Managed Node Requirements
+		- ssh (sftp or config to scp in ansible.cfg)
+		- Python 2.4+ (< 2.5 need "python-simplejson")
+		- libselinux-python (if SELinux enabled)
+
+Getting Started
+	First setup and commands
+	- vi/etc/ansible/hosts
+	- ansible all -m ping [-u user] [--sudo]
+	- ansible all -a uptime
+	- ansible all -a "echo hello world"
+	Turn off Host Key Checking
+	- vi /etc/ansible/ansible.cfg or ~/.ansible.cfg
+	  [defaults]
+	  host_key_checking = False
+		OR
+	- export ANSIBLE_HOST_KEY_CHECKING=False
+Introduction to Ad-Hoc Commands 	http://docs.ansible.com/ansible/intro_adhoc.html

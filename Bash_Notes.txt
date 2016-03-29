@@ -1,0 +1,248 @@
+	###############################
+		bash tips and tricks
+	###############################
+	
+# update change the title bar of the terminal
+echo -ne "\033]0;`whoami`@`hostname`\007"
+
+# each of these adds 1 to i
+i=`expr $i + 1` 	# All Bourne shells
+let i=i+1			# Bash
+let "i = i + 1"
+$(( i = i + 1 ))
+$(( i += 1 ))
+$(( i++ ))
+$(( BASE#NUMBER_IN_BASE )) (ex: echo $((36#1x587kv2)) => 150514102622)
+
+declare -a array=()		# declare an array and init to ''
+array+=("val1")			# pop on a value into the array
+array+=("val2")			# pop on another value into the array
+
+echo "STDOUT and STDERR to /dev/null" &>/dev/null
+
+is_number_regex="^[0-9]+$"
+[ "${input}" =~ $is_number_regex ] && echo "yep"
+
+umanize () {
+    VAL=$1
+    G=$(( $VAL >> 30 ))
+    M=$(( $VAL >> 20 ))
+    K=$(( $VAL >> 10 ))
+    if [ $G -gt 0 ]; then
+            GH=$( echo $(( $(( $VAL * 10 )) >> 30 )) | sed -e 's/\(.\)$/.\1/')
+            echo -n "${GH} GB"
+    elif [ $M -gt 0 ]; then
+            echo -n "${M} MB"
+    elif [ $K -gt 0 ]; then
+            echo -n "${K} KB"
+    else
+            echo -n "${VAL} bytes"
+    fi
+}
+
+# Source global definitions
+if [ -f /etc/bashrc ]; then
+	. /etc/bashrc
+fi
+
+# User specific aliases and functions
+
+function function_name () {
+	...
+}
+
+alias a="alias"
+alias c="clear"
+alias f="declare -F | awk '{print \$3}' | more"
+alias ghwt='dmidecode | grep Product'
+alias h="history"
+alias hg="history | grep $1"
+alias lla='ls -la'
+alias rm='rm -i'
+alias tt='echo -ne "\033]0;`whoami`@`hostname`\007"'
+----------------
+$ echo $$ | while read line; do echo $line $$ $BASHPID; done
+11656 11656 31497
+----------------
+if $bool -a [ $x -ne $y ]; then echo y; else echo n; fi
+	(bool=[true|false] - if statement uses value of $?)
+-------------------
+$ declare -a x='([0]="hi" [1]="bye")'
+$ echo ${x[0]}; echo ${x[1]}
+hi
+bye
+----------------
+$ y=([0]="zero" [1]="one" [2]="two")
+$ echo ${y[1]}
+one
+$ i=2; echo ${y[$i]}
+two
+$ declare -p y
+declare -a y='([0]="zero" [1]="one" [2]="two")'
+----------------
+for ((x=0; x <= 127; x++)); do
+   printf '%3d | %04o | 0x%02x\n' "$x" "$x" "$x"
+done
+--------------
+$ the_mac="0:13:ce:7:7a:ad"
+$ echo 0x${the_mac//:/ 0x}
+0x0 0x13 0xce 0x7 0x7a 0xad
+$ the_mac="$(printf "%02x:%02x:%02x:%02x:%02x:%02x" 0x${the_mac//:/ 0x})"
+$ echo $the_mac
+00:13:ce:07:7a:ad
+$ the_mac="$(printf "%02X:%02X:%02X:%02X:%02X:%02X" 0x${the_mac//:/ 0x})"
+$ echo $the_mac
+00:13:CE:07:7A:AD
+$ printf -v new_mac "%02X:%02X:%02X:%02X:%02X:%02X" 0x${the_mac//:/ 0x}
+$ echo $new_mac
+00:13:CE:07:7A:AD
+------------
+[praco@jump2 ~]$ printf -v var "hello"
+[praco@jump2 ~]$ echo $var
+hello
+------------
+printf "Surname: %s\nName: %s\n" "$SURNAME" "$LASTNAME"
+printf '%d\n' $size		# signed decimal
+printf '%i\n' $size		# signed decimal
+printf '%u\n' $size		# unsigned decimal
+printf '%f\n' $size		# floating point
+printf '%e\n' $size		# double <N>+/-e<N> format
+printf '%E\n' $size		# double <N>+/-E<N> format
+printf '%g\n' $size		# double <N>+/-e<N> short format
+printf '%G\n' $size		# double <N>+/-E<N> short format
+printf '%c\n' $size		# character
+printf '%s\n' $size		# string
+printf '%.Ns\n' $size	# string
+printf '%Ns\n' $size	# string
+
+	(formats: <N> . * # 0 <space>)
+--------------------
+[praco@jump2 ~]$ length=50
+[praco@jump2 ~]$ printf -v line "%*s" $length
+[praco@jump2 ~]$ echo "'$line'"
+'                                                  '
+[praco@jump2 ~]$ echo ${line// /=}
+==================================================
+[praco@jump2 ~]$ echo ${line// /+}
+++++++++++++++++++++++++++++++++++++++++++++++++++
+---------------------
+cat <<EOF > $outputfile
+#!/bin/sh
+
+EOF
+-------
+echo "#!/bin/sh
+" > $outputfile
+----------------
+tput [blink|bold|sgr0]
+	blink=`tput blink`
+	echo -e "${blink}This text should be blinking" 
+----------------
+su "user" <<ENDOFSU
+	ls
+	whoami
+ENDOFSU
+-----------------
+grep			- grep, egrep, fgrep - print lines matching a pattern
+	# grep "-q" = no - "-q" option not portable
+	# grep -qE '[[:space:]]lm([[:space:]]|$)'
+	# grep -vE '^[[:space:]]*(#|$)'
+------------------
+getopts			- bash built-in; parse positional parameters
+	# while getopts ":ab:c" opt; do
+	# case $opt in
+------------------
+((count++))
+((variable=value/amt))
+count=$((count+1))
+count=$[count+1]
+rpm -ql $pkg | while read file; do; echo $file; done
+find RPMS/ -type f -name '*.rpm' | while read file; do; echo $file; done          
+
+
+--------------
+Immutable global variables 
+•Try to keep globals to minimum
+•UPPER_CASE naming
+•readonly decleration
+•Use globals to replace cryptic $0, $1, etc.
+•Globals I allways use in my programs:
+
+readonly PROGNAME=$(basename $0)
+readonly PROGDIR=$(readlink -m $(dirname $0))
+readonly ARGS="$@"
+
+Everything is local
+All variable should be local.
+
+change_owner_of_file() {
+    local filename=$1
+    local user=$2
+    local group=$3
+
+    chown $user:$group $filename
+}
+
+temporary_files() {
+    local dir=$1
+
+    set -x
+    ls $dir \
+        | grep pid \
+        | grep -v daemon
+    set +x
+}
+
+temporary_files() {
+    echo $FUNCNAME $@
+    local dir=$1
+
+    ls $dir \
+        | grep pid \
+        | grep -v daemon
+}
+
+str=/aaa/bbb/ccc.txt
+echo "str: $str"
+echo ${str##*/} == $(basename $str)
+echo ${str%/*} == $(dirname $str)
+
+set -- one two		# set values to $1 and $2
+
+VARIABLE SUBSTITUTION
+	No spaces should be used in the following expressions.	The colon (:) is optional; if it’s included, var must be nonnull as well as set.
+${var}				Use value of var; They are required for array variables.
+${var:-value}		Use var if set; otherwise, use value.
+${var:=value}		Use var if set; otherwise, use value and assign value to var.
+${var:?value}		Use var if set; otherwise, print value and exit (if not interactive).					If value isn’t supplied, print the phrase "parameter null or not set"
+${var:+value}		Use value if var is set; otherwise, use nothing.
+${#var}				Use the length of var.
+${#*}				Use the number of positional parameters.
+${#@}				Use the number of positional parameters.
+${var#pattern}		Use value of var after removing text matching pattern from the left.					Remove the shortest matching piece.
+${var##pattern} 	Same as #pattern, but remove the longest matching piece.
+${var%pattern}		Use value of var after removing text matching pattern from the right.					Remove the shortest matching piece.
+${var%%pattern}		Same as %pattern, but remove the longest matching piece.
+${var^pattern}		Convert the case of var to uppercase. The pattern is evaluated as for filename matching.					If the first letter of var matches the pattern, it is converted to uppercase.					var can be * or @, in which case the positional parameters are modified.
+					var can also be an array subscripted by * or @, in which case the substitution is applied
+					to all the elements of the array.
+${var^^pattern}		Same as ^pattern, but apply the match to every letter in the string.
+${var,pattern}		Convert matching characters to lower case. Applies only to the first character in the string.
+${var,,pattern}		Same as ,pattern, but apply the match to every letter in the string.
+${!prefix*},
+${!prefix@}			List of variables whose names begin with prefix.
+${var:pos},
+${var:pos:len}		Starting at position pos (0-based) in variable var, extract len characters,					or extract rest of string if no len. pos and len may be arithmetic expressions.
+					When var is * or @, the expansion is performed upon the positional parameters.					If pos is zero, then $0 is included in the resulting list.					Similarly, var can be an array indexed by * or @.
+${var/pat/repl}		Use value of var, with first match of pat replaced with repl.
+${var/pat}			Use value of var, with first match of pat deleted.
+${var//pat/repl}	Use value of var, with every match of pat replaced with repl.
+${var/#pat/repl}	Use value of var, with match of pat replaced with repl. Match must occur at beg of the value.
+${var/%pat/repl}	Use value of var, with match of pat replaced with repl. Match must occur at end of the value.
+${!var}				Use value of var as name of variable whose value should be used (indirect reference).
+
+EXAMPLES
+$ z=hello
+$ echo ${z/ll/LL}
+heLLo
+---
