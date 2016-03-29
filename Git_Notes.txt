@@ -2,20 +2,23 @@
 - Git Notes -
 -------------
 
-git init						# initialize a repo
+git init				# initialize a repo
 git commit -m "message"			# commit changes in staging area
-git log							# show Git commits
-git diff						# show changes made
-git add <FILE1> <FILE2>...|-A	# add changes to stagining area
-git status						# show staging area status
+git log					# show Git commits
+git diff				# show changes made
+git add <FILE1> <FILE2>...|-A		# add changes to stagining area
+git status				# show staging area status
 git show HEAD|<BRANCH>			# show info on 
 git reset HEAD <FILE>			# revert changes
-git reset <SHA>					# revert back to a SHA (can use first 7 chars)
-git branch [-d] [<BRANCH_NAME>]	# list|delete branches and current branch
-git checkout <BRANCH> <FILE>	# revert chenges
-git merge <BRANCH>				# after switching to the receiving branch
+git reset <SHA>				# revert back to a SHA (can use first 7 chars)
+git branch [-d] [<BRANCH_NAME>]		# list|delete branches and current branch
+git checkout <BRANCH> <FILE>		# revert chenges
+git merge <BRANCH>			# after switching to the receiving branch
 git clone <REMOTE_LOC> [<CLONE_NAME>]
-git remote -v					# see a list of Git project's remotes
-git fetch						# bring changes into 'remote' branch
+git remote -v				# see a list of Git project's remotes
+git fetch				# bring changes into 'remote' branch
 git merge origin/master
 git push [origin <BRANCH>]
+----
+git remote add origin https://github.com/pataraco/notes.git
+git push -u origin master
