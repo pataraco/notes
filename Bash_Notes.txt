@@ -211,7 +211,7 @@ set -- one two		# set values to $1 and $2
 
 VARIABLE SUBSTITUTION
 	No spaces should be used in the following expressions.	The colon (:) is optional; if it’s included, var must be nonnull as well as set.
-${var}				Use value of var; They are required for array variables.
+${var}			Use value of var; They are required for array variables.
 ${var:-value}		Use var if set; otherwise, use value.
 ${var:=value}		Use var if set; otherwise, use value and assign value to var.
 ${var:?value}		Use var if set; otherwise, print value and exit (if not interactive).					If value isn’t supplied, print the phrase "parameter null or not set"

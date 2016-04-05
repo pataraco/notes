@@ -539,37 +539,37 @@ openssl			- OpenSSL command line tool
 	# openssl req -text -noout -verify -in ca.csr
 	# openssl rsa -in ca.key -check
 	# openssl x509 -in ca.crt -text -noout
-pam_tally2		- The login counter (tallying) module
-parted			- GNU Parted - a partition manipulation program
-passwd			- update user's authentication tokens
+pam_tally2	- The login counter (tallying) module
+parted		- GNU Parted - a partition manipulation program
+passwd		- update user's authentication tokens
 	# passwd -[l|u] "userid"	# lock|un-lock account
 	# passwd -S "userid"		# get short information about the password status for account
-pgrep			- look up processes based on name and other attributes
+pgrep		- look up processes based on name and other attributes
 	# pgrep -[a]fl "pattern"
-pkill			- signal processes based on name and other attributes
-ping, ping6		- send ICMP ECHO_REQUEST to network hosts
-popd			- bash built-in - make working directory top of stack
-printf			- format and print data
+pkill		- signal processes based on name and other attributes
+ping, ping6	- send ICMP ECHO_REQUEST to network hosts
+popd		- bash built-in - make working directory top of stack
+printf		- format and print data
 	# printf "%d\n" 0x5630c
 	# 353036
 	# printf -v pool_id "%02d" $i
-pstree			- display a tree of processes
-pushd			- push directory onto stack and set working directory
+pstree		- display a tree of processes
+pushd (bash)	- push directory onto stack and set working directory
 pvchange (8)	- change attributes of a physical volume
-pvcreate		- initialize a disk or partition for use by LVM
+pvcreate	- initialize a disk or partition for use by LVM
 pvdata	 (8)	- shows debugging information about a physical volume
 pvdisplay (8)	- display attributes of a physical volume
-pvs (8)			- report information about physical volumes
-pvscan (8)		- scan all disks for physical volumes
-python			- an interpreted, interactive, object-oriented programming lang
+pvs (8)		- report information about physical volumes
+pvscan (8)	- scan all disks for physical volumes
+python		- an interpreted, interactive, object-oriented programming lang
 	# python -c 'import crypt; print(crypt.crypt("My Password", "$6$My Salt"))'
-qemu-img		- QEMU disk image utility
-raw				- bind a Linux raw character device
+qemu-img	- QEMU disk image utility
+raw		- bind a Linux raw character device
 	# raw -qa
 	# raw /dev/raw/raw21 0 0
 readlink [-m]	- print value of a symbolic link or canonical file name
-renice			- alter priority of running processes
-resize2fs	(8)	- ext2 file system resizer	
+renice		- alter priority of running processes
+resize2fs (8)	- ext2 file system resizer	
 	# resize2fs /dev/vdb
 	# resize2fs /dev/vg01/lvol6
 restorecon		- restore file(s) default SELinux security contexts.

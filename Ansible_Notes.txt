@@ -7,7 +7,7 @@ Community: galaxy.ansible.com - Ansible Galaxy; hub for finding, reusing, and sh
 Installation
 ------------
 - Latest Released - use package managers, otherwise use `pip`
-	- Control Machine	  Requirements
+	- Control Machine Requirements
 		- Python 2.6/2.7
 	  Install
 		- AWS - create a RHEL instance	# ansible-control
@@ -42,8 +42,8 @@ Installation
 
 Getting Started
 	First setup and commands
-	- vi/etc/ansible/hosts
-	- ansible all -m ping [-u user] [--sudo]
+	- vi /etc/ansible/hosts
+	- ansible all -m ping [-u user] [--sudo|-b [--become-user user]] [--private-key]
 	- ansible all -a uptime
 	- ansible all -a "echo hello world"
 	Turn off Host Key Checking
@@ -52,4 +52,51 @@ Getting Started
 	  host_key_checking = False
 		OR
 	- export ANSIBLE_HOST_KEY_CHECKING=False
+Iventory
+	/etc/ansible/hosts
+		- host
+		- [group]
+		- host:port
+		- alias ansible_port=PORT ansible_host=IP
+		- www[01:50].example.com
+		- db-[a:f].example.com
+		- HOST	ansible_connection=local
+		  HOST2	ansible_connection=ssh	ansible_user=USER
+		- host1 http_port=80	maxRequestsPerChild=800
+		  host2 http_port=303	maxRequestsPerChild=900
+		- [GROUP]
+		  host1
+		  host2
+		  [GROUP:vars]
+		  ntp_server=ntp.example.com
+		  proxy=proxy.example.com
 Introduction to Ad-Hoc Commands 	http://docs.ansible.com/ansible/intro_adhoc.html
+	$ ansble <pattern> -m <module> -a <arguments>
+		Patterns:
+			all|*|GROUP|G1:G2|G1:!G2|G1:&G2|G1:G2:&G3:!G4|*.example.com|*.com:G
+		 Index	GROUP[0]|GROUP[-1]|G[2:3]|G[:2]
+		 RegEx	~(web|db).*\.example\.com	# regular exp
+		 CLI	ansible --limit @these_hosts.txt
+	$ ansible GROUP -a "/sbin/reboot" -f 10		# fork 10
+	$ ansible GROUP -a "/sbin/reboot" -u USERNAME
+	$ ansible GROUP -a "/sbin/reboot" -u USERNAME --become|-b [--ask-become-pass|-k]
+	$ ansible GROUP -a "/sbin/reboot" -u USERNAME --become-user USERNAME [--ask-become-pass|-k]
+	$ ansible HOSTS -m shell -a 'echo $TERM'
+	$ ansible HOSTS -m copy -a "src=/etc/hosts dest=/tmp/hosts"
+	$ ansible HOSTS -m file -a "dest=/etc/hosts mode=660 owner=USER group=GROUP"
+	$ ansible HOSTS -m file -a "dest=/etc/ansible mode=775 owner=USER group=GROUP state=directory"
+	$ ansible HOSTS -m file -a "dest=/etc/ansible state=absent"
+	$ ansible webservers -m yum -a "name=acme state=present"	# pkg installed
+	$ ansible webservers -m yum -a "name=acme-1.5 state=present"	# version of pkg installed
+	$ ansible webservers -m yum -a "name=acme state=latest"		# lastest of pkg installed
+	$ ansible webservers -m yum -a "name=acme state=absent"		# pkg NOT installed
+	$ ansible all -m user -a "name=foo password=<crypted password here>"
+	$ ansible all -m user -a "name=foo state=absent"
+	$ ansible webservers -m git -a "repo=git://foo.example.org/repo.git dest=/srv/myapp version=HEAD"
+	$ ansible webservers -m service -a "name=httpd state=started"
+	$ ansible webservers -m service -a "name=httpd state=restarted"
+	$ ansible webservers -m service -a "name=httpd state=stopped"
+	$ ansible all|localhost -m setup
+Playbooks
+Roles
+	roles/ROLE: files, templates, tasks, handlers, vars, defaults, meta (dependencies)

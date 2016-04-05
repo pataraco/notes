@@ -73,27 +73,34 @@ print(args.number**2)
 
 ---------------- str Methods ---------------
 s.lower(), s.upper()	# returns the lowercase or uppercase version of the string
-s.strip()				# returns a string with whitespace removed from the start and end
-s.isalpha()			 	# tests if all the string chars are in the various character classes
-s.isdigit()			 	# tests if all the string chars are in the various character classes
-s.isspace()			 	# tests if all the string chars are in the various character classes
+s.strip()		# returns a string with whitespace removed from the start and end
+s.isalpha()	 	# tests if all the string chars are in the various character classes
+s.isdigit()	 	# tests if all the string chars are in the various character classes
+s.isspace()	 	# tests if all the string chars are in the various character classes
 s.startswith('other') 	# tests if the string starts with the given other string
-s.endswith('other')		# tests if the string ends with the given other string
-s.find('other')			# searches for the given other string (not a regular expression) within s,						# and returns the first index where it begins or -1 if not found
+s.endswith('other')	# tests if the string ends with the given other string
+s.find('other')		# searches for the given other string (not a regular expression) within s,
+			# and returns the first index where it begins or -1 if not found
 s.replace('old', 'new')	# returns a string where all occurrences of 'old' have been replaced by 'new'
-s.split('delim')		# returns a list of substrings separated by the given delimiter.						# The delimiter is not a regular expression, it's just text.						# 'aaa,bbb,ccc'.split(',') -> ['aaa', 'bbb', 'ccc'].						# s.split() (with no arguments) splits on all whitespace chars.
-s.join(list)			# joins the elements in the given list together using the string as the delim						# '---'.join(['aaa', 'bbb', 'ccc']) -> aaa---bbb---ccc
+s.split('delim')	# returns a list of substrings separated by the given delimiter.
+			# The delimiter is not a regular expression, it's just text.
+			# 'aaa,bbb,ccc'.split(',') -> ['aaa', 'bbb', 'ccc'].
+			# s.split() (with no arguments) splits on all whitespace chars.
+s.join(list)		# joins the elements in the given list together using the string as the delim
+			# '---'.join(['aaa', 'bbb', 'ccc']) -> aaa---bbb---ccc
 ---------------- list Methods ---------------
-l.append(elem)			# adds a single element to the end of the list
-						# Common error: does not return the new list, just modifies the original
+l.append(elem)		# adds a single element to the end of the list
+			# Common error: does not return the new list, just modifies the original
 l.insert(index, elem)	# inserts the element at the given index, shifting elements to the right
-l.extend(list2)			# adds the elements in list2 to the end of the list
-						# Using + or += on a list is similar to using extend()
-l.index(elem)			# searches for elem from the start of the list and returns its index.						# Throws a ValueError if elem not found (use "in" to avoid a ValueError)
-l.remove(elem)			# searches for first inst of elem & remove it (ValueError if not found)
-l.sort()				# sorts the list in place (does not return it). (use sorted())
-l.reverse()				# reverses the list in place (does not return it)
-l.pop(index)			# removes and returns the element at the given index.						# Returns rightmost element if index omitted (~ opposite of append()).
+l.extend(list2)		# adds the elements in list2 to the end of the list
+			# Using + or += on a list is similar to using extend()
+l.index(elem)		# searches for elem from the start of the list and returns its index.
+			# Throws a ValueError if elem not found (use "in" to avoid a ValueError)
+l.remove(elem)		# searches for first inst of elem & remove it (ValueError if not found)
+l.sort()		# sorts the list in place (does not return it). (use sorted())
+l.reverse()		# reverses the list in place (does not return it)
+l.pop(index)		# removes and returns the element at the given index.
+			# Returns rightmost element if index omitted (~ opposite of append()).
 ---------------- dict Methods ---------------
 d.keys(), d.values(), d.items()
 d.pop(key[,default]), d.popitem(), d.update([other])
