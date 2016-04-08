@@ -113,7 +113,8 @@ match = re.split(r'pattern', string, maxsplit=0, flags=0)	# splits string by pat
 "They'Re Bill'S Books"
 >>> def titlecase(s):
 ...   return re.sub(r"[A-Za-z]+('[A-Za-z]+)?",
-...                 lambda m: m.group(0)[0].upper() + m.group(0)[1:].lower(),...                 s)
+...                 lambda m: m.group(0)[0].upper() + m.group(0)[1:].lower(),
+...                 s)
 >>> titlecase("they're bill's books")
 "They're Bill's Books"
 >>> re.sub(r'([\w.-]+)@([\w.-]+)', r'\1@tcs.com', 'praco@sun.com')
