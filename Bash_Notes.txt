@@ -210,36 +210,48 @@ echo ${str%/*} == $(dirname $str)
 set -- one two		# set values to $1 and $2
 
 VARIABLE SUBSTITUTION
-	No spaces should be used in the following expressions.	The colon (:) is optional; if it’s included, var must be nonnull as well as set.
+---------------------
+	No spaces should be used in the following expressions.
+	The colon (:) is optional; if it’s included, var must be nonnull as well as set.
 ${var}			Use value of var; They are required for array variables.
 ${var:-value}		Use var if set; otherwise, use value.
 ${var:=value}		Use var if set; otherwise, use value and assign value to var.
-${var:?value}		Use var if set; otherwise, print value and exit (if not interactive).					If value isn’t supplied, print the phrase "parameter null or not set"
+${var:?value}		Use var if set; otherwise, print value and exit (if not interactive).
+			If value isn’t supplied, print the phrase "parameter null or not set"
 ${var:+value}		Use value if var is set; otherwise, use nothing.
-${#var}				Use the length of var.
-${#*}				Use the number of positional parameters.
-${#@}				Use the number of positional parameters.
-${var#pattern}		Use value of var after removing text matching pattern from the left.					Remove the shortest matching piece.
+${#var}			Use the length of var.
+${#*}			Use the number of positional parameters.
+${#@}			Use the number of positional parameters.
+${var#pattern}		Use value of var after removing text matching pattern from the left.
+			Remove the shortest matching piece.
 ${var##pattern} 	Same as #pattern, but remove the longest matching piece.
-${var%pattern}		Use value of var after removing text matching pattern from the right.					Remove the shortest matching piece.
+${var%pattern}		Use value of var after removing text matching pattern from the right.
+			Remove the shortest matching piece.
 ${var%%pattern}		Same as %pattern, but remove the longest matching piece.
-${var^pattern}		Convert the case of var to uppercase. The pattern is evaluated as for filename matching.					If the first letter of var matches the pattern, it is converted to uppercase.					var can be * or @, in which case the positional parameters are modified.
-					var can also be an array subscripted by * or @, in which case the substitution is applied
-					to all the elements of the array.
+${var^pattern}		Convert the case of var to uppercase.
+			The pattern is expanded similar to filename expansion.
+			If first letter of var matches pattern, it is converted to uppercase.
+			var can be * or @, in which case positional parameters are modified.
+			var can also be an array subscripted by * or @ to apply to all elements
 ${var^^pattern}		Same as ^pattern, but apply the match to every letter in the string.
-${var,pattern}		Convert matching characters to lower case. Applies only to the first character in the string.
+${var,pattern}		Convert matching characters to lower case. only the first character
 ${var,,pattern}		Same as ,pattern, but apply the match to every letter in the string.
 ${!prefix*},
-${!prefix@}			List of variables whose names begin with prefix.
+${!prefix@}		List of variables whose names begin with prefix.
 ${var:pos},
-${var:pos:len}		Starting at position pos (0-based) in variable var, extract len characters,					or extract rest of string if no len. pos and len may be arithmetic expressions.
-					When var is * or @, the expansion is performed upon the positional parameters.					If pos is zero, then $0 is included in the resulting list.					Similarly, var can be an array indexed by * or @.
+${var:pos:len}		Starting at position pos (0-based) in var, extract len characters,
+			or extract rest of string if no len. pos & len may be expressions.
+			When var is * or @, expansion is performed on positional parameters.
+			If pos is zero, then $0 is included in the resulting list.
+			Similarly, var can be an array indexed by * or @.
 ${var/pat/repl}		Use value of var, with first match of pat replaced with repl.
-${var/pat}			Use value of var, with first match of pat deleted.
+${var/pat}		Use value of var, with first match of pat deleted.
 ${var//pat/repl}	Use value of var, with every match of pat replaced with repl.
-${var/#pat/repl}	Use value of var, with match of pat replaced with repl. Match must occur at beg of the value.
-${var/%pat/repl}	Use value of var, with match of pat replaced with repl. Match must occur at end of the value.
-${!var}				Use value of var as name of variable whose value should be used (indirect reference).
+${var/#pat/repl}	Use value of var, with match of pat replaced with repl.
+			Match must occur at beg of the value.
+${var/%pat/repl}	Use value of var, with match of pat replaced with repl.
+			Match must occur at end of the value.
+${!var}			Use value of var as name of variable to use (indirect reference).
 
 EXAMPLES
 $ z=hello

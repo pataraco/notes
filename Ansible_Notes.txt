@@ -97,6 +97,15 @@ Introduction to Ad-Hoc Commands 	http://docs.ansible.com/ansible/intro_adhoc.htm
 	$ ansible webservers -m service -a "name=httpd state=restarted"
 	$ ansible webservers -m service -a "name=httpd state=stopped"
 	$ ansible all|localhost -m setup
+	$ ansible localhost -m shell -a '/bin/date' | awk '$5=="rc=0" {p="t"}; ($5=="rc=1" || $5=="rc=2") {p="f"}; p=="t" {print $0}'
+	$ ansible -i hosts dev_local -K -b -m authorized_key -a  "user=root key=\"{{ lookup('file', '/path/to/.ssh/id_dsa.pub') }}\" state=present"
+
 Playbooks
 Roles
 	roles/ROLE: files, templates, tasks, handlers, vars, defaults, meta (dependencies)
+
+######################################################################
+
+--------- Ansible Tutorial Project ------------
+
+

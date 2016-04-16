@@ -16,6 +16,7 @@ COMMANDS
 	# aws ec2 create-tags --resources $instanceID --tags Key=Creator,Value='DickButt'
 	# aws ec2 describe-images --image-ids ami-e54f5f84
 	# aws ec2 describe-images --image-ids ami-bfc7848f|egrep 'VirtualizationType|ImageId|RootDeviceType|"Name'
+	$ aws iam list-account-aliases	# also found on IAM dashboard
 		
 AUTOSCALING
 

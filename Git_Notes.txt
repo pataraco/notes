@@ -4,6 +4,12 @@
 
 git add <FILE1> <FILE2>...|-A		# add changes to stagining area
 git branch [-d] [<BRANCH_NAME>]		# list|delete branches and current branch
+	git branch NEW_BRANCH
+	git checkout NEW_BRANCH
+	# edit files
+	git add & commit
+	git checkout master
+	git merge NEW_BRANCH
 git checkout <BRANCH> <FILE>		# revert chenges
 git clone <REMOTE_LOC> [<CLONE_NAME>]
 git commit -m "message"			# commit changes in staging area
@@ -18,12 +24,14 @@ git diff				# show changes made
 git fetch				# bring changes into 'remote' branch
 git init				# initialize a repo
 git log					# show Git commits
+git ls-files [*.zip]			# list cached files
 git merge <BRANCH>			# after switching to the receiving branch
 git merge origin/master
 git push [origin <BRANCH>]
 git reset HEAD <FILE>			# revert changes
 git reset <SHA>				# revert back to a SHA (can use first 7 chars)
 git remote -v				# see a list of Git project's remotes
+git rm [--cached] \*.zip		# remove cached files
 git show HEAD|<BRANCH>			# show info on 
 git status				# show staging area status
 ----

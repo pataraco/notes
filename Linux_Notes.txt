@@ -935,11 +935,24 @@ pvcreate, vgcreate, vgextend, lvcreate			devpts
 lvmconf, lvmdiskscan, lvmdump, lvremove		
 vgdisplay, vgextend, resize2fs
 fdisk -> pvcreate -> vgcreate|vgextend -> lvcreate|lvextend -> mkfs
+# create a new LV/Filesystem
   $ lvcreate -L 10G -n /dev/vg01/data vg01
   $ mkdir /data
   $ vi /etc/fstab
   $ mkfs /dev/mapper/vg01-data
   $ mount /data
+# reduce a size of a LV/Filesystem
+  # /etc/fstab
+  #/dev/mapper/vg0-usr	/usr	ext4	defaults	1 2
+  $ umount /usr		# commented out /usr from /etc/fstab and `reboot` then `init 1`
+  $ e2fsck -f /dev/mapper/vg0-usr		# -f = force fsck even if clean
+  $ resize2fs /dev/mapper/vg0-usr 100G
+  $ lvreduce -L 100G /dev/mapper/vg0-usr
+  $ e2fsck -f /dev/mapper/vg0-usr
+  $ mount /usr		# or replace original /etc/fstab file and reboot
+# create a snapshot volume
+  $ lvcreate -s -L 10M -n var_snapshot /dev/mapper/vg0-var
+  $ lvcreate --snapshot --size 100M --name usr_snapshot /dev/mapper/vg0-usr
 ############################## -|  Automounter  |- #############################
 /etc/init.d/autofs		/etc/sysconfig/autofs, /misc, /net		automount
 showmount			/etc/auto.master, /etc/auto.misc, /etc/auto.net
