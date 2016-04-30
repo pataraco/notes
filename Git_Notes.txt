@@ -31,6 +31,7 @@ git push [origin <BRANCH>]
 git reset HEAD <FILE>			# revert changes
 git reset <SHA>				# revert back to a SHA (can use first 7 chars)
 git remote -v				# see a list of Git project's remotes
+git remote set-url origin git@stor2:cloud_automation
 git rm [--cached] \*.zip		# remove cached files
 git show HEAD|<BRANCH>			# show info on 
 git status				# show staging area status

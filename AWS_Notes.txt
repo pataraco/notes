@@ -8,6 +8,15 @@ Install the AWS CLI Using pip
 	To upgrade an existing AWS CLI installation, use the --upgrade option:
 		$ sudo pip install --upgrade awscli
 
+TO-READ
+   Continuous Integration:		http://aws.amazon.com/devops/continuous-integration/
+   Continuous Delivery:			http://aws.amazon.com/devops/continuous-delivery/
+   AWS CodePipeline:			https://aws.amazon.com/codepipeline/
+   AWS CodePipeline Documentation:	https://aws.amazon.com/documentation/codepipeline/
+   AWS CodeDeploy:			https://aws.amazon.com/codedeploy/
+   AWS CodeDeploy Documentation:	https://aws.amazon.com/documentation/codedeploy/
+   Continuous Delivery (Starter kit)	http://bit.ly/AWSCodeStarterKit
+
 ENVIRONMENT
 	use/set "AWS_DEFAULT_PROFILE" instead of "--profile" with CLI
 
@@ -17,7 +26,20 @@ COMMANDS
 	# aws ec2 describe-images --image-ids ami-e54f5f84
 	# aws ec2 describe-images --image-ids ami-bfc7848f|egrep 'VirtualizationType|ImageId|RootDeviceType|"Name'
 	$ aws iam list-account-aliases	# also found on IAM dashboard
-		
+	$ aws route53 list-hosted-zones
+	$ aws ec2 describe-tags --filters Name=resource-id,Values=i-5703388e --region us-west-2 --output=text
+
+S3
+	# bucket creation, bucket deletion, properties, policies, tags, website hosting, ARN
+(CLI)	$ s3cmd|aws - cp, rm, sync, get, put, ls
+
+IAM
+	# user creation, policies, groups, MFA, keys, policy simulator, policy creator
+
+Route 53
+	
+Key Management
+
 AUTOSCALING
 
   /usr/local/bin/aws cloudwatch put-metric-data --dimensions webapp_type=${server_type} --namespace=R5 --metric-name=ScaleStatus --value 0
@@ -127,12 +149,14 @@ Additional Documetation
 
 Additional Commands
 ---------- --------
-aws [command] [sub-command ] help						# Help
-aws --version											# version information
-aws s3 ls [--profile <PROFILE>]							# list data buckets
-aws s3 ls s3://<BUCKET_NAME> [--profile <PROFILE>]		# list contents of a data bucket
-aws s3 cp s3://<BUCKET_NAME>/<FILE> [--profile <PROFILE>]		# copy file from bucket to .
-aws s3 sync --profile ptu s3://firefall-stabilization-build-1298-publictest/ /data/1298-download
+$ aws [command] [sub-command ] help				# Help
+$ aws --version							# version information
+$ aws s3 ls [--profile <PROFILE>]				# list data buckets
+$ aws s3 ls s3://<BUCKET_NAME> [--profile <PROFILE>]		# list contents of a data bucket
+$ aws s3 cp s3://<BUCKET_NAME>/<FILE> [--profile <PROFILE>]	# copy file from bucket to .
+$ aws s3 sync --profile ptu s3://firefall-stabilization-build-1298-publictest/ /data/1298-download
+$ aws s3 cp --acl public-read baby2002.html s3://tcs-location-studio/index2.html
+$ s3cmd cp --acl-public|-P public-read baby2002.html s3://tcs-location-studio/index2.html
 
 Glossary
 --------

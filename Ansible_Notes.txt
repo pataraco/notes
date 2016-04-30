@@ -108,4 +108,179 @@ Roles
 
 --------- Ansible Tutorial Project ------------
 
+EXAMPLES
+--------
+
+- name: print value of item using with_items
+  debug: var=item
+  with_items: "{{ secgrp.group_id }}"
+
+MODULE REGISTERS		# the values of the returned registered variables
+----------------
+module: ec2_vpc:
+register: vpc_created
+ok: [localhost] => {
+    "vpc_created": {
+        "changed": true|false,
+        "igw_id": "igw-d14c72b4",
+        "subnets": [],
+        "vpc": {
+            "cidr_block": "10.150.0.0/16",
+            "dhcp_options_id": "dopt-b9ec6bdc",
+            "id": "vpc-07f95b63",
+            "region": "us-west-2",
+            "state": "pending|available"
+        },
+        "vpc_id": "vpc-07f95b63"
+    }
+}
+
+module: ec2_vpc_igw:
+register: igw_created
+ok: [localhost] => {
+    "igw_created": {
+        "changed": true|false,
+        "gateway_id": "igw-d14c72b4"
+    }
+}
+
+module: ec2_vpc_subnet:
+register: int_subnet_2a_created
+ok: [localhost] => {
+    "int_subnet_2a_created": {
+        "changed": true|false,
+        "subnet": {
+            "availability_zone": "us-west-2a",
+            "available_ip_address_count": 251,
+            "cidr_block": "10.150.1.0/24",
+            "default_for_az": "false",
+            "id": "subnet-50fc5534",
+            "map_public_ip_on_launch": "false",
+            "state": "available",
+            "tags": {
+                "ChargeCode": "INT03 - IT/Operations",
+                "Env": "dev",
+                "Name": "sub-int-uw2a-raco",
+                "VPCName": "vpc-raco"
+            },
+            "vpc_id": "vpc-07f95b63"
+        }
+    }
+}
+
+module: ec2_vpc_route_table:
+register: int_rtbl_created
+ok: [localhost] => {
+    "int_rtbl_created": {
+        "changed": true,
+        "route_table": {
+            "id": "rtb-d4b833b0",
+            "routes": [
+                {
+                    "destination_cidr_block": "10.150.0.0/16",
+                    "gateway_id": "local",
+                    "instance_id": null,
+                    "interface_id": null,
+                    "origin": "CreateRouteTable",
+                    "state": "active",
+                    "vpc_peering_connection_id": null
+                },
+                {
+                    "destination_cidr_block": "0.0.0.0/0",
+                    "gateway_id": "igw-d14c72b4",
+                    "instance_id": null,
+                    "interface_id": null,
+                    "origin": "CreateRoute",
+                    "state": "active",
+                    "vpc_peering_connection_id": null
+                }
+            ],
+            "tags": {
+                "ChargeCode": "INT03 - IT/Operations",
+                "Env": "dev",
+                "Name": "rtbl-internal-raco",
+                "VPCName": "vpc-raco"
+            },
+            "vpc_id": "vpc-07f95b63"
+        }
+    }
+}
+
+module: ec2_vpc_route_table:
+register: http_ext_secgrp_created
+ok: [localhost] => {
+    "http_ext_secgrp_created": {
+        "changed": true,
+        "group_id": "sg-95b589f2"
+    }
+}
+
+module: ec2_vpc_route_table:
+register: elb_created
+ok: [localhost] => {
+    "elb_created": {
+        "ansible_facts": {
+            "ec2_elb": "info"
+        },
+        "changed": true,
+        "elb": {
+            "app_cookie_policy": null,
+            "connection_draining_timeout": 300,
+            "cross_az_load_balancing": "yes",
+            "dns_name": "elb-raco-353273861.us-west-2.elb.amazonaws.com",
+            "health_check": {
+                "healthy_threshold": 10,
+                "interval": 30,
+                "target": "HTTP:80/index.html",
+                "timeout": 5,
+                "unhealthy_threshold": 2
+            },
+            "hosted_zone_id": "Z33MTJ483KN6FU",
+            "hosted_zone_name": "elb-raco-353273861.us-west-2.elb.amazonaws.com",
+            "idle_timeout": 60,
+            "in_service_count": 0,
+            "instance_health": [],
+            "instances": [],
+            "lb_cookie_policy": null,
+            "listeners": [
+                [
+                    80,
+                    80,
+                    "HTTP",
+                    "HTTP"
+                ]
+            ],
+            "name": "elb-raco",
+            "out_of_service_count": 0,
+            "region": "us-west-2",
+            "scheme": "internet-facing",
+            "security_group_ids": [
+                "sg-95b589f2"
+            ],
+            "status": "created",
+            "subnets": [
+                "subnet-50fc5534",
+                "subnet-887b66d1"
+            ],
+            "unknown_instance_state_count": 0,
+            "zones": [
+                "us-west-2a",
+                "us-west-2c"
+            ]
+        }
+    }
+}
+
+module: ec2_key:
+register: key_created
+ok: [localhost] => {
+    "key_created": {
+        "changed": true|false,
+        "key": {
+            "fingerprint": "bf:42:85:1b:41:a7:55:92:62:d2:ed:80:8c:c1:f4:50:1b:de:aa:ef",
+            "name": "raco"
+            "private_key": "-----BEGIN RSA PRIVATE KEY-----\naasflkaSBSDWR8243lfj\n...."
+        }
+    }
+}
 
