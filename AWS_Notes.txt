@@ -20,6 +20,18 @@ TO-READ
 ENVIRONMENT
 	use/set "AWS_DEFAULT_PROFILE" instead of "--profile" with CLI
 
+TECHNOLOGIES
+	* EC2
+	* S3
+	* Cloudfront
+	* Glacier
+	* VPC
+	* Route 53
+	* CodeCommit
+	* CloudWatch
+	* CloudFormation
+	* Identity & Access Management (IAM)
+
 COMMANDS
 	# ec2metadata
 	# aws ec2 create-tags --resources $instanceID --tags Key=Creator,Value='DickButt'

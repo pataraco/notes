@@ -70,7 +70,11 @@ Iventory
 		  [GROUP:vars]
 		  ntp_server=ntp.example.com
 		  proxy=proxy.example.com
-Introduction to Ad-Hoc Commands 	http://docs.ansible.com/ansible/intro_adhoc.html
+
+Introduction to Ad-Hoc Commands
+-------------------------------
+	http://docs.ansible.com/ansible/intro_adhoc.html
+
 	$ ansble <pattern> -m <module> -a <arguments>
 		Patterns:
 			all|*|GROUP|G1:G2|G1:!G2|G1:&G2|G1:G2:&G3:!G4|*.example.com|*.com:G
@@ -103,6 +107,12 @@ Introduction to Ad-Hoc Commands 	http://docs.ansible.com/ansible/intro_adhoc.htm
 Playbooks
 Roles
 	roles/ROLE: files, templates, tasks, handlers, vars, defaults, meta (dependencies)
+
+Misc Commands
+-------------
+
+	$ ansible-doc MODULE		# RTFM about a module
+	$ ansible-doc -l		# list of all installed modules
 
 ######################################################################
 
@@ -281,6 +291,31 @@ ok: [localhost] => {
             "name": "raco"
             "private_key": "-----BEGIN RSA PRIVATE KEY-----\naasflkaSBSDWR8243lfj\n...."
         }
+    }
+}
+
+module: ec2_vpc_subnet_facts:
+register: subnet_facts
+    "subnet_facts": {
+        "changed": false,
+        "subnets": [
+            {
+                "availability_zone": "us-west-2b",
+                "available_ip_address_count": 251,
+                "cidr_block": "10.150.5.0/24",
+                "default_for_az": "false",
+                "id": "subnet-9b4ffaff",
+                "map_public_ip_on_launch": "false",
+                "state": "available",
+                "tags": {
+                    "ChargeCode": "INT03 - IT/Operations",
+                    "Env": "dev",
+                    "Name": "sub-int-uw2a-raco",
+                    "VPCName": "vpc-raco"
+                },
+                "vpc_id": "vpc-51ef4635"
+            }
+        ]
     }
 }
 

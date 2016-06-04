@@ -683,10 +683,10 @@ ss		- another utility to investigate sockets
 	# ss -ap	# show all and the pid/program
 ssh		- OpenSSH SSH client (remote login program)
 ssh-copy-id	- use locally available keys to authorise logins on a remote machine
-	# ssh-copy-id $HOSTNAME
+	# ssh-copy-id [$USER@]$HOSTNAME
 ssh-keygen	- authentication key generation, management and conversion
 	# ssh-keygen -t rsa -b 4096 -C "$(whoami)@$(hostname)-$(date -I)"
-	# ssh-keygen -t rsa
+	# ssh-keygen -t rsa			# create RSA key pair
 	# ssh-keygen -q -f /tmp/ssh-key
 	# ssh-keygen -f ~/.ssh/id_rsa -p	# change the passphrase w/o changing the key
 	# ssh-keygen -lf Red5DevTest.pub	# get the fingerprint from a public key

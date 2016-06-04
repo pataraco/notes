@@ -1,25 +1,42 @@
--------------
-- Git Notes -
--------------
+		-------------
+		- Git Notes -
+		-------------
 
-git add <FILE1> <FILE2>...|-A		# add changes to stagining area
-git branch [-d] [<BRANCH_NAME>]		# list|delete branches and current branch
-	git branch NEW_BRANCH
-	git checkout NEW_BRANCH
-	# edit files
-	git add & commit
-	git checkout master
-	git merge NEW_BRANCH
-git checkout <BRANCH> <FILE>		# revert chenges
-git clone <REMOTE_LOC> [<CLONE_NAME>]
+git add <FILE1> <FILE2>...|-A		# add [FILES]|All changes to staging area
+git branch [-a|-d|-r] [<BRANCH_NAME>]	# list|create|delete branches & current
+	git branch NEW_BRANCH		# create new branch
+	git branch -a			# list both remote and local branches
+	git branch -r			# list remote branches
+	git branch -d [-r]		# delete local[remote] branch
+		# git branch -d -r origin/nubranch
+	# using branches to make then merge changes in a new branch on to master
+	git checkout -b NEW_BRANCH	# create and checkout new branch
+		(or `git branch NEW_BRANCH; git checkout NEW_BRANCH)
+	(edit/make changes to files)	# make code changes
+	git add "modified files"	# add modified files to staging area
+	git commit -m "commit messages"	# commit your changes
+	git checkout master		# switch to master
+	git merge NEW_BRANCH		# merge changes on to master
+git checkout [-b] <BRANCH>|<TAG> [<FILE>]	# checkout a git reference
+	git checkout <BRANCH> <FILE>		# revert changes to <FILE>
+	git checkout HEAD aws_tags.py		# revert changes made to aws_tags.py
+	git checkout NEW_BRANCH			# switch HEAD to NEW_BRANCH
+	git checkout master			# switch HEAD to master
+	git checkout -b new_branch		# create and checkout a new branch
+	git checkout -b new_branch existing_tag	# start develpment from known tag
+	git checkout origin/master -- path/to/file	# get one file
+git clone <REMOTE_LOC> [<CLONE_NAME>]	# git clone a repo
 git commit -m "message"			# commit changes in staging area
-get config				# man git-config
-	--system (/etc/gitconfig)
-	--global (~/.gitconfig | ~/.config/git/config)
-	--local (.git/config)
-git config --local user.email pataraco@gmail.com
-git config user.name "Patrick Raco"	# defaults to "--local"
-git config --global color.ui auto	# turn on color globally
+git config [<file-option>]		# man git-config
+	   file-options
+		--system (/etc/gitconfig)
+		--global (~/.gitconfig | ~/.config/git/config)
+		--local (.git/config)
+	git config --local user.email pataraco@gmail.com
+	git config user.name "Patrick Raco"	# defaults to "--local"
+	git config --global color.ui auto	# turn on color globally
+	git config --global alias.co checkout
+	git config --global alias.ec 'config --global -e'
 git diff				# show changes made
 git fetch				# bring changes into 'remote' branch
 git init				# initialize a repo
@@ -27,14 +44,24 @@ git log					# show Git commits
 git ls-files [*.zip]			# list cached files
 git merge <BRANCH>			# after switching to the receiving branch
 git merge origin/master
-git push [origin <BRANCH>]
+git push [-u] [origin <BRANCH>]
+	git push -u origin new_branch	# add upstream (tracking) ref for branches too
+	git push -f --delete origin ref	# (force) delete ref's from remote repo
+	git push -u origin master
 git reset HEAD <FILE>			# revert changes
 git reset <SHA>				# revert back to a SHA (can use first 7 chars)
 git remote -v				# see a list of Git project's remotes
-git remote set-url origin git@stor2:cloud_automation
+	git remote add origin https://github.com/pataraco/notes.git
+	git remote set-url origin git@stor2:cloud_automation
+	git remote set-url --add --push origin git@stor2:cloud_automation
+	git remote set-url --add --push origin ssh://git-codecommit.us-east-1.amazonaws.com/v1/repos/cloud_automation
 git rm [--cached] \*.zip		# remove cached files
 git show HEAD|<BRANCH>			# show info on 
+git stash				# stash the changes in a dirty working dir away
+	git stash list
+	git stash list
+	git stash apply [stash@{2}]
 git status				# show staging area status
+git tag					# create, list, del, verify tag object
+	git tag -a ref -m "tag message"	# make unsigned, annotated tag object w/msg
 ----
-git remote add origin https://github.com/pataraco/notes.git
-git push -u origin master
