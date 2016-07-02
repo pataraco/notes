@@ -40,6 +40,13 @@ COMMANDS
 	$ aws iam list-account-aliases	# also found on IAM dashboard
 	$ aws route53 list-hosted-zones
 	$ aws ec2 describe-tags --filters Name=resource-id,Values=i-5703388e --region us-west-2 --output=text
+	$ aws codecommit create-repository --repository-name raco --repository-description "Raco's test repo" --region us-east-1
+	$ aws codecommit delete-repository --repository-name raco --region us-east-1
+	$ aws codecommit list-repositories --region us-east-1
+        $ aws iam upload-ssh-public-key --user-name praco --output json --ssh-public-key-body SSH_PUB_KEY
+	$ aws iam list-ssh-public-keys [--user-name praco]
+ 	$ aws iam get-ssh-public-key --ssh-public-key-id APKAJE6JPZ2K3KPTRYAQ --encoding SSH --user-name praco
+	$ aws iam upload-ssh-public-key --user-name praco --output json --ssh-public-key-body 'PUBLIC KEY'
 
 S3
 	# bucket creation, bucket deletion, properties, policies, tags, website hosting, ARN

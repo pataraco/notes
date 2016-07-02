@@ -332,6 +332,8 @@ expand		- expand tabs to spaces
 exportfs	- maintain table of exported NFS file systems
 faillog -> /sbin/pam_tally2
 fdisk		- Partition table manipulator for Linux
+file		- determine file type
+	# file -s /dev/xvdf	# special/block files
 find		- search for files in a dir hierarchy (operators, options, tests, actions)
 	# find RPMS/ -type f -name '*.rpm'		# find regular files
 	# find /usr -type l -ls				# find symbolic links
@@ -342,6 +344,7 @@ find		- search for files in a dir hierarchy (operators, options, tests, actions)
 finger		- user information lookup program
 free		- Display amount of free and used memory in the system
 fsck		- check and repair a Linux file system
+	# fsck -N /dev/sdf	# show fs type
 fsck.ext[2|3|4] - check a Linux ext2/ext3/ext4 file system (e2fsck)
 fuser		- identify processes using files or sockets
 	# fuser -vm /maint
@@ -586,28 +589,30 @@ route		- show / manipulate the IP routing table
 rpm		- RPM - Red Hat Package Manager (www.rpm.org)
 	#$pkg=[ NET OnLine informix-audit jboss lightspeed ls-support-files UX ]
 	# $specfile=rpmrepack.spec
-	# rpm -e kernel-2.6.32-220.el6.x86_64	# erase command
+	# rpm -e kernel-2.6.32-220.el6.x86_64	# the erase command
 	# rpm -e gpg-pubkey-2fa658e0-45700c69	# erase keys after importing
-	# rpm -i PKG_FILE 			# install command
-	# rpm -K 				# verify signature (key)
-	# rpm -q kernel				# query command
+	# rpm -i PKG_FILE 			# the install command
+	# rpm -K|--checksig			# verify signature (key)
+	# rpm -q kernel				# the query command
+	# rpm --querytags			# list query tags
 	# rpm -q --queryformat "%{INSTALLPREFIX}" $pkg
 	# rpm -q --queryformat "%{ARCH}" $pkg
 	# rpm -q --queryformat "\n%%description\n%{DESCRIPTION}\n" $pkg
 	# rpm -q --queryformat "Name: %{NAME}\nVersion: %{VERSION}\nRelease: %{RELEASE}\nSummary: %{SUMMARY}\nCopyright: %{COPYRIGHT}\nURL: %{URL}\nGroup: %{GROUP}\n" $pkg
-	# rpm -qa
-	# rpm -qa gpg-pubkey*	# all currently imported public keys
-	# rpm -qa --last	# list all installed & sort by install date/time
-	# rpm -qa kernel	# list kernels installed
-	# rpm -qf /usr/bin/passwd
+	# rpm -qa				# query (list all) installed packages
+	# rpm -qa --last			# list all installed & sort by install date/time
+	# rpm -qa gpg-pubkey*			# all currently imported public keys
+	# rpm -qa kernel			# list kernels installed
+	# rpm -qf /usr/bin/passwd		# what package installed this file
 	# rpm -qi gpg-pubkey-2fa658e0-45700c69	# public key details
-	# rpm -ql $pkg			# list files installed with package
-	# rpm -qpi
-	# rpm -V 			# verify integrity (files)
-	# rpm --checksig PACKAGE.rpm
-	# rpm --nodeps -ivh ${rpmlist}	# no dependency check, verb & print hash marks
-	# rpm --querytags
-	# rpm --showrc		# show options & values set in rpmrc & macros 
+	# rpm -ql $pkg				# list files installed with package
+	# rpm -qi $pkg				# get info about a package
+	# rpm -qs $pkg				# state of files (normal, not installed, replaced)
+	# rpm -qpi				# query an uninstalled pkg
+	# rpm -V 				# verify integrity (files)
+	# rpm -K|--checksig PACKAGE.rpm
+	# rpm --nodeps -ivh ${rpmlist}		# no dependency check, verb & print hash marks
+	# rpm --showrc				# show options & values set in rpmrc & macros 
 rpmbuild	- Build RPM Package(s)
 	# rpmbuild -bb --target=$arch $specfile
 	#/usr/lib/rpm/find-requires "\$@" | grep -vE '^lib(if|4s|mq|imq)' | grep -vE '^:'
@@ -648,7 +653,7 @@ seq (1)		- print a sequence of numbers
 	# seq -f "%05g" 10 15
 service		- run a System V init script
 	# service SCRIPT COMMAND [OPTIONS]
-	# service < option > | --status-all | [ service_name [ command | --full-restart ] ]
+	# service <option>|--status-all|[service_name[command|--full-restart]]
 sestatus	- SELinux status tool
 set		- bash built-in - set shell variables and options
 	# set [-|+]o [shell variable]
@@ -828,6 +833,7 @@ yum		- Yellowdog Updater Modified
 	# yum install -y -q hp-health hpacucli	# quiet and assume "yes"
 	# yum groupinstall "NFS file server"
 	# yum provides "*/dig"			# find packages containing
+	# yum [-v] repolist [all|disabled|enabled]
 	# yum update [hp-health hpacucli]
 	# yum --showduplicates list PKG
 	# yum install PKG-VERSION.REL_INFO.ARCH

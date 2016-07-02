@@ -1,6 +1,6 @@
 ar_lock		arbanksvc	ardetail	ardoc		banktrans	
-ghp			gp_lock		gsi_header	hmagent		hotelname		
-listu		offmarket	outoforder	res			roomassigned			
+ghp		gp_lock		gsi_header	hmagent		hotelname		
+listu		offmarket	outoforder	res		roomassigned			
 reslock		resrooms	rooms		blockedroom	ls_back_to_back
 -----------
 locks on rooms: listu , roomassigned, reslock

@@ -4,6 +4,10 @@
 
 Community: galaxy.ansible.com - Ansible Galaxy; hub for finding, reusing, and sharing the best Ansible content.
 
+TODO
+----
+- learn about "local_action"
+
 Installation
 ------------
 - Latest Released - use package managers, otherwise use `pip`
@@ -113,6 +117,9 @@ Misc Commands
 
 	$ ansible-doc MODULE		# RTFM about a module
 	$ ansible-doc -l		# list of all installed modules
+	$ ansible-playbook -vvv -i inventory/S3-Scanning/hosts_local playbooks/S3-Scanning/destroy_s3_scanning_vpc_and_stack.yml
+	$ ansible-playbook -vvv -i inventory/S3-Scanning/hosts_local playbooks/S3-Scanning/create_s3_scanning_vpc_and_stack.yml
+	$ ansible-playbook -vvv -i inventory/vagrant --private-key=~/.ssh/vagrant playbooks/util/manage_users.yml
 
 ######################################################################
 
@@ -318,4 +325,5 @@ register: subnet_facts
         ]
     }
 }
+
 
