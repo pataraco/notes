@@ -138,6 +138,7 @@ beeping the pc speaker
 /etc/services
 /etc/shadow		# encrypted passwd file
 /etc/skel
+/etc/ssh/sshd_config	# sshd config file
 /etc/sudoers		# users that can sudo
 /etc/sysconfig/autofs	# default options for autofs
 /etc/sysconfig/clock	# timezone
@@ -185,7 +186,7 @@ beeping the pc speaker
 /var/log/audit/audit.log	# SELinux log file
 /var/log/dmesg			# boot messages (also: `dmesg`)
 /var/log/messages		# see /etc/rsyslog.conf
-/var/log/secure			# see /etc/rsyslog.conf
+/var/log/secure			# see /etc/rsyslog.conf, login info
 /var/run/autofs.pid		# PID of automount
 /var/www/html			# default Apache root dir
 
@@ -297,6 +298,7 @@ dhclient	- Dynamic Host Configuration Protocol Client
 dig 		- DNS lookup utility
 	# dig "zone"
 	# dig -x "IP"
+	# dig MX location.studio
 dirs		- bash built-in - display list of remembered directories
 dircolors	- color setup for ls
 dmesg		- print or control the kernel ring buffer
@@ -530,6 +532,7 @@ nslookup	- query Internet name servers interactively
 	# nslookup is deprecated in Linux
 	# /usr/sbin/nslookup -sil	# get rid of deprecated message?
 	# > set all|set debug|set domain=NAME|set type=VALUE|server DOMAIN|host [server]
+	# nslookup -type=[mx|ns|text|a] <NAME> [<NAME_SERVER>]
 ntpdate		- set the date and time via NTP
 	# ntpdate -q ntphost1.star
 	# ntpdate -u
@@ -573,6 +576,9 @@ raw		- bind a Linux raw character device
 	# raw /dev/raw/raw21 0 0
 readlink [-m]	- print value of a symbolic link or canonical file name
 renice		- alter priority of running processes
+repoquery	- query from yum repos
+	# repoquery -i PACKAGE
+	# repoquery -qf "%{repoid}" PACKAGE
 resize2fs (8)	- ext2 file system resizer	
 	# resize2fs /dev/vdb
 	# resize2fs /dev/vg01/lvol6
@@ -603,12 +609,12 @@ rpm		- RPM - Red Hat Package Manager (www.rpm.org)
 	# rpm -qa --last			# list all installed & sort by install date/time
 	# rpm -qa gpg-pubkey*			# all currently imported public keys
 	# rpm -qa kernel			# list kernels installed
-	# rpm -qf /usr/bin/passwd		# what package installed this file
+	# rpm -qf $file				# what package installed this file
 	# rpm -qi gpg-pubkey-2fa658e0-45700c69	# public key details
 	# rpm -ql $pkg				# list files installed with package
 	# rpm -qi $pkg				# get info about a package
 	# rpm -qs $pkg				# state of files (normal, not installed, replaced)
-	# rpm -qpi				# query an uninstalled pkg
+	# rpm -qip $pkg				# query an uninstalled pkg
 	# rpm -V 				# verify integrity (files)
 	# rpm -K|--checksig PACKAGE.rpm
 	# rpm --nodeps -ivh ${rpmlist}		# no dependency check, verb & print hash marks
@@ -711,6 +717,8 @@ su		- run a shell with substitute user and group IDs
 	# su -c - eci 'loader dev $newsmsz'
 	# su "user" -c 'command(s) to run'
 sudo		- execute a command as another user
+	# sudo -s -H -u praco
+	# sudo -l [-U $USER]	# list available capabilities
 sum		- checksum and count the blocks in a file
 sync		- flush file system buffers
 sysctl		- configure kernel parameters at runtime
@@ -830,16 +838,20 @@ xhost - server access control program for X
 	# xhost -
 yum		- Yellowdog Updater Modified
 	# yum [-y] [-q] install hp-health hpacucli
-	# yum install -y -q hp-health hpacucli	# quiet and assume "yes"
 	# yum groupinstall "NFS file server"
+	# yum install -y -q hp-health hpacucli	# quiet and assume "yes"
+	# yum list [RegEx]			# find packages Installed/Available
+		# yum list *virtumedix*
 	# yum provides "*/dig"			# find packages containing
 	# yum [-v] repolist [all|disabled|enabled]
 	# yum update [hp-health hpacucli]
 	# yum --showduplicates list PKG
 	# yum install PKG-VERSION.REL_INFO.ARCH
 		# yum install httpd-2.4.6-6.fc20.x86_64
-yumdownloader	- a program for downloading RPMs from Yum repositories
-yum-config-manager	- manage yum configuration options and yum repositories
+yumdownloader - a program for downloading RPMs from Yum repositories
+yum-config-manager - manage yum configuration options and yum repositories
+	# yum-config-manager --add-repo REPO_URL
+	# yum-config-manager --enable [REPO|GLOB_EXP]
 zcat		- expand data (identical to `uncompress -c`)
 zip		- package and compress (archive) files
 	# zip -ru "zipfile" "files"	# update and recursive

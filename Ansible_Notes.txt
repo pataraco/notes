@@ -107,6 +107,8 @@ Introduction to Ad-Hoc Commands
 	$ ansible all|localhost -m setup
 	$ ansible localhost -m shell -a '/bin/date' | awk '$5=="rc=0" {p="t"}; ($5=="rc=1" || $5=="rc=2") {p="f"}; p=="t" {print $0}'
 	$ ansible -i hosts dev_local -K -b -m authorized_key -a  "user=root key=\"{{ lookup('file', '/path/to/.ssh/id_dsa.pub') }}\" state=present"
+	$ ansible-vault decrypt encrypted --output=decrypted --vault-password-file=~/.vault.vmdev
+	$ ansible-vault encrypt decrypted --output=encrypted --vault-password-file=~/.vault.vmdev
 
 Playbooks
 Roles
@@ -326,4 +328,6 @@ register: subnet_facts
     }
 }
 
-
+BUILT-IN VARIABLES
+------------------
+inventory_hostname_short
