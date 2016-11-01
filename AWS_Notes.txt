@@ -117,8 +117,10 @@ To resume specific processes for the specified Auto Scaling group, use the --sca
 	$ aws autoscaling resume-processes --auto-scaling-group-name <ASG_NAME> --scaling-processes AlarmNotification [--profile <PROFILE>]
 
 Additional Information (Links)
-	Auto Scaling Documentation		aws.amazon.com/documentation/autoscaling
-	Suspend and Resume Auto Scaling Processes		docs.aws.amazon.com/AutoScaling/latest/DeveloperGuide/US_SuspendResume.html
+	Auto Scaling Documentation
+		aws.amazon.com/documentation/autoscaling
+	Suspend and Resume Auto Scaling Processes
+		docs.aws.amazon.com/AutoScaling/latest/DeveloperGuide/US_SuspendResume.html
  
 aws autoscaling suspend-processes --auto-scaling-group-name my-asg
 aws autoscaling resume-processes --auto-scaling-group-name my-asg

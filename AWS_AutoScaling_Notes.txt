@@ -196,7 +196,8 @@ forums
 	- replace:
 		all_matching_entries=$(grep "^${server_type}-" /var/log/collectd_values.txt)
 		webapps_servers=$(echo "$all_matching_entries" | awk -F'/' '{print $1}' |sort | uniq)
-	- with		webapps_servers=`grep "^webapp-wallet-" /var/log/collectd_values.txt|cut -d'/' -f1|sort -u`
+	- with
+		webapps_servers=`grep "^webapp-wallet-" /var/log/collectd_values.txt|cut -d'/' -f1|sort -u`
 /usr/lib/nagios/plugins/autoscale/sessiontest.sh
 	- the way it's getting the list of servers is goofy - change
 /usr/lib/nagios/plugins/autoscale/cputest.sh
@@ -204,7 +205,8 @@ forums
 	- replace:
 		all_matching_entries=$(grep "^${server_type}-" /var/log/collectd_values.txt)
 		webapps_servers=$(echo "$all_matching_entries" | awk -F'/' '{print $1}' |sort | uniq)
-	- with		webapps_servers=`grep "^webapp-wallet-" /var/log/collectd_values.txt|cut -d'/' -f1|sort -u`
+	- with
+		webapps_servers=`grep "^webapp-wallet-" /var/log/collectd_values.txt|cut -d'/' -f1|sort -u`
 	- get rid of average and sum values in calculations
 		<cpus=$(grep "^${server}.*cpu-idle" /var/log/collectd_values.txt)
 		>cpus=$(grep "^${server}.*/cpu-./cpu-idle" /var/log/collectd_values.txt)

@@ -114,6 +114,13 @@ Playbooks
 Roles
 	roles/ROLE: files, templates, tasks, handlers, vars, defaults, meta (dependencies)
 
+# run a command on a remote host
+tasks:
+  - shell: whoami; hostname
+    register: whoami
+    delegate_to: remotehost
+    remote_user: someuser
+
 Misc Commands
 -------------
 

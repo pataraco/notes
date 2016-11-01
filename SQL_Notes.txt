@@ -107,7 +107,8 @@ WHERE liveortrain='L'
 ------------------
 SELECT guestnum 
 FROM res 
-WHERE status='CO'AND guestnum IN (SELECT guestnum FROM resrooms WHERE roomstatus='REG' AND hotelnum=NNN) 
+WHERE status='CO'
+AND guestnum IN (SELECT guestnum FROM resrooms WHERE roomstatus='REG' AND hotelnum=NNN) 
 AND hotelnum=NNN
 ------------------
 BEGIN work;  

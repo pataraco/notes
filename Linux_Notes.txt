@@ -296,6 +296,7 @@ df		- report file system disk space usage
 dhclient	- Dynamic Host Configuration Protocol Client
 	# dhclient eth0
 dig 		- DNS lookup utility
+	# dig @server name type
 	# dig "zone"
 	# dig -x "IP"
 	# dig MX location.studio
@@ -546,6 +547,9 @@ openssl		- OpenSSL command line tool
 	# openssl req -text -noout -verify -in ca.csr
 	# openssl rsa -in ca.key -check
 	# openssl x509 -in ca.crt -text -noout
+	# openssl req -new -newkey rsa:2048 -nodes -keyout testing.key -out testing.csr
+	# openssl pkcs12 -info -in cert_iowa.pkcs12
+	# openssl pkcs12 -in cert_iowa.pkcs12 -out cert_iowa.crt
 pam_tally2	- The login counter (tallying) module
 parted		- GNU Parted - a partition manipulation program
 passwd		- update user's authentication tokens
