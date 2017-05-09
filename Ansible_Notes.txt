@@ -126,6 +126,7 @@ Misc Commands
 
 	$ ansible-doc MODULE		# RTFM about a module
 	$ ansible-doc -l		# list of all installed modules
+	$ ansible-playbook --list-tasks $PLAYBOOK
 	$ ansible-playbook -vvv -i inventory/S3-Scanning/hosts_local playbooks/S3-Scanning/destroy_s3_scanning_vpc_and_stack.yml
 	$ ansible-playbook -vvv -i inventory/S3-Scanning/hosts_local playbooks/S3-Scanning/create_s3_scanning_vpc_and_stack.yml
 	$ ansible-playbook -vvv -i inventory/vagrant --private-key=~/.ssh/vagrant playbooks/util/manage_users.yml

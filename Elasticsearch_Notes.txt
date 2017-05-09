@@ -1,0 +1,188 @@
+=============
+ElasticSearch
+=============
+
+# Install
+---------
+# Make sure correct Java (currently: 1.8.0_73)
+java -version
+# Install via RPM
+# Download and install GPG
+rpm --import https://artifacts.elastic.co/GPG-KEY-elasticsearch
+# Create yum repo
+vi /etc/yum.repos.d/elasticsearch.repo ---
+  --- /etc/yum.repos.d/elasticsearch.repo ---
+  [elasticsearch-5.x]
+  name=Elasticsearch repository for 5.x packages
+  baseurl=https://artifacts.elastic.co/packages/5.x/yum
+  gpgcheck=1
+  gpgkey=https://artifacts.elastic.co/GPG-KEY-elasticsearch
+  enabled=1
+  autorefresh=1
+  type=rpm-md
+  --- /etc/yum.repos.d/elasticsearch.repo ---
+# Install (default location: /usr/share/elasticsearch)
+sudo yum install elasticsearch
+# Configure
+sudo chkconfig --add elasticsearch
+# Start
+sudo -i service elasticsearch start
+# Check
+curl -XGET 0:9200 OR curl -XGET localhost:9200 OR curl -XGET 'localhost:9200/?pretty'
+
+
+TARBALL
+wget https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-5.1.1.tar.gz
+wget https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-5.1.1.tar.gz.sha1
+sha1sum elasticsearch-5.1.1.tar.gz 
+tar -xzf elasticsearch-5.1.1.tar.gz
+cd elasticsearch-5.1.1
+---------
+
+# install plugins
+/usr/share/elasticsearch/bin/plugin -i|--install PLUG-IN
+    - elasticsearch/elasticsearch-cloud-aws/2.6.0
+    - lmenezes/elasticsearch-kopf/master
+# list plugins
+/usr/share/elasticsearch/bin/plugin -l|--list
+
+# Config
+default location: /etc/elasticsearch/elasticsearch.yml
+#important config settings:
+path:
+  logs: /var/log/elasticsearch		# default: /var/log/elasticsearch
+  data: /var/data/elasticsearch		# default: /var/lib/elasticsearch
+cluster.name: racos-es-cluster		# default: elasticsearch
+node.name: ${HOSTNAME}			# default: UUID
+
+# check value of mlockall
+curl -XGET '0:9200/_nodes?filter_path=**.mlockall';echo
+
+ 
+/etc/elasticsearch/log4j2.properties
+
+
+# Creating Snapshots
+# 1. Register snapshot repository
+	# Example 1 (with type=s3 and cloud-aws plugin. Create in AWS S3)
+	curl -XPUT 'http://localhost:9200/_snapshot/{{ virtumedix_search_bucket }}/' -d '
+	{
+	  "type": "s3",
+	  "settings": {
+	    "bucket": "{{ virtumedix_search_bucket }}",
+	    "region": "{{ region }}",
+	    "base_path": "{{ region }}"
+	  }
+	}'
+	# OR
+	curl -XPUT 'http://localhost:9200/_snapshot/virtumedix-elasticsearch/' -d '{ "type": "s3", "settings": { "bucket": "virtumedix-elasticsearch", "region": "us-east-1", "base_path": "us-east-1" } }'
+	# Example 2
+	curl -XPUT 'localhost:9200/_snapshot/s3_repository?verify=false&pretty' -d'
+	{
+	  "type": "s3",
+	  "settings": {
+	    "bucket": "my_s3_bucket",
+	    "region": "eu-west-1"
+	  }
+	}'
+	# OR
+	curl -XPUT 'localhost:9200/_snapshot/s3_repository?verify=false&pretty' -d '{ "type": "s3", "settings": { "bucket": "my_s3_bucket", "region": "eu-west-1" } }'
+# 2. Take a snapshot
+	curl -XPUT "http://localhost:9200/_snapshot/{{ virtumedix_search_bucket }}/{{ sn }}?wait_for_completion=true"
+	curl -XPUT "http://localhost:9200/_snapshot/snapshot_1?wait_for_completion=true"
+# Get snapshot info
+	curl -XGET "http://localhost:9200/_snapshot/snapshot_1"
+	curl -XGET "http://localhost:9200/_snapshot/snapshot_*,some_other_snap"
+	curl -XGET "http://localhost:9200/_snapshot"
+	curl -XGET "http://localhost:9200/_snapshot/_all"
+	# currently running shapshot
+	curl -XGET "localhost:9200/_snapshot/my_backup/_current"
+# Delete snapshot
+	curl -XDELETE "http://localhost:9200/_snapshot/my_backup/shapshot_1"
+# Delete repo
+	curl -XDELETE "http://localhost:9200/_snapshot/my_backup"
+# Delete all data
+	curl -XDELETE "http://localhost:9200/_all"
+# Restore snapshot
+        curl -XPOST "http://localhost:9200/_snapshot/{{ virtumedix_search_bucket }}/{{ time_stamp }}/_restore"
+	curl -XPOST "http://localhost:9200/_snapshot/my_backup/snapshot_1/_restore"
+# Snapshot Status
+	curl -XGET "http://localhost:9200/_snapshot/_status"				# currently running snapshots
+	curl -XGET "http://localhost:9200/_snapshot/my_backup/_status"			# specific repo
+	curl -XGET "http://localhost:9200/_snapshot/my_backup/snapshot_1/_status"	# specific snapshot
+	curl -XGET "http://localhost:9200/_snapshot/my_backup/ss_1,ss_2/_status"	# multiple snapshots
+# Storing a document
+	      Verb                   Index   Type  DocId
+	        |                      |       |     |   
+	curl -XPUT 'localhost:9200/literature/quote/one' -d'
+	{
+	  "person": "Yoda",
+	  "said": "Do or do not, there is no try"
+	}'    \
+               Body
+# Simple Query
+	      Verb                   Index    Type   Action
+	        |                      |        |       |   
+	curl -XPOST 'localhost:9200/literature/quote/_search' -d'
+	{
+	  "query": {
+            "match": {
+	      "person": "jack"
+            }
+          }
+        }'
+# Getting Status
+curl -XGET '0:9200/_cluster/health?pretty'
+curl -XGET 'localhost:9200/_cluster/health?pretty'
+# Create an index
+	curl -XPUT 'localhost:9200/library' -d'
+	{
+	  "settings": {
+            "index.nujber_of_shards": 1,
+            "index.nuber_of_replicas": 0
+	  }
+        }'
+# Bulk Indexing
+	curl -XPOST 'localhost:9200/library/books/_bulk' -d'
+	{ "index": { "_id": 1 }}
+        { "title": "The quick brown fox", "price": 5, "colors": ["red","green","blue"]}
+	{ "index": { "_id": 2 }}
+        { "title": "The quick brown fox jumps over the lazy dog", "price": 15, "colors": ["yellow","blue"]}
+	{ "index": { "_id": 3 }}
+        { "title": "Brown fox brown dog", "price": 9, "colors": ["red","black","blue"]}'
+# Analysis - tokenization + token filters
+	curl -XGET 'localhost:9200/library/_analyze' -d'
+        {
+          "tokenizer": "standard",
+          "tokenizer": "letter",
+          "tokenizer": "uax_url_email",
+          "filter": ["lowercase", "unique"],
+          "text": "Brown fox brown dog"
+        }
+# Aggregations
+	curl -XGET 'localhost:9200/library/_search' -d'
+        {
+          "size": 0,
+          "query": {
+            "match": {
+              "title": "dog"
+            }
+          },
+          "aggs": {
+": "letter",
+            "popular-colors": {
+              "terms": {
+                "field": "colors.keyword"
+              }
+            }
+          }
+        }'
+# Updating
+	curl -XPUT 'localhost:9200/library/books/1/_update' -d'
+	{
+	  "doc": {
+            "title": "The quick fantastic fox"
+	  }
+        }'
+# Mapping
+	curl -XGET 'localhost:9200/library/_mapping'

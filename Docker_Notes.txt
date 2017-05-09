@@ -1,0 +1,134 @@
+Docker Notes
+------------
+
+- created a Docker cloud account
+
+Install Docker
+--------------
+# remove old
+$ yum remove docker docker-common container-selinux docker-selinux docker-engine
+# set up repo
+# get yum-config-manager utility
+$ yum install yum-utils
+# set up the stable repo
+sudo yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
+# optional: enable edge repo
+yum-config-manager --enable docker-ce-edge
+# disable it
+yum-config-manager --disable docker-ce-edge
+# update the yum package index
+yum makecache fast
+# install
+yum install docker-ce	# didn't work, need CentOS 7
+yum install docker-io
+# list versions to install a specific
+yum list docker\* --showduplicates | sort -r
+# start Docker
+chkconfig --list docker
+service docker start
+# test
+docker run hello-world
+docker run -it ubuntu bash
+
+Install Docker-Machine
+----------------------
+# get it
+curl -L https://github.com/docker/machine/releases/download/v0.10.0/docker-machine-`uname -s`-`uname -m` >/tmp/docker-machine
+# place it
+chmod +x /tmp/docker-machine
+sudo cp /tmp/docker-machine /usr/local/bin/
+# test it
+which docker-machine
+docker-machine version
+
+Docker Commands
+---------------
+build		- build an image
+	docker build -t docker-whalesay . # build from ./Dockerfile
+	docker run docker-whalesay
+	docker build -t pataraco/myfirstapp .
+image rm	- remove image
+	docker image rm -f 2cde513e9c25
+images		- list images loaded
+	docker images
+inspect		- Return low-level information on a container or image
+	docker inspect
+login		- log in to Docker account
+	docker login # then enter username/passwd/email
+port		- lookup the public-facing port that is NAT-ed to PRIVATE_PORT
+	docker port IMAGE
+ps [-a]		- list containers
+	docker ps [-a]
+pull		- pull from Docker Hub
+	docker pull alpine	# lightweight linux distro
+push		- push to Docker Hub
+	docker push pataraco/docker-whale
+rm		- remove container
+	docker rm CONTAINER-ID|NAME
+rmi		- remove one or more images
+	docker rmi -f 2cde513e9c25
+run [-it]	- load image into container and run it
+	docker run docker/whalesay cowsay boo
+stop		- stop a running container
+	docker stop CONTAINER-ID|NAME
+tag		- tag an image
+	docker tag 2cde513e9c25 pataraco/docker-whale:latest
+
+Docker Machine Commands
+-----------------------
+docker-machine version
+docker-machine create MACHINE
+docker-machine ls			# list machines
+docker-machine env MACHINE		# how to connect to client
+docker-machine ip MACHINE		# get IP of machine
+eval $(docker-machine env MACHINE)	# connect shell to machine and verify
+docker-machine ls			# look for the "*"
+docker-machine ssh MACHINE		# ssh to machine
+docker-machine stop MACHINE		# stop a machine
+------------
+# initialize the swarm
+# log into a "manager"
+docker-machine ssh manager
+# initialize a swarm
+manager|$ docker swarm init --advertise-addr 192.168.99.101
+# join a "worker" node to the swarm
+worker|$ docker swarm join \
+    --token SWMTKN-1-0o39mcad25srcce3fr \
+    192.168.99.101:2377
+# to get the command (on the manager)
+manager|$ docker swarm join-token worker
+# list the nodes in the swarm
+manager|$ docker node ls
+
+# Deploy voting app example
+# copy docker-stack.yml to master to deploy the app
+# this didn't work
+docker-machine scp ~/repos/docker/example-voting-app/docker-stack.yml manager:/home/docker/.
+# but this did
+scp -i ~/.docker/machine/machines/manager/id_rsa docker-stack.yml docker@192.168.99.101:/tmp
+# Deploy the application stack based on the .yml using the command `docker stack deploy`
+manager|$ docker stack deploy --compose-file docker-stack.yml APP-NAME
+# Verify that the stack deployed as expected
+manager|$ docker stack services APP-NAME
+# Test out
+<manager-ip>:5000	# vote
+<manager-ip>:5001	# see results
+<manager-ip>:8080	# visualizer
+# Stop the voting app (by stopping the machines)
+docker-machine stop worker
+docker-machine stop manager
+# Restart the voting app (by starting the machines)
+docker-machine start manager
+docker-machine start worker
+# Remove the app
+manager|$ docker stack rm vote
+# Remove the docker machines
+docker-machine rm [-f] worker
+docker-machine rm [-f] manager
+
+
+NEXT:
+3.0 Deploying an app to a Swarm
+https://training.docker.com/user/consume/course_pathway/a243879c-f73b-36a5-86d0-a5d1f610e8c3/93/ace984a9-392e-31bb-914e-1cdacb0263be?complete=0&tab=overview
+
+

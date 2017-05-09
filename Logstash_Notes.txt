@@ -1,0 +1,47 @@
+Logstash Notes
+--------------
+
+INPUTS -> FILTERS -> OUTPUTS
+
+INSTALL
+-------
+yum or apt-get
+
+PLUG-INS
+--------
+logstash /usr/share/logstash/bin/logstash-plugin install logstash-filter-fingerprint
+
+EXAMPLES
+--------
+
+HelloWorld.conf
+--
+input {
+  tcp {
+    port => 10000
+  }
+}
+
+filter {
+  grok {
+    match => { "message" => "Hello, %{WORD:name}" }
+  }
+}
+
+output {
+  elasticsearch {
+    hosts => "https://aasd2342134.us-east-1.aws.found.io:9234"
+    user => "elastic"
+    password => "SAGAS@#$%DFSGFDS"
+  }
+}
+
+$ echo "Hello, Fred" | nc localhost 10000
+$ cat sample.log.entry | nc localhost 10000
+--
+cd logstash-5.3.2
+bin/logstash -e 'input { stdin { } } output { stdout {} }'
+--
+# logstash info
+$ curl -s 0:9600/_node?pretty
+$ curl -s 0:9600/_node/stats?pretty

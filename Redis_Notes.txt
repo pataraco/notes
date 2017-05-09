@@ -1,0 +1,324 @@
+Redis
+-----
+
+Questions
+---------
+Q1. Setting 'tcp_backlog 511' in /etc/redis/*.conf files, but
+	/proc/sys/net/core/somaxconn: 128
+	/proc/sys/net/ipv4/tcp_max_syn_backlog: 256
+	nothing in: /etc/sysctl.conf
+Q2. Logfile set to "" and daemonized, so logs -> /dev/null
+A2. Messages are going to syslog with 'syslog-enabled yes' setting
+Q3. How to check/verify DB snapshots
+Q4. In /etc/redis/*.conf files, how does
+	'slaveof tcs-redis1 6371' -> 'slaveof 10.200.18.115 6371'
+Q5. Where are the 'slow-log' commands logged? How to see?
+	SLOWLOG GET [N]
+	SLOWLOG LEN
+
+Install
+-------
+http://download.redis.io/redis-stable.tar.gz
+
+$ wget http://download.redis.io/redis-stable.tar.gz
+$ tar xvzf redis-stable.tar.gz
+$ cd redis-stable
+$ make
+$ make test		# optional
+--------------
+# yum install wget tcl
+# wget http://download.redis.io/releases/redis-3.2.5.tar.gz
+# tar xzf redis-3.2.5.tar.gz
+# cd redis-3.2.5
+# make
+# make test
+--------------
+$ sudo make install
+  OR
+$ sudo cp src/redis-server /usr/local/bin/
+$ sudo cp src/redis-cli /usr/local/bin/
+$ sudo mkdir /etc/redis
+$ sudo mkdir /var/redis
+$ sudo cp utils/redis_init_script /etc/init.d/redis_6379
+$ sudo cp redis.conf /etc/redis/6379.conf
+$ sudo mkdir /var/redis/6379
+$ sudo update-rc.d redis_6379 defaults # OR sudo chkconfig --add redis_6379
+$ sudo /etc/init.d/redis_6379 start
+--------------
+
+TERMS
+-----
+RESP (REdis Serialization Protocol)
+RESP, the type of some data depends on the first byte:
+	Simple Strings	"+"
+	Errors		"-"
+	Integers	":"
+	Bulk Strings	"$"
+	Arrays		"*"
+Redis append-only file feature (AOF)
+
+COMMANDS
+--------
+$ redis-server				# start server
+	/etc/init.d/redis_PORT start
+$ redis-cli [-p PORT] shutdown		# stop server
+	/etc/init.d/redis_PORT stop
+$ redis-cli ping			# check if working
+$ redis-cli --stat [-i interval]	# continuous stats mode
+$ redis-cli --bigkeys			# scan for big keys
+$ redis-cli [-p port ] --scan [--pattern REGEX]	# get a list of keys
+$ redis-cli [-p port ] monitor			# monitor commands
+$ redis-cli [-p port ] --latency			# monitor latency of instances
+$ redis-cli [-p port ] --latency-history [-i interval]
+$ redis-cli [-p port ] --latency-dist		# spectrum of latencies
+$ redis-cli --intrinsic-latency [-p port ] [test-time]	# latency of system
+	$ redis-cli --intrinsic-latency 5
+$ redis-cli --rdb <dest-filename>		# remote RDB backup ($?=0 success)
+	$ redis-cli --rdb /tmp/dump.rdb
+$ redis-cli --slave			# slave mode (monitor master -> slave writes)
+$ redis-cli --lru-test 10000000		# Least Recently Used (LRU) simulation
+	# used to help configure 'maxmemory' for LRU
+$ redis-cli save			# save dump file (dump.rdb) to $dir
+$ redis-cli select <DB_NUMBER>		# select DB
+$ redis-cli dbsize			# show size of DB
+$ redis-cli connect <SERVER> <PORT>	# connect to different servers/ports
+$ redis-cli debug restart
+$ redis-cli --version
+$ redis-cli pubsub channels [PATTERN]
+$ redis-cli pubsub numsub [channel1 ... channelN]
+$ redis-cli subscribe/psubscribe/publish
+$ redis-cli slowlog get [N]|len
+	a. unique progressive identifier for every slow log entry.
+	b. timestamp at which the logged command was processed.
+	c. amount of time needed for its execution, in microseconds.
+	d. array composing the arguments of the command.
+
+FILES
+-----
+config file: /etc/redis/6371.conf
+	dbfilename dump.rdb
+	dir /var/lib/redis/6371
+	pidfile /var/run/redis/6371.pid
+DB saved to:
+	/var/lib/redis/6371/dump.rdb
+
+OPTIONS
+-------
+--raw, --no-raw
+
+Configuration
+-------------
+redis.conf	# well documented
+default ports: 6379 / 16379 (cluster mode) / 26379 (Sentinel)
+
+daemonize no
+pidfile /var/run/redis_6379.pid
+port 6379
+loglevel info
+logfile /var/log/redis_6379.log
+dir /var/redis/6379
+
+
+keyword argument1 argument2 ... argumentN
+
+	slaveof 127.0.0.1 6380
+	requirepass "hello world"
+	maxmemory 2mb
+	maxmemory-policy allkeys-lru
+	masterauth <password>
+	daemonize no			# when run under daemontools
+	
+Administration
+--------------
+/etc/sysctl.conf
+--
+vm.overcommit_memory = 1	# sysctl vm.overcommit_memory=1
+echo never > /sys/kernel/mm/transparent_hugepage/enabled
+	
+# passing arguments via CLI
+$ ./redis-server --port 6380 --slaveof 127.0.0.1 6379
+
+redis> config get GLOB
+redis> config set slaveof 127.0.0.1 6380
+redis> config rewrite
+
+--- ---
+Actual config
+---
+daemonize yes
+pidfile /var/run/redis/6371.pid
+port 6371
+tcp-backlog 511
+bind 0.0.0.0
+timeout 0
+tcp-keepalive 0
+loglevel notice
+logfile ""
+syslog-enabled yes
+syslog-ident redis
+syslog-facility USER
+databases 16
+save 900 1
+save 300 10
+save 60 10000
+stop-writes-on-bgsave-error yes
+rdbcompression yes
+rdbchecksum yes
+dbfilename dump.rdb
+dir /var/lib/redis/6371
+slaveof 10.200.18.115 6371	# only on slave(s)
+slave-serve-stale-data yes
+slave-read-only yes
+repl-disable-tcp-nodelay no
+slave-priority 100
+maxclients 10000
+maxmemory-policy noeviction
+appendonly no
+appendfilename "appendonly.aof"
+appendfsync everysec
+no-appendfsync-on-rewrite no
+auto-aof-rewrite-percentage 100
+auto-aof-rewrite-min-size 64mb
+lua-time-limit 5000
+slowlog-log-slower-than 10000
+slowlog-max-len 128
+notify-keyspace-events ""
+hash-max-ziplist-entries 512
+hash-max-ziplist-value 64
+list-max-ziplist-entries 512
+list-max-ziplist-value 64
+set-max-intset-entries 512
+zset-max-ziplist-entries 128
+zset-max-ziplist-value 64
+activerehashing yes
+client-output-buffer-limit normal 0 0 0
+client-output-buffer-limit slave 256mb 64mb 60
+client-output-buffer-limit pubsub 32mb 8mb 60
+hz 10
+aof-rewrite-incremental-fsync yes
+---
+
+Replication
+-----------
+redis> config set masterauth <password>
+persistence = enabled OR automatic-restarts = disabled
+
+slaveof 192.168.1.1 6379
+repl-diskless-sync
+repl-diskless-sync-delay
+slave-read-only
+masterauth <password>	# config set masterauth <password>
+min-slaves-to-write <number of slaves>
+min-slaves-max-lag <number of seconds>
+slave-announce-ip 5.5.5.5
+slave-announce-port 1234
+
+Redis Sentinel (26379)
+--------------
+- Monitoring
+- Notification
+- Automatic failover
+- Configuration provider
+
+redis-sentinel /path/to/sentinel.conf
+	OR
+redis-server /path/to/sentinel.conf --sentinel
+
+# typical minimal config
+---
+# sentinel monitor <master-group-name> <ip> <port> <quorum>
+# sentinel down-after-milliseconds <master-name> <milliseconds> # default 30 secs
+# sentinel failover-timeout <master-name> <milliseconds> # default 3 minutes
+# sentinel parallel-syncs <master-name> <numslaves>
+---
+# example typical minimal config:
+---
+sentinel monitor mymaster 127.0.0.1 6379 2
+sentinel down-after-milliseconds mymaster 60000
+sentinel failover-timeout mymaster 180000
+sentinel parallel-syncs mymaster 1
+---
+# additional configs
+---
+# bind 127.0.0.1 192.168.1.1
+# protected-mode no
+# sentinel announce-ip <ip>
+# sentinel announce-port <port>
+# dir <working-directory>
+# syntax: sentinel <option_name> <master_name> <option_value>
+# sentinel auth-pass <master-name> <password>
+# sentinel down-after-milliseconds <master-name> <milliseconds> # default 30 secs
+# sentinel parallel-syncs <master-name> <numslaves>
+# sentinel failover-timeout <master-name> <milliseconds> # default 3 minutes
+# sentinel notification-script <master-name> <script-path>
+	# passed: <event type> <event description>
+# sentinel client-reconfig-script <master-name> <script-path>
+	# passed: <master-name> <role> <state> <from-ip> <from-port> <to-ip> <to-port>
+		# <state> is currently always "failover"
+		# <role>  is either "leader" or "observer"
+--- --- ---
+# actual config
+---
+/etc/redis/sentinel_26371.conf 
+# redis-sentinel 2.8.9 configuration file
+# sentinel_26371.conf
+daemonize no
+dir "/var/lib/redis/sentinel_26371"
+pidfile "/var/run/redis/sentinel_26371.pid"
+port 26371
+bind 0.0.0.0
+sentinel monitor iowa_master_staging 10.200.18.115 6375 2
+sentinel config-epoch iowa_master_staging 0
+sentinel leader-epoch iowa_master_staging 0
+sentinel known-slave iowa_master_staging 10.200.20.234 6375
+logfile ""
+syslog-enabled yes
+syslog-ident "sentinel_26371"
+syslog-facility user
+-------------
+# sentinel messages/events
+---
++monitor master <group-name> <ip> quorum <N>
+
+# Testing
+$ redis-cli -p PORT
+127.0.0.1:PORT> SENTINEL master mymaster			# info about master
+127.0.0.1:PORT> SENTINEL slaves mymaster			# info about slave(s)
+127.0.0.1:PORT> SENTINEL sentinels mymaster			# info about sentinel(s)
+127.0.0.1:PORT> SENTINEL get-master-addr-by-name mymasterer	# get address of master
+$ redis-cli -p 6379 DEBUG sleep 30				# simulate master hanging
+---
+ping
+SENTINEL masters				# get list of monitored masters and their state
+SENTINEL master <master name>
+SENTINEL slaves <master name>
+SENTINEL sentinels <master name>
+SENTINEL get-master-addr-by-name <master name>
+SENTINEL reset <pattern>			# reset all masters matching pattern
+SENTINEL failover <master name>			# force a failover
+SENTINEL ckquorum <master name>			# check if current config is able to failover
+SENTINEL flushconfig				# rewrite config file
+SENTINEL monitor <name> <ip> <port> <quorum>	# start monitoring a new master
+SENTINEL remove <name>				# stop monitoring master
+SENTINEL SET <name> <option> <value>
+---
+# Commands
+$ 
+
+Redis Cluster
+-------------
+port 7000
+cluster-enabled yes
+cluster-config-file nodes.conf
+cluster-node-timeout 5000
+appendonly yes
+
+=====================================
+redis1:$ WTFI redis-cli  => /nb/redis/bin/redis-cli
+
+redis-cli -h <hostname> -p <port> -r <repeat (-1=forever)> -i <interval (secs)> -n <DB_NUM> <COMMAND>
+redis-cli -p 6371|26371 info [server|clients|memory|persistence|stats|replication|cpu|keyspace|sentinel]
+redis-cli -p 6371 ping
+=====================================
+Upgrading or restarting a Redis instance without downtime
+	Check out: https://redis.io/topics/admin (bottom)

@@ -33,8 +33,13 @@ TECHNOLOGIES
 	* Identity & Access Management (IAM)
 
 COMMANDS
+	# aws autoscaling delete-tags --region us-west-1 --tags ResourceId=raco-test-asg,ResourceType=auto-scaling-group,Key=MOP
+	# aws --region us-west-1 autoscaling create-or-update-tags --tags ResourceId=raco-test-asg,ResourceType=auto-scaling-group,Key=MOP,Value=true,PropagateAtLaunch=true
+[
 	# ec2metadata
+        # aws ec2 terminate-instances --region eu-west-1 --instance-ids i-027f25b22de9270c2
 	# aws ec2 create-tags --resources $instanceID --tags Key=Creator,Value='DickButt'
+	# aws ec2 delete-tags --resources $instanceID --tags Key=MOP
 	# aws ec2 describe-images --image-ids ami-e54f5f84
 	# aws ec2 describe-images --image-ids ami-bfc7848f|egrep 'VirtualizationType|ImageId|RootDeviceType|"Name'
 	$ aws iam list-account-aliases	# also found on IAM dashboard
@@ -48,6 +53,35 @@ COMMANDS
  	$ aws iam get-ssh-public-key --ssh-public-key-id APKAJE6JPZ2K3KPTRYAQ --encoding SSH --user-name praco
 	$ aws iam upload-ssh-public-key --user-name praco --output json --ssh-public-key-body 'PUBLIC KEY'
 	$ aws elb create-load-balancer-listeners --load-balancer-name elb-virtumedix-vm4 --listeners "Protocol=TCP,LoadBalancerPort=443,InstanceProtocol=tcp,InstancePort=443"
+	$ aws sts assume-role --role-arn "arn:aws:iam::801178088653:role/ModifyMobileLocationStudioR53FromTeleComSys" --role-session-name "R53-Update" --output json
+		$ export AWS_ACCESS_KEY_ID=ASIAJLNZBIGWWYCJMCFA
+		$ export AWS_SECRET_ACCESS_KEY=Bz7CIFjblG511bTwEtBm9Jn1eqn7EeDxgSqIG0uK
+		$ export AWS_SECURITY_TOKEN=FQoDYXdzEH4aDFUiQGZY5B2MD+4GOiLNAZUFEqCDxB79wBWjV34wXCM5pVWGOspS9se81sb96c
+	$ aws route53 list-resource-record-sets --hosted-zone-id Z3MWE1Z2JT5DNN
+	$ aws route53 change-resource-record-sets --hosted-zone-id Z3MWE1Z2JT5DNN --change-batch file:///tmp/r53.add.json
+	$ cat /tmp/r53.add.json
+		{
+		  "Comment": "testing ability to create",
+		  "Changes": [
+		    {
+		      "Action": "CREATE",
+		      "ResourceRecordSet": {
+		        "Name": "testing-delete-me.mobile.location.studio",
+		        "Type": "CNAME",
+		        "TTL": 60,
+		        "ResourceRecords": [
+		          {
+		            "Value": "some.bogus.domain.com"
+		          }
+		        ]
+		      }
+		    }
+		  ]
+		}
+	$ aws ec2 describe-instances --region=eu-west-1 --filters "Name=tag:Project,Values=VMedix" "Name=tag:Env,Values=staging" --query "Reservations[].Instances[].[Tags[?Key=='Name'].Value|[0],PrivateIpAddress,InstanceId,Tags[?Key=='Env'].Value|[0],Tags[?Key=='Cluster'].Value|[0],State.Name]" --output table|egrep -v '^\+|DescribeInstances' | sort
+	$ aws autoscaling describe-launch-configurations --launch-configuration-names '*blue*' --max-items 3 --query "LaunchConfigurations[].LaunchConfigurationName" --output table
+	$ aws autoscaling describe-auto-scaling-groups --query "AutoScalingGroups[].[AutoScalingGroupName,Instances[].InstanceId|join(', ',@)]"  --region eu-west-1 --output table
+	$ aws autoscaling describe-auto-scaling-groups --query AutoScalingGroups[].[AutoScalingGroupName,LoadBalancerNames] --output table --region eu-west-1
 
 S3
 	# bucket creation, bucket deletion, properties, policies, tags, website hosting, ARN
@@ -131,26 +165,26 @@ Turn ALL ASGs processes on
 	for asgn in $(aws --profile dtu autoscaling describe-auto-scaling-groups | grep AutoScalingGroupName | cut -d'"' -f4); do echo $asgn ; aws --profile dtu autoscaling resume-processes --auto-scaling-group-name $asgn; done
 
 # process of replacing launch configs
-	# replace-launch-configs.sh
-	./copy-configs.sh 			# create a new launch configuraton with temp "Copy" name
-	./update-to-copies.sh 		# update the ASG to use the new temp "Copy" launch configuration
-	./delete-launch-configs.sh 	# delete the old launch configuration
-	./launch-configs.sh 		# create the new launch config with correct name
-	./update-to-originals.sh 	# update the ASG to use the launch configuration with the correct name
-	./delete-copies.sh 			# delete the temp "Copy" launch configuration
+	# 1. create a new launch configuraton with temp "Copy" name
+	aws autoscaling create-launch-configuration --launch-configuration-name LC-NAME-COPY --image-id ami-UID --security-groups sg-UID1 sg-UID2 --key-name KEY_NAME --instance-type c3.large --user-data file://all-userdata/NEW_user_data.txt
+	# 2. update the ASG to use the new temp "Copy" launch configuration
+	aws autoscaling update-auto-scaling-group --auto-scaling-group-name ASG-NAME --launch-configuration-name LC-NAME-COPY
+	# 3. delete the old launch configuration
+	aws autoscaling delete-launch-configuration --launch-configuration-name ORIG-LC-NAME
+	# 4. create the new launch config with correct name
+	aws autoscaling create-launch-configuration --launch-configuration-name ORIG-LC-NAME --image-id ami-UID --security-groups sg-UID1 sg-UID2 --key-name KEY_NAME --instance-type c3.large --user-data file://all-userdata/NEW_user_data.txt
+	# 5. update the ASG to use the launch configuration with the correct name
+	aws autoscaling update-auto-scaling-group --auto-scaling-group-name ASG-NAME --launch-configuration-name ORIG-LC-NAME
+	# 6. delete the temp "Copy" launch configuration
+	aws autoscaling delete-launch-configuration --launch-configuration-name LC-NAME-COPY
 
-# copy-configs.sh			# create a new launch configuraton with temp "Copy" name
-	aws autoscaling create-launch-configuration --launch-configuration-name globaldataCopy-config --image-id ami-9587ada5 --security-groups sg-2f4f5343 sg-574f533b --key-name Red5DevTest --instance-type c3.large --user-data file://all-userdata/globaldata-userdata.txt
-# update-to-copies.sh		# update the ASG to use the new temp "Copy" launch configuration
-	aws autoscaling update-auto-scaling-group --auto-scaling-group-name globaldata-asg --launch-configuration-name globaldataCopy-config
-# delete-launch-configs.sh	# delete the old launch configuration
-	aws autoscaling delete-launch-configuration --launch-configuration-name globaldata-config
-# launch-configs.sh			# create the new launch config with correct name
-	aws autoscaling create-launch-configuration --launch-configuration-name globaldata-config --image-id ami-9587ada5 --security-groups sg-2f4f5343 sg-574f533b --key-name Red5DevTest --instance-type c3.large --user-data file://all-userdata/globaldata-userdata.txt
-# update-to-originals.sh	# update the ASG to use the launch configuration with the correct name
-	aws autoscaling update-auto-scaling-group --auto-scaling-group-name globaldata-asg --launch-configuration-name globaldata-config
-# delete-copies.sh			# delete the temp "Copy" launch configuration
-	aws autoscaling delete-launch-configuration --launch-configuration-name globaldataCopy-config
+	# Example
+	aws autoscaling create-launch-configuration --region us-east-1 --launch-configuration-name lc-VMedix-app-nginx-blue-COPY --image-id ami-be8f61a8 --key-name ops.pem --security-groups sg-289f984d sg-857b41e0 sg-a07b41c5 sg-b37b41d6 --user-data file:///tmp/app_nginx_user_data-new.txt --instance-type m3.large --iam-instance-profile ec2-restricted-access --no-associate-public-ip-address --placement-tenancy dedicated
+	aws autoscaling update-auto-scaling-group --region us-east-1 --auto-scaling-group-name asg-VMedix-app-nginx-blue --launch-configuration-name lc-VMedix-app-nginx-blue-COPY
+	aws autoscaling delete-launch-configuration --region us-east-1 --launch-configuration-name lc-VMedix-app-nginx-blue
+	aws autoscaling create-launch-configuration --region us-east-1 --launch-configuration-name lc-VMedix-app-nginx-blue --image-id ami-be8f61a8 --key-name ops.pem --security-groups sg-289f984d sg-857b41e0 sg-a07b41c5 sg-b37b41d6 --user-data file:///tmp/app_nginx_user_data-new.txt --instance-type m3.large --iam-instance-profile ec2-restricted-access --no-associate-public-ip-address --placement-tenancy dedicated
+	aws autoscaling update-auto-scaling-group --region us-east-1 --auto-scaling-group-name asg-VMedix-app-nginx-blue --launch-configuration-name lc-VMedix-app-nginx-blue
+	aws autoscaling delete-launch-configuration --region us-east-1 --launch-configuration-name lc-VMedix-app-nginx-blue-COPY
 
 
 # Examples

@@ -273,13 +273,14 @@ chroot		- run command or interactive shell with special root directory
 compress	- compress data
 column		- columnate lists
 cksum		- checksum and count the bytes in a file
-createrepo	- Create repomd (xml-rpm-metadata) repository
+createrepo	- create repomd (xml-rpm-metadata) repository
 cryptsetup	- setup cryptographic volumes for dm-crypt (also LUKS extension)
 	# cryptsetup luksFormat /dev/sda1
 	# cryptsetup luksUUID /dev/sda1 [> sda1uuid]
 	# cryptsetup luksOpen /dev/sda1 `cat sda1uuid`
-ctags		- Generate tag files for source code
-curl		- transfer a URL
+ctags		- generate tag files for source code
+curl		- transfer a URL (exchange requests/responses with a server)
+	$ curl http://169.254.169.254/latest/meta-data/instance-id
 date		- print or set the system date and time
 	# date -ud @1299287328
 	# date --date "$dbst" +'%d%m%y(%H:%M:%S)'` # convert to DDMMYY(HH:MM:SS)
@@ -423,6 +424,8 @@ iostat		- Report Central Processing Unit (CPU) statistics and
 	input/output statistics for devices, partitions and
 	network filesystems (NFS).
 ip		- show / manipulate routing, devices, policy routing and tunnels
+	# ip addr | grep eth.$
+	# ip route del 172.17.0.0/16
 iperf		- Internet Protocol bandwidth measuring tool
 iptables	- administration tool for IPv4 packet filtering and NAT
 	# iptables -t tabletype <action direction> <packet pattern> -j <what to do>
@@ -511,7 +514,8 @@ mutt		- The Mutt Mail User Agent
 named		- Internet domain name server
 	# named -v
 nc (netcat)	- arbitrary TCP and UDP connections and listens
-	# nc -Z SERVER PORT
+	# nc -z SERVER PORT
+	# nc -zv location-studio-dev.nimaws.com 8130
 netstat		- Print network connections, routing tables, interface stats,
 		masquerade connections, and multicast memberships
 		(obsolete - see `ss`)
@@ -548,8 +552,13 @@ openssl		- OpenSSL command line tool
 	# openssl rsa -in ca.key -check
 	# openssl x509 -in ca.crt -text -noout
 	# openssl req -new -newkey rsa:2048 -nodes -keyout testing.key -out testing.csr
+	# openssl rsa -in server.key -out server_new.key
 	# openssl pkcs12 -info -in cert_iowa.pkcs12
 	# openssl pkcs12 -in cert_iowa.pkcs12 -out cert_iowa.crt
+	# openssl pkcs7 -print_certs -in certificate.p7b -out certificate.cer
+	# openssl x509 -noout -modulus -in certificate.crt | openssl md5
+	# openssl rsa -noout -modulus -in privateKey.key | openssl md5
+	# openssl req -noout -modulus -in CSR.csr | openssl md5
 pam_tally2	- The login counter (tallying) module
 parted		- GNU Parted - a partition manipulation program
 passwd		- update user's authentication tokens
@@ -600,7 +609,6 @@ rpm		- RPM - Red Hat Package Manager (www.rpm.org)
 	#$pkg=[ NET OnLine informix-audit jboss lightspeed ls-support-files UX ]
 	# $specfile=rpmrepack.spec
 	# rpm -e kernel-2.6.32-220.el6.x86_64	# the erase command
-	# rpm -e gpg-pubkey-2fa658e0-45700c69	# erase keys after importing
 	# rpm -i PKG_FILE 			# the install command
 	# rpm -K|--checksig			# verify signature (key)
 	# rpm -q kernel				# the query command
@@ -611,11 +619,13 @@ rpm		- RPM - Red Hat Package Manager (www.rpm.org)
 	# rpm -q --queryformat "Name: %{NAME}\nVersion: %{VERSION}\nRelease: %{RELEASE}\nSummary: %{SUMMARY}\nCopyright: %{COPYRIGHT}\nURL: %{URL}\nGroup: %{GROUP}\n" $pkg
 	# rpm -qa				# query (list all) installed packages
 	# rpm -qa --last			# list all installed & sort by install date/time
-	# rpm -qa gpg-pubkey*			# all currently imported public keys
+        # Show all GPG keys with repo info
+	# rpm -q gpg-pubkey --qf '%{name}-%{version}-%{release}:%{summary}\n'
+	# rpm -qi gpg-pubkey-2fa658e0-45700c69	# public key details
+	# rpm -e gpg-pubkey-2fa658e0-45700c69	# erase keys after importing
 	# rpm -qa kernel			# list kernels installed
 	# rpm -qf $file				# what package installed this file
-	# rpm -qi gpg-pubkey-2fa658e0-45700c69	# public key details
-	# rpm -ql $pkg				# list files installed with package
+	# rpm -ql[p] $pkg			# list files installed with package
 	# rpm -qi $pkg				# get info about a package
 	# rpm -qs $pkg				# state of files (normal, not installed, replaced)
 	# rpm -qip $pkg				# query an uninstalled pkg
@@ -830,7 +840,8 @@ virsh		- management user interface
 volname (1)	- return volume name
 w		- Show who is logged on and what they are doing.
 watch		- execute a program periodically, showing output fullscreen
-wget		- The non-interactive network downloader.
+wget		- The non-interactive network downloader. (download files from servers)
+	$ wget -q -O - http://169.254.169.254/latest/meta-data/instace-id
 whatis		- search the whatis database for complete words. (aka: man -f)
 who		- show who is logged on
 	# who -r		# display the current run level
@@ -843,10 +854,12 @@ xhost - server access control program for X
 yum		- Yellowdog Updater Modified
 	# yum [-y] [-q] install hp-health hpacucli
 	# yum groupinstall "NFS file server"
-	# yum install -y -q hp-health hpacucli	# quiet and assume "yes"
-	# yum list [RegEx]			# find packages Installed/Available
-		# yum list *virtumedix*
-	# yum provides "*/dig"			# find packages containing
+	# yum install -y -q hp-health hpacucli		# quiet and assume "yes"
+	# yum list [available|installed] [RegEx]	# find packages Installed/Available
+		# yum list VirtuMedix*			# actually not case-sensitive
+	# find packages Installed/Available from a specific REPO
+	# yum --disablerepo "*" --enablerepo REPO list [available] [RegEx]
+	# yum provides "*/dig"				# find packages containing
 	# yum [-v] repolist [all|disabled|enabled]
 	# yum update [hp-health hpacucli]
 	# yum --showduplicates list PKG

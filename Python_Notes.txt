@@ -163,3 +163,21 @@ sorted(list, key=len)
 def last(x):
   return x[-1]
 sorted(list, key=last)
+---------------- API to assume AWS role example --------------
+import boto3
+
+sts_client = boto3.client('sts')
+
+assumedRoleObject = sts_client.assume_role(
+    RoleArn="arn:aws:iam::801178088653:role/ModifyMobileLocationStudioR53FromTeleComSys",
+    RoleSessionName="AssumeRoleSession1"
+)
+
+credentials = assumedRoleObject['Credentials']
+
+R53_resource = boto3.resource(
+    'route53',
+    aws_access_key_id = credentials['AccessKeyId'],
+    aws_secret_access_key = credentials['SecretAccessKey'],
+    aws_session_token = credentials['SessionToken']
+)

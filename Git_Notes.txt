@@ -4,72 +4,79 @@
 
 git add <FILE1> <FILE2>...|-A		# add [FILES]|All changes to staging area
 git branch [-a|-d|-r] [<BRANCH_NAME>]	# list|create|delete branches & current
-	git branch NEW_BRANCH		# create new branch
-	git branch -a			# list both remote and local branches
-	git branch -r			# list remote branches
-	git branch -d [-r]		# delete local[remote] branch
-		# git branch -d -r origin/nubranch
-	# using branches to make then merge changes in a new branch on to master
-	git checkout -b NEW_BRANCH	# create and checkout new branch
-		(or `git branch NEW_BRANCH; git checkout NEW_BRANCH)
-	(edit/make changes to files)	# make code changes
-	git add "modified files"	# add modified files to staging area
-	git commit -m "commit messages"	# commit your changes
-	git checkout master		# switch to master
-	git merge NEW_BRANCH		# merge changes on to master
+   git branch NEW_BRANCH		# create new branch
+   git branch -a			# list both remote and local branches
+   git branch -r			# list remote branches
+   git branch -d [-r]			# delete local[remote] branch
+      # git branch -d -r origin/nubranch
+   # using branches to make then merge changes in a new branch on to master
+     1. git checkout -b NEW_BRANCH	# create and checkout new branch
+       (or `git branch NEW_BRANCH; git checkout NEW_BRANCH)
+     2. (edit/make changes to files)	# make code changes
+     3. git add "modified files"	# add modified files to staging area
+     4. git commit -m "commit messages"	# commit your changes
+     5. git checkout master		# switch to master
+     6. git merge NEW_BRANCH		# merge changes on to master
 git checkout [-b] <BRANCH>|<TAG> [<FILE>]	# checkout a git reference
-	git checkout <BRANCH> <FILE>		# revert changes to <FILE>
-	git checkout HEAD aws_tags.py		# revert changes made to aws_tags.py
-	git checkout NEW_BRANCH			# switch HEAD to NEW_BRANCH
-	git checkout master			# switch HEAD to master
-	git checkout -b new_branch		# create and checkout a new branch
-	git checkout -b new_branch existing_tag	# start develpment from known tag
-	git checkout -b new_branch origin/existing_branch	# dev from known branch
-	git checkout --track origin/existing_branch		# dev from known branch
-	git checkout origin/master -- path/to/file	# get one file
+   git checkout <BRANCH> <FILE>		# revert changes to <FILE>
+   git checkout HEAD aws_tags.py	# revert changes made to aws_tags.py
+   git checkout NEW_BRANCH		# switch HEAD to NEW_BRANCH
+   git checkout master			# switch HEAD to master
+   git checkout -b new_branch		# create and checkout a new branch
+   git checkout -b new_branch existing_tag		# start from known tag
+   git checkout -b new_branch origin/existing_branch	# dev from known branch
+   git checkout --track origin/existing_branch		# dev from known branch
+   git checkout origin/master -- path/to/file		# get one file
 git clone <REMOTE_LOC> [<CLONE_NAME>]	# git clone a repo
 git commit -m "message"			# commit changes in staging area
 git config [<file-option>]		# man git-config
-	   file-options
-		--system (/etc/gitconfig)
-		--global (~/.gitconfig | ~/.config/git/config)
-		--local (.git/config)
-	git config --local user.email pataraco@gmail.com
-	git config user.name "Patrick Raco"	# defaults to "--local"
-	git config --global color.ui auto	# turn on color globally
-	git config --global alias.co checkout
-	git config --global alias.ec 'config --global -e'
+   file-options
+   --system (/etc/gitconfig)
+   --global (~/.gitconfig | ~/.config/git/config)
+   --local (.git/config)
+   git config --local user.email pataraco@gmail.com
+   git config user.name "Patrick Raco"	# defaults to "--local"
+   git config --global color.ui auto	# turn on color globally
+   git config --global alias.co checkout
+   git config --global alias.ec 'config --global -e'
 git diff				# show changes made
+   git diff [--name-only] HEAD^		# last files|changes commited
+      git diff HEAD^ $FILE
+   git show [--name-only] <SHA1> <SHA2>	# diffs between 2 commits
 git fetch				# bring changes into 'remote' branch
 git init				# initialize a repo
 git log					# show Git commits
+   git log -- FILE			# show commits FILE changed in
+   git log -p FILE			# show commits and changes of file
 git ls-files [*.zip]			# list cached files
 git ls-remote				# list references in a remote repo
-	git ls-remote --tags origin vm-1517*	# list references matching vm-1517*
+   git ls-remote --tags origin vm-1517*	# list references matching vm-1517*
 git merge <BRANCH>			# after switching to the receiving branch
 git merge origin/master
 git push [-u] [origin <BRANCH>]
-	git push -u origin new_branch	# add upstream (tracking) ref for branches too
-	git push [-f] --delete origin ref	# (force) delete ref's from remote repo
-	git push origin :ref		# delete ref from remote repo
-	git push -u origin master
-git reset HEAD <FILE>			# revert changes
+   git push -u origin new_branch	# add upstream (tracking) ref for branches too
+   git push [-f] --delete origin ref	# (force) delete ref's from remote repo
+   git push origin :ref			# delete ref from remote repo
+   git push -u origin master
+git reset [HEAD] <FILE>			# revert changes | unstage a file
 git reset <SHA>				# revert back to a SHA (can use first 7 chars)
 git remote -v				# see a list of Git project's remotes
-	git remote add origin https://github.com/pataraco/notes.git
-	git remote set-url origin git@stor2:cloud_automation
-	git remote set-url --add --push origin git@stor2:cloud_automation
-	git remote set-url --add --push origin ssh://git-codecommit.us-east-1.amazonaws.com/v1/repos/cloud_automation
+   git remote add origin https://github.com/pataraco/notes.git
+   git remote set-url origin git@stor2:cloud_automation
+   git remote set-url --add --push origin git@stor2:cloud_automation
+   git remote set-url --add --push origin ssh://git-codecommit.us-east-1.amazonaws.com/v1/repos/cloud_automation
 git rm [--cached] \*.zip		# remove cached files
 git show HEAD|<BRANCH>			# show info on 
 git stash				# stash the changes in a dirty working dir away
-	git stash list
-	git stash list
-	git stash apply [stash@{2}]
+   git stash list
+   git stash list
+   git stash apply [stash@{2}]
 git status				# show staging area status
 git tag					# create, list, del, verify tag object
-	git tag -a ref -m "tag message"	# make unsigned, annotated tag object w/msg
-	git tag -f vm-1605-rc-1
-	git push origin --tags
-	git tag -l vm-1517*		# list remote tags
-----
+   git tag -a ref -m "tag message"	# make unsigned, annotated tag object w/msg
+   git tag -f vm-1605-rc-1
+   git push origin --tags
+   git tag -l vm-1517*			# list remote tags
+# check if need to pull
+$ git remote update
+$ git status -uno
