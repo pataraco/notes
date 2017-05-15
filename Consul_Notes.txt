@@ -1,0 +1,82 @@
+Consul Notes
+------------
+
+Docs
+----
+  - https://www.consul.io/docs/index.html
+  - https://www.serf.io/
+
+Install
+-------
+download and unzip precompiled binary 
+  - https://www.consul.io/downloads.html
+
+Overview
+--------
+Servers
+  - Clustered (3-5 ideal)
+Clients: 
+  - run Consul agent - talk to Consul servers
+  - query servers for service discovery
+  - register and provide service(s)
+  - discover provider(s)
+  - run health check
+  - KV store
+  - Monitoring (cluster/server/services health)
+
+Running
+-------
+  - agent: server or client mode
+  - need at least 1 server (3-5 recommended)
+  - remaining are clients on every node
+  - start agent in dev mode (useful from single-node Consul env - not for prod)
+    $ consul agent -dev
+
+Stopping
+--------
+  - stop agent with interrupt (Ctrl-C)
+    - set status: left - no reconnects attempted
+  - status: failed - health: critical, reconnects attempted and allows for recovering
+
+Registering Services
+--------------------
+  - service definition: register a service
+  - HTTP API
+
+Querying Services
+-----------------
+  - DNS: SERVICE_NAME.service.consul
+  - DNS: [TAG.]SERVICE_NAME.service.consul
+    dig @0 -p 8600 rails.web.service.consul
+    dig @localhost -p 8600 web.service.consul
+    dig @127.0.0.1 -p 8600 web.service.consul [SRV]
+  - HTTP: curl http://localhost:8500/v1/catalog/service/SERVICE_NAME
+  - HTTP: curl http://localhost:8500/v1/catalog/service/SERVICE_NAME?passing
+
+NEXT: Consul Cluster: (https://www.consul.io/intro/getting-started/join.html)
+----------------
+
+Files/Dirs
+----------
+/etc/consul.d  # config dir
+
+/etc/consul.d/web.json
+{
+  "service": {
+    "name": "web",
+    "tags": ["rails"],
+    "port": 80
+  }
+}
+
+Commands
+--------
+  $ consul agent              # start an agent
+  $ consul agent -dev         # start agent in dev mode
+  $ consul agent -dev -config-dir=/etc/consul.d # start agent in dev mode
+  $ consul agent              # start an agent
+  $ consul member [-detailed] # list members of a cluster
+  $ curl localhost:8500/v1/catalog/nodes # strong consistent view fo the cluster (world)
+  $ dig @127.0.0.1 -p 8600 praco.dev.local.node.consul # DNS interface
+
+
