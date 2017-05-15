@@ -5,7 +5,57 @@ INPUTS -> FILTERS -> OUTPUTS
 
 INSTALL
 -------
-yum or apt-get
+Required: Java 8 (May 2107: Java 9 not supported)
+  # java -version
+  # export JAVA_HOME=/usr/bin/java # may need
+
+APT
+---
+wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | sudo apt-key add -
+sudo apt-get install apt-transport-https
+echo "deb https://artifacts.elastic.co/packages/5.x/apt stable main" | sudo tee -a /etc/apt/sources.list.d/elastic-5.x.list
+sudo apt-get update && sudo apt-get install logstash
+
+YUM
+---
+# download public signing key
+rpm --import https://artifacts.elastic.co/GPG-KEY-elasticsearch
+# add/create yum repo
+-- /etc/yum.repos.d/logstash.repo
+[logstash-5.x]
+name=Elasticsearch repository for 5.x packages
+baseurl=https://artifacts.elastic.co/packages/5.x/yum
+gpgcheck=1
+gpgkey=https://artifacts.elastic.co/GPG-KEY-elasticsearch
+enabled=1
+autorefresh=1
+type=rpm-md
+--
+# install with yum
+sudo yum install logstash
+
+FILES/DIRS
+----------
+/usr/share/logstash  # install dir
+/etc/logstash
+/etc/logstash/conf.d
+/etc/logstash/logstash.yml
+/var/log/logstash
+/var/lib/logstash
+
+FILEBEAT INSTALL
+----------------
+# using same GPG key install in yum repo config above
+sudo yum install filebeat
+
+FILES/DIRS
+----------
+/usr/share/filebeat                # install dir
+/etc/filebeat/filebeat.yml         # config file
+/usr/share/filebeat/data/registry  # state of files harvested
+
+# Start filebeat
+sudo filebeat -e -c /etc/filebeat/filebeat.yml -d "publish"
 
 PLUG-INS
 --------
@@ -39,9 +89,60 @@ output {
 $ echo "Hello, Fred" | nc localhost 10000
 $ cat sample.log.entry | nc localhost 10000
 --
-cd logstash-5.3.2
-bin/logstash -e 'input { stdin { } } output { stdout {} }'
+# basic/simple test
+[sudo] logstash -e 'input { stdin {} } output { stdout {} }'
+INFO logstash.pipeline - Pipeline manin started
+The stdin plugin is now waiting for input:
+Hello World!
+2017-05-15T18:59:06.891Z praco.dev.local Hello World!
+[Ctrl-D]
 --
 # logstash info
 $ curl -s 0:9600/_node?pretty
 $ curl -s 0:9600/_node/stats?pretty
+
+COMMANDS
+--------
+logstash -f CONFIG --config.test_and_exit # test config and exit
+logstash -f CONFIG --config.reload.automatic # enable automatic config reloads
+
+curl -XGET '0:9200/logstash-2017.05.15/_search?pretty&q=respons=200'
+curl -XGET '0:9200/logstash-2017.05.15/_search?pretty&q=geoip.city_name=Mountain'
+
+sample logstash configs
+-----------------------
+input {
+  beats {
+    port => "5043"
+  }
+}
+
+filter {
+  grok {
+    match => {
+      "message" => "%{COMBINEDAPACHELOG}"
+    }
+  }
+  geoip {
+    source => "clientip"
+  }
+}
+
+output {
+#  stdout {
+#    codec => rubydebug
+#  }
+  elasticsearch {
+    hosts => [ "localhost:9200" ]
+  }
+}
+
+sample filebeat config
+----------------------
+filebeat.prospectors:
+- input_type: log
+  paths:
+    - /data/logstash/log/logstash-tutorial.log
+output.logstash:
+  hosts: ["localhost:5043"]
+
