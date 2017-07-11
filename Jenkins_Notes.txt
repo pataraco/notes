@@ -1,0 +1,82 @@
+Jenkins
+-------
+
+# Docs
+# ----
+Next: Defining execution environments; https://jenkins.io/doc/pipeline/tour/agents/
+
+# Install
+# -------
+# LTS
+# docker	# did NOT work
+docker pull jenkinsci/jenkins:lts	# did NOT work, could not find "lts" tag
+docker pull jenkinsci/jenkins		# did NOT work, could not find "latest" tag
+# linux	 <-------- performed this one
+sudo wget -O /etc/yum.repos.d/jenkins.repo https://pkg.jenkins.io/redhat-stable/jenkins.repo
+sudo rpm --import https://pkg.jenkins.io/redhat-stable/jenkins.io.key
+yum install jenkins
+# war	# tested - seemed to work fine
+http://mirrors.jenkins.io/war-stable/latest/jenkins.war
+java -jar jenkins.war
+http://localhost:8080	# follow instructions to finish install
+
+# Files
+# -------
+/etc/sysconfig/jenkins
+
+
+# Jenkins File
+# ------------
+pipeline {
+    agent any
+    agent { docker 'python:3.5.1' }
+    environment {
+        VAR = 'val'
+    }
+    environment {
+        AWS_ACCESS_KEY_ID     = credentials('AWS_ACCESS_KEY_ID')
+        AWS_SECRET_ACCESS_KEY = credentials('AWS_SECRET_ACCESS_KEY')
+    }
+    stages {
+        stage('Test') {
+            steps {
+                sh 'printenv'
+            }
+        }
+        stage('Build') {
+            steps {
+            }
+        }
+        stage('Sanity check') {
+            steps {
+                input "Does the staging environment look ok?"
+            }
+        }
+        stage('Deploy') {
+            steps {
+            }
+        }
+    }
+    post {
+        always {
+            archive 'build/libs/**/*.jar'
+            junit 'build/reports/**/*.xml'
+            mail to: 'team@example.com',
+                 subject: "VMedix Jenkins: Executed Pipeline: ${currentBuild.fullDisplayName}",
+                 body: "Ran: ${env.BUILD_URL}"
+        }
+        success {
+            slackSend channel: '#ops-room',
+                      color: 'good',
+                      message: "The pipeline ${currentBuild.fullDisplayName} completed successfully."
+        }
+        unstable {
+        }
+        failure {
+            hipchatSend message: "Attention @here ${env.JOB_NAME} #${env.BUILD_NUMBER} has failed.",
+                        color: 'RED'
+        }
+        changed {
+        }
+    }
+}

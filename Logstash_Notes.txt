@@ -1,6 +1,55 @@
 Logstash Notes
 --------------
 
+LEARNING DOCS
+-------------
+Review
+------
+https://www.elastic.co/guide/en/logstash/current/execution-model.html
+
+New/Next
+--------
+https://www.elastic.co/guide/en/logstash/current/output-plugins.html
+
+Reference
+---------
+https://www.elastic.co/support/matrix#show_logstash_plugins
+https://www.elastic.co/guide/en/logstash/current/input-plugins.html
+https://www.elastic.co/guide/en/logstash/current/filter-plugins.html
+https://www.elastic.co/guide/en/logstash/current/output-plugins.html
+https://www.elastic.co/guide/en/logstash/current/codec-plugins.html
+https://www.elastic.co/guide/en/logstash/current/tuning-logstash.html
+
+TO-DO/ISSUES
+------------
+- add CloudWatch input filter
+- find out how ELB logs are getting into S3 buckets
+- set up ELB logging via Ansible
+- get/look at ELB logs
+- Tuning and Profiling Logstash Performance (https://www.elastic.co/guide/en/logstash/current/tuning-logstash.html)
+- consider enabling (to prevent loss): https://www.elastic.co/guide/en/logstash/current/persistent-queues.html
+- are other servers named logstash or loghost?
+  logstash
+- which AMI to use - use lookup 
+- for lc, image_id and image_name being define?
+- security groups
+- public/private network
+- asg role av zone?
+- create sec-grp-logstash?
+- setup access logs and log bucket info for elb logging
+- /etc/yum.conf
+  value of "releasever" wrong
+- AWS keys not being set
+  because value of "releasever" (above) was wrong, could not install gcc
+  due to "distro" value in Ansible inventory (override on command line when running playbook)
+- update R53 record logstash.us.vmedix.nim
+- find out how to run logstash in debug mode
+- create/use a patterns dir for GROK
+  https://www.elastic.co/guide/en/logstash/current/plugins-filters-grok.html
+  - put file and pattern in logstash role
+  - update role to install the pattern file
+  - update the inventory file to use the new/added pattern
+
 INPUTS -> FILTERS -> OUTPUTS
 
 INSTALL
@@ -21,8 +70,8 @@ YUM
 # download public signing key
 rpm --import https://artifacts.elastic.co/GPG-KEY-elasticsearch
 # add/create yum repo
--- /etc/yum.repos.d/logstash.repo
-[logstash-5.x]
+/- /etc/yum.repos.d/elastic.repo -\
+[elastic-5.x]
 name=Elasticsearch repository for 5.x packages
 baseurl=https://artifacts.elastic.co/packages/5.x/yum
 gpgcheck=1
@@ -30,36 +79,41 @@ gpgkey=https://artifacts.elastic.co/GPG-KEY-elasticsearch
 enabled=1
 autorefresh=1
 type=rpm-md
---
+\- /etc/yum.repos.d/elastic.repo -/
 # install with yum
 sudo yum install logstash
 
 FILES/DIRS
 ----------
-/usr/share/logstash  # install dir
+/usr/share/logstash             # install dir
+/usr/local/bin/logstash -> /usr/share/logstash/bin/logstash
 /etc/logstash
-/etc/logstash/conf.d
-/etc/logstash/logstash.yml
+/etc/logstash/conf.d            # pipeline config files
+/etc/logstash/logstash.yml      # settings config file
+/etc/logstash/startup.options   # linux: for system-install
+/etc/logstash/jvm.options       # JVM config flags
+/etc/logstash/log4j2.properties # logs configurations
 /var/log/logstash
 /var/lib/logstash
+/etc/init.d/logstash            # Upstart
+/etc/init/logstash              # SysV
 
-FILEBEAT INSTALL
+Running/Stopping
 ----------------
-# using same GPG key install in yum repo config above
-sudo yum install filebeat
-
-FILES/DIRS
-----------
-/usr/share/filebeat                # install dir
-/etc/filebeat/filebeat.yml         # config file
-/usr/share/filebeat/data/registry  # state of files harvested
-
-# Start filebeat
-sudo filebeat -e -c /etc/filebeat/filebeat.yml -d "publish"
+sudo systemctl start logstash.service  # Systemd
+sudo systemctl stop logstash           # Systemd
+sudo initctl start|stop logstash       # Upstart
+sudo /etc/init.d/logstash start|stop   # SysV
+sudo kill -TERM $LOGSTASH_PID          
 
 PLUG-INS
 --------
-logstash /usr/share/logstash/bin/logstash-plugin install logstash-filter-fingerprint
+/usr/share/logstash/bin/logstash-plugin
+logstash-plugin install logstash-filter-fingerprint
+logstash-plugin install logstash-output-amazon_es
+  (https://github.com/awslabs/logstash-output-amazon_es)
+  output { amazon_es { hosts => $HOSTS region => $REGION } }
+logstash-plugin list
 
 EXAMPLES
 --------
@@ -98,32 +152,81 @@ Hello World!
 [Ctrl-D]
 --
 # logstash info
-$ curl -s 0:9600/_node?pretty
-$ curl -s 0:9600/_node/stats?pretty
+$ curl -s 0:9600/_node?pretty		# server info
+$ curl -s 0:9600/_node/stats?pretty	# stats info
 
 COMMANDS
 --------
-logstash -f CONFIG --config.test_and_exit # test config and exit
-logstash -f CONFIG --config.reload.automatic # enable automatic config reloads
+logstash -f CONFIG -t|--config.test_and_exit    # test config and exit
+logstash -f CONFIG -r|--config.reload.automatic # enable automatic config reloads
 
-curl -XGET '0:9200/logstash-2017.05.15/_search?pretty&q=respons=200'
+# get list of logging subsystems/settings
+curl -XGET 'localhost:9600/_node/logging?pretty'
+# change value of logging subsystems/settings
+curl -XPUT 'localhost:9600/_node/logging?pretty' -H 'Content-Type: application/json' -d' { "logger.logstash.outputs.elasticsearch" : "DEBUG" } '
+
+# Elasticsearch test query
+curl -XGET '0:9200/logstash-$DATE/_search?pretty&q=response=200'
+curl -XGET '0:9200/logstash-2017.05.15/_search?pretty&q=response=200'
 curl -XGET '0:9200/logstash-2017.05.15/_search?pretty&q=geoip.city_name=Mountain'
+curl -XGET 'http://localhost:9200/logstash-$DATE/_search?pretty&q=client:iphone'
+curl -XGET 'http://localhost:9200/logstash-$DATE/_search?pretty&q=fields.type:syslog'
 
 sample logstash configs
 -----------------------
 input {
   beats {
-    port => "5043"
+    id              => "vmedix_beats_input_plugin"
+    port            => "5043"
+    ssl             => "true"
+    ssl_certificate => "/path/to/cert"
+    ssl_key         => "/path/to/key"  # PKCS8 format
+  }
+  cloudwatch {
+    port => "5044"
+  }
+  elasticsearch {
+    # reads query results from an Elasticsearch cluster
+    port => "5045"
+  }
+  exec {
+    # capture output of a shell command
+  }
+  file {
+    # stream events from file(s)
+  }
+  generator {
+    # generates random log events for test purposes
+  }
+  github {
+    # reads events from a GitHub webhook
+  }
+  redis {
+    # reads events from a Redis instance
+  }
+  s3 {
+    # streams events from files in a S3 bucket
+  }
+  snmptrap {
+    # creates events based on SNMP trap messages
+  }
+  sqs {
+    # pulls events from AWS SQS
   }
 }
 
 filter {
   grok {
+    id    => "vmedix_grok_filter_plugin"
     match => {
       "message" => "%{COMBINEDAPACHELOG}"
     }
   }
+  date {
+    id    => "vmedix_date_filter_plugin"
+    match => [ "timestamp", "ISO8601" ]
   geoip {
+    id     => "vmedix_geopip_filter_plugin"
     source => "clientip"
   }
 }
@@ -135,14 +238,38 @@ output {
   elasticsearch {
     hosts => [ "localhost:9200" ]
   }
+  amazon_es {
+    hosts  => ["{{ elasticsearch_endpoint }}"]
+    region => "{{ elasticsearch_region }}"
+    index  => "{{ project | lower }}-{{ env }}-%{indexname}-logs-%{+YYYY.MM.dd}"
+    id     => "vmedix_amazon_output_plugin"
+  }
+ 
 }
 
-sample filebeat config
-----------------------
-filebeat.prospectors:
-- input_type: log
-  paths:
-    - /data/logstash/log/logstash-tutorial.log
-output.logstash:
-  hosts: ["localhost:5043"]
+GROK
+----
+syntax for a grok pattern is %{SYNTAX:SEMANTIC[:DATA_TYPE]}
+  SYNTAX:    name of the pattern that will match the text
+  SEMANTIC:  identifier to give to the text being matched
+  DATA_TYPE: (Optional - data type conversion: int or float)
+
+Custom Patterns
+---------------
+# Named Capture
+(?<field_name>the pattern here)
+  (?<queue_id>[0-9A-F]{10,11})
+# Create a custom patterns file
+  - create a directory called "patterns"
+  - create a file in the patterns directory with a meaningful name
+    # contest of ./patterns/postfix
+    POSTFIX_QUEUE_ID [0-9A-F]{10,11}
+  - use the "patterns_dir" setting in GROK plugin
+    filter {
+      grok {
+        patterns_dir => ["./patterns"]
+        match => { "message" => "%{SYSLOGBASE} %{POSTFIX_QUEUE_ID:queue_id}: %{GREEDYDATA:syslog_message}" }
+      }
+    }
+
 

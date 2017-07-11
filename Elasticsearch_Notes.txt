@@ -57,8 +57,16 @@ node.name: ${HOSTNAME}			# default: UUID
 
 # check value of mlockall
 curl -XGET '0:9200/_nodes?filter_path=**.mlockall';echo
+curl -G|--get '0:9200/_nodes?filter_path=**.mlockall';echo
 
- 
+# templates
+curl -G|--get '0:9200/_template'  # get list of all templates
+curl -I|--head '0:9200/_template/TEMPLATE'
+curl -I|--head '0:9200/_template/TEMPLATE'
+
+# show info
+curl -G 0:9200/_cat
+
 /etc/elasticsearch/log4j2.properties
 
 
@@ -138,8 +146,8 @@ curl -XGET 'localhost:9200/_cluster/health?pretty'
 	curl -XPUT 'localhost:9200/library' -d'
 	{
 	  "settings": {
-            "index.nujber_of_shards": 1,
-            "index.nuber_of_replicas": 0
+            "index.number_of_shards": 1,
+            "index.number_of_replicas": 0
 	  }
         }'
 # Bulk Indexing

@@ -1,0 +1,74 @@
+Filebeat Notes
+--------------
+
+https://www.elastic.co/products/beats/filebeat
+
+INSTALL
+-------
+Required: Java 8 (May 2107: Java 9 not supported)
+  # java -version
+  # export JAVA_HOME=/usr/bin/java # may need
+
+APT
+---
+# download public signing key
+wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | sudo apt-key add -
+sudo apt-get install apt-transport-https
+echo "deb https://artifacts.elastic.co/packages/5.x/apt stable main" | sudo tee -a /etc/apt/sources.list.d/elastic-5.x.list
+sudo apt-get update && sudo apt-get install logstash
+
+YUM
+---
+# download public signing key
+rpm --import https://artifacts.elastic.co/GPG-KEY-elasticsearch
+# add/create yum repo
+/- /etc/yum.repos.d/elastic.repo -\
+[elastic-5.x]
+name=Elasticsearch repository for 5.x packages
+baseurl=https://artifacts.elastic.co/packages/5.x/yum
+gpgcheck=1
+gpgkey=https://artifacts.elastic.co/GPG-KEY-elasticsearch
+enabled=1
+autorefresh=1
+type=rpm-md
+\- /etc/yum.repos.d/elastic.repo -/
+# yum install
+sudo yum install filebeat
+
+FILES/DIRS
+----------
+/usr/share/filebeat                # install dir
+/usr/local/bin/filebeat -> /usr/share/filebeat/bin/filebeat
+/etc/filebeat/filebeat.yml         # config file
+/usr/share/filebeat/data/registry  # state of files harvested
+
+# Test config file
+sudo filebeat -configtest -e
+# Start filebeat
+sudo filebeat -e -c /etc/filebeat/filebeat.yml -d "publish"
+sudo service filebeat start|stop
+----------------
+FILEBEAT INSTALL
+
+sample filebeat config
+----------------------
+egrep -v '^$|^ *#' filebeat.yml
+---
+filebeat.prospectors:
+- input_type: log
+  paths:
+    - /data/logstash/log/logstash-tutorial.log
+output.logstash:
+  hosts: ["localhost:5043"]
+--------
+root@vmedix-api_nginx1 filebeat # egrep -v '^$|^ *#' filebeat.yml
+filebeat.prospectors:
+- input_type: log
+  paths:
+    - /var/log/messages
+    - /var/log/monit
+    - /var/log/*.log
+    - /var/log/nginx/*.log
+  document_type: filebeat   # <--- optional (default: log)
+output.logstash:
+  hosts: ["vmedix-logstash.shared2.mirkwood.nim:25829"]

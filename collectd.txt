@@ -1,0 +1,74 @@
+collectd Notes
+--------------
+
+DOCUMENTATION
+-------------
+https://collectd.org/
+https://collectd.org/documentation.shtml
+man collectd
+man collectd-exec
+man collectd-python
+man collectd-unixsock
+man collectd-java
+man collectd-perl
+man collectd.conf
+
+INSTALL
+-------
+yum install collectd
+
+FILES
+-----
+/etc/collectd.conf
+	egrep -v '^#|^$' /etc/collectd.conf
+/etc/collectd.d/
+/usr/share/collectd/types.db
+/var/lib/collectd
+
+DATA DESIRED
+------------
+- cpu       # CPU utilization: Time spent in the system, user, nice, idle, and related states
+? curl      # Parse statistics from websites using regular expressions
+- df        # Mountpoint usage (Basically the values `df(1)' delivers)
+- disk      # Disk utilization: Sectors read/written, number of read/write actions, average time an IO-operation took to complete
+? exec      # Values gathered by a custom program or script.
+? interface # Interface traffic: Number of octets, packets and errors for each interface.
+- load      # System load average over the last 1, 5 and 15 minutes
+- memory    # Memory utilization: Memory occupied by running processes, page cache, buffer cache and free.
+- netlink   # Very detailed Linux network interface and routing statistics. You can get (detailed) information on interfaces, qdiscs, classes, and, if you can make use of it, filters
+? nginx     # Collects statistics from `nginx' (speak: engine X), a HTTP and mail server/proxy.
+- ntpd      # NTP daemon statistics: Local clock drift, offset to peers, etc.
+- ping      # Network latency: Time to reach the default gateway or another given host.
+- processes # Process counts: Number of running, sleeping, zombie, ... processes
+- redis     # The redis plugin gathers information from a Redis server, including: uptime, used memory, total connections etc.
+- snmp      # Read values from SNMP (Simple Network Management Protocol) enabled network devices such as switches, routers, thermometers, rack monitoring servers, etc. See collectd-snmp(5).
+- swap      # Pages swapped out onto hard disk or whatever is called `swap' by the OS.
+- uptime    # System uptime statistics
+- users     # Users currently logged in
+
+output
+------
+- network   # Send the data to a remote host to save the data somehow. This is useful for large setups where the data should be saved by a dedicated machine
+
+Plug-Ins
+--------
+LoadPlugin network
+<Plugin network>
+        # client setup:
+        #Server "10.200.21.252" "25821"
+        Server "vmedix-logstash.shared2.mirkwood.nim" "25821"
+        TimeToLive "128"
+        MaxPacketSize 1024
+        # statistics about the network plugin itself
+        ReportStats false
+        # "garbage collection"
+        CacheFlush 1800
+</Plugin>
+
+
+COMMANDS
+--------
+# some commands
+root:# while sleep 1; do collectdctl -s /var/run/collectd.sock listval| sed -e 's/\/.*//'| uniq| wc -l; done
+
+root:# while sleep 1; do echo -n "`date`: "; collectdctl -s /var/run/collectd.sock listval|sed -e 's/\/.*//'|uniq|wc -l;done

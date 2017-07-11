@@ -57,7 +57,12 @@ git push [-u] [origin <BRANCH>]
    git push -u origin new_branch	# add upstream (tracking) ref for branches too
    git push [-f] --delete origin ref	# (force) delete ref's from remote repo
    git push origin :ref			# delete ref from remote repo
+   git push --repo=REPO :ref		# delete ref from specified remote repo
    git push -u origin master
+git rebase -i HEAD~3			# change commit messages
+   (editor opens with list of commits, change "pick" to "edit")
+   git commit --amend
+   git commit --continue
 git reset [HEAD] <FILE>			# revert changes | unstage a file
 git reset <SHA>				# revert back to a SHA (can use first 7 chars)
 git remote -v				# see a list of Git project's remotes
@@ -80,3 +85,30 @@ git tag					# create, list, del, verify tag object
 # check if need to pull
 $ git remote update
 $ git status -uno
+
+ _____________________________________
+|             GitHub Tips             |
+
+# create a new repository on the command line
+mkdir NAME_OF_REPO
+cd NAME_OF_REPO
+echo "# NAME_OF_REPO" >> README.md
+git init
+git add README.md
+git commit -m "first commit"
+git remote add origin https://github.com/pataraco/NAME_OF_REPO.git
+git push -u origin master
+
+# push an existing repository from the command line
+git remote add origin https://github.com/pataraco/NAME_OF_REPO.git
+git push -u origin master
+
+|_____________GitHub_Tips_____________|
+
+MISC
+----
+# cat .gitconfig
+[credential "https://github.com/comtech-et/cloud_automation"]
+        helper = store
+# cat .git-credentials
+https://$TOKEN:x-oauth-basic@github.com

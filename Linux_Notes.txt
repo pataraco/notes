@@ -278,6 +278,7 @@ cryptsetup	- setup cryptographic volumes for dm-crypt (also LUKS extension)
 	# cryptsetup luksFormat /dev/sda1
 	# cryptsetup luksUUID /dev/sda1 [> sda1uuid]
 	# cryptsetup luksOpen /dev/sda1 `cat sda1uuid`
+cssh		- cluster administration tool
 ctags		- generate tag files for source code
 curl		- transfer a URL (exchange requests/responses with a server)
 	$ curl http://169.254.169.254/latest/meta-data/instance-id
@@ -336,6 +337,7 @@ expand		- expand tabs to spaces
 exportfs	- maintain table of exported NFS file systems
 faillog -> /sbin/pam_tally2
 fdisk		- Partition table manipulator for Linux
+figlet		- display large characters made up of ordinary screen characters (banner)
 file		- determine file type
 	# file -s /dev/xvdf	# special/block files
 find		- search for files in a dir hierarchy (operators, options, tests, actions)
@@ -573,6 +575,7 @@ printf		- format and print data
 	# printf "%d\n" 0x5630c
 	# 353036
 	# printf -v pool_id "%02d" $i
+pssh		- parallel ssh program
 pstree		- display a tree of processes
 pushd (bash)	- push directory onto stack and set working directory
 pvchange (8)	- change attributes of a physical volume
@@ -637,7 +640,7 @@ rpmbuild	- Build RPM Package(s)
 	# rpmbuild -bb --target=$arch $specfile
 	#/usr/lib/rpm/find-requires "\$@" | grep -vE '^lib(if|4s|mq|imq)' | grep -vE '^:'
 rsync		- a fast, versatile, remote (and local) file-copying tool
-	# rsync -vcrlDz --existing SRC DST		# verbose,checksums,recursive,symlinks,specials,compress
+	# rsync -vcrlDz --existing SRC DST	# verbose,checksums,recursive,symlinks,specials,compress
 	# rsync -e ssh -av --checksum --progress Server_patch_1012_1013 10.248.0.14:/data/chedegaard/
 rsyslogd	- reliable and extended syslogd
 runlevel	- output previous and current runlevel
