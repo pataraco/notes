@@ -112,3 +112,11 @@ MISC
         helper = store
 # cat .git-credentials
 https://$TOKEN:x-oauth-basic@github.com
+----
+# git bash autocompletion
+#OLD#curl https://raw.github.com/git/git/master/contrib/completion/git-completion.bash > ~/.git-completion.sh
+curl https://raw.githubusercontent.com/git/git/master/contrib/completion/git-completion.bash > ~/.git-completion.sh
+# git prompt
+#OLD#curl https://raw.github.com/git/git/master/contrib/completion/git-prompt.sh > ~/.git-prompt.sh
+curl https://raw.githubusercontent.com/git/git/master/contrib/completion/git-prompt.sh > ~/.git-prompt.sh
+ 

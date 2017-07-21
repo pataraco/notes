@@ -142,6 +142,7 @@ curl -G 0:9200/_cat
 # Getting Status
 curl -XGET '0:9200/_cluster/health?pretty'
 curl -XGET 'localhost:9200/_cluster/health?pretty'
+watch -d "curl -s -XGET 'http://localhost:9200/_cat/health?v'; curl -s -XGET 'http://localhost:9200/_cat/nodes?v'"
 # Create an index
 	curl -XPUT 'localhost:9200/library' -d'
 	{

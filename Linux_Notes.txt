@@ -858,6 +858,8 @@ yum		- Yellowdog Updater Modified
 	# yum [-y] [-q] install hp-health hpacucli
 	# yum groupinstall "NFS file server"
 	# yum install -y -q hp-health hpacucli		# quiet and assume "yes"
+	# yum list updates [RegEx]			# find updates to installed packages
+	# yum info installed [RegEx]			# get info on installed packages
 	# yum list [available|installed] [RegEx]	# find packages Installed/Available
 		# yum list VirtuMedix*			# actually not case-sensitive
 	# find packages Installed/Available from a specific REPO
