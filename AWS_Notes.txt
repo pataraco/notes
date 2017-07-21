@@ -211,6 +211,8 @@ $ aws s3 ls [--profile <PROFILE>]				# list data buckets
 $ aws s3 ls s3://<BUCKET_NAME> [--profile <PROFILE>]		# list contents of a data bucket
 $ aws s3 cp s3://<BUCKET_NAME>/<FILE> [--profile <PROFILE>]	# copy file from bucket to .
 $ aws s3 sync --profile ptu s3://firefall-stabilization-build-1298-publictest/ /data/1298-download
+$ aws s3 sync --profile corsother --exclude \* --include repodata\* s3://tcs-yum-repos/amzn/noarch/data/ s3://vmedix-yum-repo/amzn/noarch/data/
+$ aws s3 sync --profile corsother --exclude \* --include VirtuMedix\* s3://tcs-yum-repos/amzn/noarch/data/ s3://vmedix-yum-repo/amzn/noarch/data/
 $ aws s3 cp --acl public-read baby2002.html s3://tcs-location-studio/index2.html
 $ s3cmd cp --acl-public|-P public-read baby2002.html s3://tcs-location-studio/index2.html
 
