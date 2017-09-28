@@ -42,6 +42,7 @@ git config [<file-option>]		# man git-config
 git diff				# show changes made
    git diff [--name-only] HEAD^		# last files|changes commited
       git diff HEAD^ $FILE
+   git diff [--name-only] BRANCH	# files/changes between current/another branch
    git show [--name-only] <SHA1> <SHA2>	# diffs between 2 commits
 git fetch				# bring changes into 'remote' branch
 git init				# initialize a repo

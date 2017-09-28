@@ -23,7 +23,7 @@ echo "STDOUT and STDERR to /dev/null" &>/dev/null
 is_number_regex="^[0-9]+$"
 [ "${input}" =~ $is_number_regex ] && echo "yep"
 
-umanize () {
+humanize () {
     VAL=$1
     G=$(( $VAL >> 30 ))
     M=$(( $VAL >> 20 ))
@@ -125,6 +125,14 @@ printf '%Ns\n' $size	# string
 ==================================================
 [praco@jump2 ~]$ echo ${line// /+}
 ++++++++++++++++++++++++++++++++++++++++++++++++++
+$ len=50
+$ printf %${len}s | tr ' ' '_'
+__________________________________________________
+$ printf "_%.0s" {1..$len}   # <--- does NOT work with vars
+_
+$ printf "_%.0s" {1..50}     # <--- works using values
+__________________________________________________
+
 ---------------------
 cat <<EOF > $outputfile
 #!/bin/sh

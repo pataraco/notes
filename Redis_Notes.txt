@@ -322,3 +322,5 @@ redis-cli -p 6371 ping
 =====================================
 Upgrading or restarting a Redis instance without downtime
 	Check out: https://redis.io/topics/admin (bottom)
+=====================================
+for p in $(grep ^port /etc/redis/*|awk '{print $NF}'); do echo "---- port: $p ----"; /nb/redis/bin/redis-cli -p $p info | grep stat; done

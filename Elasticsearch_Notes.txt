@@ -142,7 +142,7 @@ curl -G 0:9200/_cat
 # Getting Status
 curl -XGET '0:9200/_cluster/health?pretty'
 curl -XGET 'localhost:9200/_cluster/health?pretty'
-watch -d "curl -s -XGET 'http://localhost:9200/_cat/health?v'; curl -s -XGET 'http://localhost:9200/_cat/nodes?v'"
+watch -d "curl -s -XGET 'http://localhost:9200/_cat/health?v'; echo "---"; curl -s -XGET 'http://localhost:9200/_cat/nodes?v'"
 # Create an index
 	curl -XPUT 'localhost:9200/library' -d'
 	{
@@ -195,3 +195,20 @@ watch -d "curl -s -XGET 'http://localhost:9200/_cat/health?v'; curl -s -XGET 'ht
         }'
 # Mapping
 	curl -XGET 'localhost:9200/library/_mapping'
+
+### joining cluster issue - fix ###
+diff -u elasticsearch.yml.orig elasticsearch.yml
+--- elasticsearch.yml.orig      2017-07-07 17:50:13.729119001 +0000
++++ elasticsearch.yml   2017-07-07 20:38:11.487178352 +0000
+@@ -8,7 +8,10 @@
+ discovery.ec2.tag.Env: production
+ repositories.s3.bucket: virtumedix-elasticsearch
+ node.name: "search2"
++#node.master: false
+ path.logs: /var/log/elasticsearch
+ bootstrap.mlockall: true
+ discovery.zen.ping.timeout: 40s
++discovery.zen.join.timeout: 60s
++discovery.zen.ping.unicast.hosts: ["search1","search3"]
+ discovery.zen.ping.multicast.enabled: false
+

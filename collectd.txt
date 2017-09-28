@@ -17,6 +17,10 @@ INSTALL
 -------
 yum install collectd
 
+RUNNING
+-------
+service collectd start|stop|restart|reload|status|condrestart
+
 FILES
 -----
 /etc/collectd.conf
@@ -68,7 +72,6 @@ LoadPlugin network
 
 COMMANDS
 --------
-# some commands
-root:# while sleep 1; do collectdctl -s /var/run/collectd.sock listval| sed -e 's/\/.*//'| uniq| wc -l; done
+root:# while sleep 1; do collectdctl -s /var/run/collectd.sock listval | sed -e 's/\/.*//' | uniq | wc -l; done
 
-root:# while sleep 1; do echo -n "`date`: "; collectdctl -s /var/run/collectd.sock listval|sed -e 's/\/.*//'|uniq|wc -l;done
+root:# while sleep 1; do echo -n "`date`: "; collectdctl -s /var/run/collectd.sock listval | sed -e 's/\/.*//' | uniq | wc -l; done
