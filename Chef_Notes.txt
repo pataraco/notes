@@ -1,0 +1,92 @@
+	Chef Notes
+	----------
+
+Set up / Configure Chef server
+
+Chef server
+- inventory
+- data
+- search
+- manage
+- data bag
+- policy
+   - roles
+   - environments
+   - data
+   - cookbook version
+   - run-list
+- install
+   - stand alone
+      - Download the package from https://downloads.chef.io/chef-server/.
+      - install the package
+         $ sudo rpm -Uvh /tmp/chef-server-core-<version>.rpm
+         $ sudo dpkg -i /tmp/chef-server-core-<version>.deb
+      - start all services
+         $ chef-server-ctl reconfigure
+      - create an adminitrator
+         $ chef-server-ctl org-user-add raco raco --admin
+         $ chef-server-ctl user-create USER_NAME FIRST_NAME LAST_NAME EMAIL 'PASSWORD' --filename FILE_NAME
+      - create an organization
+         $ chef-server-ctl org-create short_name 'full_organization_name' --association_user user_name --filename ORGANIZATION-validator.pem
+
+      - marketplace-setup
+         $ chef-server-ctl marketplace-setup -u chefadmin -f chefadmin -l p -e pataraco@gmail.com -o aws -p 'PASSWORD' -y
+
+Workstation
+- development
+- push to chef-server
+- Chef Development Kit (ChefDK)
+   - Install
+      - $ curl https://omnitruck.chef.io/install.sh | sudo bash -s -- -P chefdk -c stable -v 2.0.28
+- chef
+   - work with items in chef repo
+- knife
+   - interact with nodes
+   - work with objects on the shef server
+- chef-repo
+   - repo where cookbooks are developed
+- Kitchen
+   - test cookbooks
+- ChefSpec
+   - simulate convergence of resources on a node
+- Create a cookbook structure
+   $ chef generate cookbook COOKBOOK_NAME
+- Create a template structure
+   $ chef generate template PATH TEMPLATE_NAME
+- Install
+   - Install ChefDK
+      $ curl https://omnitruck.chef.io/install.sh | sudo bash -s -- -P chefdk -c stable -v 2.0.28
+   - may need to do this to use Chef's ruby environment
+      echo 'eval "$(chef shell-init bash)"' >> ~/.bash_profile
+         or
+      echo 'export PATH="/opt/chefdk/embedded/bin:$PATH"' >> ~/.bash_profile && source ~/.bash_profile
+   - install git
+   - grab client and org pems and place into .chef dir
+   - create knife.rb file
+   - get SSL cert
+      knife ssl fetch
+   - check SSL cert
+      knife ssl check
+- upload cookbook
+   knife cookbook upload COOKBOOK
+- upload role
+   knife role from file web-server.rb
+
+   ```
+      chef-srvr# chef-server-ctl user-create praco Patrick Raco pataraco@gmail.com MY_PASSWORD --filename /tmp/raco.chef.pem
+      chef-srvr# chef-server-ctl org-create raco 'Raco test org' --association_user raco --filename /tmp/raco-validator.pem
+      chef-srvr# chef-server-ctl org-user-add raco raco --admin
+   ```
+   ```
+      $ curl https://omnitruck.chef.io/install.sh | sudo bash -s -- -P chefdk -c stable -v 2.0.28
+      $ knife ssh fetch|check
+      $ vi knife.rb
+   ```
+
+Nodes
+- install chef-client
+
+- Chef-client
+- Ohai
+- bootstrap
+   knife bootstrap 54.153.35.157 -x ec2-user --sudo
