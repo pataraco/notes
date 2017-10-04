@@ -20,6 +20,9 @@ array+=("val2")			# pop on another value into the array
 
 echo "STDOUT and STDERR to /dev/null" &>/dev/null
 
+# sort on tab seperated 2nd field
+sort -rhk2 -t $'\t'
+
 is_number_regex="^[0-9]+$"
 [ "${input}" =~ $is_number_regex ] && echo "yep"
 

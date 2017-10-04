@@ -712,21 +712,23 @@ ss		- another utility to investigate sockets
 ssh		- OpenSSH SSH client (remote login program)
 ssh-copy-id	- use locally available keys to authorise logins on a remote machine
 	# ssh-copy-id [$USER@]$HOSTNAME
-ssh-keygen	- authentication key generation, management and conversion
+ssh-keygen - authentication key generation, management and conversion
 	# ssh-keygen -t rsa -b 4096 -C "$(whoami)@$(hostname)-$(date -I)"
 	# ssh-keygen -t rsa			# create RSA key pair
 	# ssh-keygen -q -f /tmp/ssh-key
 	# ssh-keygen -f ~/.ssh/id_rsa -p	# change the passphrase w/o changing the key
 	# ssh-keygen -lf Red5DevTest.pub	# get the fingerprint from a public key
-ssh-keyscan	- gather ssh public keys
+ssh-keyscan - gather ssh public keys
 	# ssh-keyscan 10.72.216.2 >> ~/.ssh/known_hosts	(/usr/bin/)
-star		- unique standard tape archiver
-stat		- display file or file system status
+star - unique standard tape archiver
+stat - display file or file system status
 	# stat -c %y $FILE
-stinint		- initialize SCSI magnetic tape drives
-strings		- print the strings of printable characters in files.
-strace		- trace system calls and signals
-su		- run a shell with substitute user and group IDs
+stress - tool to impose load on and stress test systems
+	# stress --cpu 2 --timeout 60
+stinint - initialize SCSI magnetic tape drives
+strings - print the strings of printable characters in files.
+strace - trace system calls and signals
+su - run a shell with substitute user and group IDs
 	# su "user" <<ENDOFSU
 	#>	ls
 	#>	whoami
