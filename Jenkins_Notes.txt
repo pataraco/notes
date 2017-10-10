@@ -6,30 +6,46 @@ Jenkins
 
 # Docs
 # ----
-Next: Defining execution environments; https://jenkins.io/doc/pipeline/tour/agents/
+* https://jenkins.io/doc/
+
+Done:
+----
+* https://jenkins.io/doc/pipeline/tour/hello-world/
+
+Re-Read:
+-------
+* https://jenkins.io/doc/pipeline/tour/getting-started/
+* https://jenkins.io/doc/pipeline/tour/hello-world/
+* https://jenkins.io/doc/pipeline/tour/running-multiple-steps/
+
+Next:
+----
+* Defining execution environments
+  https://jenkins.io/doc/pipeline/tour/agents/
 
 # Install
 # -------
-# LTS
+# Long Term Support (LTS)
 # docker	# did NOT work
-docker pull jenkinsci/jenkins:lts	# did NOT work, could not find "lts" tag
-docker pull jenkinsci/jenkins		# did NOT work, could not find "latest" tag
-# linux	 <-------- performed this one
-sudo wget -O /etc/yum.repos.d/jenkins.repo https://pkg.jenkins.io/redhat-stable/jenkins.repo
-sudo rpm --import https://pkg.jenkins.io/redhat-stable/jenkins.io.key
-yum install jenkins
-# war	# tested - seemed to work fine
-http://mirrors.jenkins.io/war-stable/latest/jenkins.war
-java -jar jenkins.war
-http://localhost:8080	# follow instructions to finish install
+  $ docker pull jenkinsci/jenkins:lts	# did NOT work, could not find "lts" tag
+  $ docker pull jenkinsci/jenkins	# did NOT work, could not find "latest" tag
+# linux					# <----- performed this one
+  $ sudo wget -O /etc/yum.repos.d/jenkins.repo https://pkg.jenkins.io/redhat-stable/jenkins.repo
+  $ sudo rpm --import https://pkg.jenkins.io/redhat-stable/jenkins.io.key
+  $ yum install jenkins
+# war					# tested - seemed to work fine
+  $ wget http://mirrors.jenkins.io/war-stable/latest/jenkins.war
+  $ java -jar jenkins.war
+  $ http://localhost:8080	# follow instructions to finish install
 
 # Files
 # -------
+# Jenkins Conig File
 /etc/sysconfig/jenkins
 
 
-# Jenkins File
-# ------------
+# Jenkins File (Jenkinsfile)
+# --------------------------
 pipeline {
     agent any
     agent { docker 'python:3.5.1' }

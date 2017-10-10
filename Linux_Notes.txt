@@ -434,6 +434,9 @@ iptables	- administration tool for IPv4 packet filtering and NAT
 iptables-save	- dump iptables rules to stdout
 isosize		- outputs the length of an iso9660 file system
 	# isosize /dev/scd0
+jq - Command-line JSON processor
+	$ <JSON_OUTPUT> | jq -r '.HostedZones[] | select(.Name=="VALUE").Id'
+        $ <JSON_OUTPUT> | jq -r '.HostedZones[] | .Name + " " + .Id'
 kill		- terminate a process
 killall		- kill processes by name
 	# killall -TERM /usr/sbin/named

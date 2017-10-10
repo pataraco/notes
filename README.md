@@ -1,8 +1,9 @@
-# notes
+# Notes
 place for me to hold my notes
 
 ## Description
-Trying compensate for my short-term memory failures
+Trying compensate for my short-term memory failures - LOL ;-)
+J/K - Keeping track of stuff I've worked on and how I've gotten stuff to work
 * this repo really isn't for public use
 * nothing to see here
 * this is not the repo you are looking for
