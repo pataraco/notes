@@ -69,6 +69,7 @@ rmi		- remove one or more images
 	docker rmi -f 2cde513e9c25
 run [-it]	- load image into container and run it
 	docker run docker/whalesay cowsay boo
+search		- search for an image on the Docker Hub
 stop		- stop a running container
 	docker stop CONTAINER-ID|NAME
 tag		- tag an image
@@ -126,6 +127,12 @@ manager|$ docker stack rm vote
 docker-machine rm [-f] worker
 docker-machine rm [-f] manager
 
+ISSUES
+------
+- /var/run/docker.sock: permission denied. Are you trying to connnect to a TLS-enabled daimon without TLS?
+$ sudo groupadd docker
+$ sudo chown root:docker /var/run/docker.sock
+$ sudo usermod -a -G docker $USERNAME
 
 NEXT:
 3.0 Deploying an app to a Swarm
