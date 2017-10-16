@@ -7,28 +7,38 @@ Jenkins
 # Docs
 # ----
 * https://jenkins.io/doc/
+* Jenkins Handbook - https://jenkins.io/doc/book/
 
 Done:
 ----
-* https://jenkins.io/doc/pipeline/tour/hello-world/
-
-Re-Read:
--------
-* https://jenkins.io/doc/pipeline/tour/getting-started/
-* https://jenkins.io/doc/pipeline/tour/hello-world/
-* https://jenkins.io/doc/pipeline/tour/running-multiple-steps/
+* Getting Started - https://jenkins.io/doc/pipeline/tour/getting-started/
+* Creating your first Pipeline - https://jenkins.io/doc/pipeline/tour/hello-world/
+* Running multiple steps - https://jenkins.io/doc/pipeline/tour/running-multiple-steps/
+* Defining execution environments - https://jenkins.io/doc/pipeline/tour/agents/
+* Using environment variables - https://jenkins.io/doc/pipeline/tour/environment/
+* Recording tests and artifacts - https://jenkins.io/doc/pipeline/tour/tests-and-artifacts/
+* Cleaning up and notifications - https://jenkins.io/doc/pipeline/tour/post/
+* Deployment - https://jenkins.io/doc/pipeline/tour/deployment/
 
 Next:
 ----
-* Defining execution environments
-  https://jenkins.io/doc/pipeline/tour/agents/
+* Jenkins Handbook - https://jenkins.io/doc/book/
+
+Re-Read:
+-------
 
 # Install
 # -------
+# required: Java 8
 # Long Term Support (LTS)
 # docker	# did NOT work
+  # pull the official Jenkins image from the Docker repo
   $ docker pull jenkinsci/jenkins:lts	# did NOT work, could not find "lts" tag
-  $ docker pull jenkinsci/jenkins	# did NOT work, could not find "latest" tag
+  $ docker pull jenkinsci/jenkins	# worked
+  # run a container running the image
+  #  - map data directory from the container to the host (TO_HOST_DIR:FROM_CONTAINER_DIR)
+  #  - expose port to host: CONTAINER_PORT EXPOSED_PORT
+  $ docker run -d -p $EXPOSED_PORT:$CONTAINER_PORT -v $TO_HOST_DIR:$FROM_CONTAINER_DIR -t jenkins/jenkins
 # linux					# <----- performed this one
   $ sudo wget -O /etc/yum.repos.d/jenkins.repo https://pkg.jenkins.io/redhat-stable/jenkins.repo
   $ sudo rpm --import https://pkg.jenkins.io/redhat-stable/jenkins.io.key
@@ -36,19 +46,39 @@ Next:
 # war					# tested - seemed to work fine
   $ wget http://mirrors.jenkins.io/war-stable/latest/jenkins.war
   $ java -jar jenkins.war
-  $ http://localhost:8080	# follow instructions to finish install
+  $ http://localhost:8080		# follow instructions to finish install
+
+# Advance Jenkins installation: https://jenkins.io/doc/book/appendix/advanced-installation/
+# - experimentation, staging or production
+# - standalone or servlet in existing framework (Tomcat or Glassfish)
+
+# stand alone Debian
+wget -q -O - https://pkg.jenkins.io/debian/jenkins.io.key | sudo apt-key add -
+sudo sh -c 'echo deb http://pkg.jenkins.io/debian-stable binary/ > /etc/apt/sources.list.d/jenkins.list'
+sudo apt-get update
+sudo apt-get install jenkins
+
+# Post Installation (Setup Wizard)
+# - grab security token from log and use with "Setup Wizard" in Web UI
+# - token also for admin default password
+# - Setup wizard installs most common plugins
 
 # Files
 # -------
-# Jenkins Conig File
-/etc/sysconfig/jenkins
+# Jenkins Config File
+/etc/sysconfig/jenkins		# Jenkins config
+/var/lib/jenkins/config.xml	# Web UI config
+/etc/init.d/jenkins		# start up script
+/var/log/jenkins/jenkins.log	# log file
+/etc/default/jenkins		# launch config parameters
+/var/lib/jenkins/secrets/initialAdminPassword	# initial passsword location
 
 
 # Jenkins File (Jenkinsfile)
 # --------------------------
 pipeline {
-    agent any
-    agent { docker 'python:3.5.1' }
+    agent any    /* where and how to execute the Pipeline, or subset thereof */
+    /* agent { docker 'python:3.5.1' } *\
     environment {
         VAR = 'val'
     }
@@ -77,25 +107,29 @@ pipeline {
         }
     }
     post {
-        always {
-            archive 'build/libs/**/*.jar'
-            junit 'build/reports/**/*.xml'
-            mail to: 'team@example.com',
-                 subject: "VMedix Jenkins: Executed Pipeline: ${currentBuild.fullDisplayName}",
-                 body: "Ran: ${env.BUILD_URL}"
+        always {    /* this will always run */
+            archive 'build/libs/**/*.jar'  /* grab built artifacts for local analysis/investigation */
+            junit 'build/reports/**/*.xml' /* grab test results and let Jenkins track them */
         }
-        success {
+        success {    /* runs when successful */
             slackSend channel: '#ops-room',
                       color: 'good',
                       message: "The pipeline ${currentBuild.fullDisplayName} completed successfully."
+            mail to: 'pataraco@gmail.com',
+                 subject: "Jenkins: Executed Pipeline [SUCCESS]: ${currentBuild.fullDisplayName}",
+                 body: "Ran: ${env.BUILD_URL}\nStatus: Succeeded\n"
         }
-        unstable {
+        unstable {    /* runs when marked as unstable */
         }
-        failure {
-            hipchatSend message: "Attention @here ${env.JOB_NAME} #${env.BUILD_NUMBER} has failed.",
-                        color: 'RED'
+        failure {    /* runs if failed */
+            mail to: 'pataraco@gmail.com',
+                 subject: "Jenkins: Executed Pipeline [FAILED]: ${currentBuild.fullDisplayName}",
+                 body: "Ran: ${env.BUILD_URL}\nStatus: Failed\n"
+            hipchatSend room: 'DevOps Notifs'
+                message: "Attention: Pipeline run [FAILED] @here \nJob name: ${env.JOB_NAME} - Job #: ${env.BUILD_NUMBER} has failed.",
+                color: 'RED'
         }
-        changed {
+        changed {    /* runs if state of Pipeline has changed, e.g. previously failed, but now succeeded */
         }
     }
 }
