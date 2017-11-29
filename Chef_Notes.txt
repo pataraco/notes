@@ -87,6 +87,10 @@ Nodes
 - install chef-client
 
 - Chef-client
+
 - Ohai
 - bootstrap
    knife bootstrap 54.153.35.157 -x ec2-user --sudo
+- validation
+   - /etc/chef/validation.pem   # used by chef-validator for initial chef-client run/validation
+   - /etc/chef/client.pem       # private key obtained from initial chef-client run by chef-validator

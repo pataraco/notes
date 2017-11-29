@@ -324,3 +324,32 @@ Upgrading or restarting a Redis instance without downtime
 	Check out: https://redis.io/topics/admin (bottom)
 =====================================
 for p in $(grep ^port /etc/redis/*|awk '{print $NF}'); do echo "---- port: $p ----"; /nb/redis/bin/redis-cli -p $p info | grep stat; done
+
+========== tool (redis_monit.sh) [begin] ==========
+#!/bin/bash
+# get status of redis servers
+REDIS_CLI_CMD=/nb/redis/bin/redis-cli
+# get the list of ports configured
+ports=$(ls /etc/redis/*.conf | tr -d '[a-z/.]')
+for port in $ports; do
+   echo "---- port: $port ----"
+   if [ -e /etc/redis/$port.conf ]; then
+      $REDIS_CLI_CMD -p $port info | grep stat
+   else
+      echo "no config (/etc/redis/$port.conf)"
+   fi
+done
+========== tool (redis_monit.sh) [end] ==========
+
+# update the monitor hosts - "live"
+sentinel monitor mymaster 127.0.0.1 6379 2
+sentinel monitor redis2 10.204.21.219 6379 2
+sentinel failover redis1
+sentinel masters
+sentinel slaves redis1
+
+# manual failover
+# CLUSTER FAILOVER [FORCE|TAKEOVER]
+
+$ redis-cli -p 7002 debug segfault
+

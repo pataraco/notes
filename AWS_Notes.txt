@@ -51,7 +51,6 @@ COMMANDS
         $ aws iam upload-ssh-public-key --user-name praco --output json --ssh-public-key-body SSH_PUB_KEY
 	$ aws iam list-ssh-public-keys [--user-name praco]
  	$ aws iam get-ssh-public-key --ssh-public-key-id APKAJE6JPZ2K3KPTRYAQ --encoding SSH --user-name praco
-	$ aws iam upload-ssh-public-key --user-name praco --output json --ssh-public-key-body 'PUBLIC KEY'
 	$ aws elb create-load-balancer-listeners --load-balancer-name elb-virtumedix-vm4 --listeners "Protocol=TCP,LoadBalancerPort=443,InstanceProtocol=tcp,InstancePort=443"
 	$ aws sts assume-role --role-arn "arn:aws:iam::801178088653:role/ModifyMobileLocationStudioR53FromTeleComSys" --role-session-name "R53-Update" --output json
 		$ export AWS_ACCESS_KEY_ID=ASIAJLNZBIGWWYCJMCFA

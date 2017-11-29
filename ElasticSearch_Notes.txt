@@ -198,6 +198,47 @@ watch -d "curl -s -XGET 'http://localhost:9200/_cat/health?v'; echo "---"; curl 
 # Mapping
 	curl -XGET 'localhost:9200/library/_mapping'
 
+# Number of API queries
+   curl -XGET 'http://search1.us.vmedix.nim:9200/events*/_count?pretty=true&ignore_unavailable=true' -d '
+      {
+         "query": {
+            "filtered": {
+               "filter": {
+                  "range": {
+                     "created": {
+                        "lt": "now",
+                        "gte": "now-5m"
+                     }
+                  }
+               },
+               "query": {
+                  "query_string": {
+                     "query": "type:request"
+                  }
+               }
+            }
+         }
+      }'
+   curl -XGET 'http://search1.us.vmedix.nim:9200/events*/_count?pretty=true&ignore_unavailable=true' -d '{"query": {"filtered": {"filter": {"range": {"created": {"lt": "now", "gte": "now-5m"}}}, "query": {"query_string": {"query": "type:request"}}}}}'
+
+# Number of real-time websocket messages
+   curl -XGET 'http://search1.us.vmedix.nim:9200/events*/_count?pretty=true&ignore_unavailable=true' -d '{"query": {"filtered": {"filter": {"range": {"created": {"lt": "now", "gte": "now-5m"}}}, "query": {"query_string": {"query": "type:real_time"}}}}}'
+
+# Number of unauthorized API queries
+   curl -XGET 'http://search1.us.vmedix.nim:9200/events*/_count?pretty=true&ignore_unavailable=true' -d '{"query": {"filtered": {"filter": {"range": {"created": {"lt": "now", "gte": "now-5m"}}}, "query": {"query_string": {"query": "type=request AND code=403"}}}}}'
+
+# Number of successful logins
+   curl -XGET 'http://search1.us.vmedix.nim:9200/events*/_count?pretty=true&ignore_unavailable=true' -d '{"query": {"filtered": {"filter": {"range": {"created": {"lt": "now", "gte": "now-5m"}}}, "query": {"query_string": {"query": "type:request AND func:jwt_login AND code:200"}}}}}'
+
+# Number of rate-limiting errors
+   curl -XGET 'http://search1.us.vmedix.nim:9200/events*/_count?pretty=true&ignore_unavailable=true' -d '{"query": {"filtered": {"filter": {"range": {"created": {"lt": "now", "gte": "now-5m"}}}, "query": {"query_string": {"query": "type:request AND code:429"}}}}}'
+
+# Number of server-side exceptions
+   curl -XGET 'http://search1.us.vmedix.nim:9200/events*/_count?pretty=true&ignore_unavailable=true' -d '{"query": {"filtered": {"filter": {"range": {"created": {"lt": "now", "gte": "now-5m"}}}, "query": {"query_string": {"query": "code:500"}}}}}'
+
+# Number of API validation errors
+   curl -XGET 'http://search1.us.vmedix.nim:9200/events*/_count?pretty=true&ignore_unavailable=true' -d '{"query": {"filtered": {"filter": {"range": {"created": {"lt": "now", "gte": "now-5m"}}}, "query": {"query_string": {"query": "code:400"}}}}}'
+
 ### joining cluster issue - fix ###
 diff -u elasticsearch.yml.orig elasticsearch.yml
 --- elasticsearch.yml.orig      2017-07-07 17:50:13.729119001 +0000
