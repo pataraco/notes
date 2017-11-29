@@ -80,6 +80,7 @@ beeping the pc speaker
 /etc/auto.smb
 /etc/autofs_ldap_auth.conf
 /etc/bashrc		# system wide bashrc file
+/etc/centos-release	# version of O.S.
 /etc/cron.allow
 /etc/cron.daily/logrotate
 /etc/cron.daily/makewhatis.cron
@@ -96,6 +97,7 @@ beeping the pc speaker
 /etc/grub.conf -> /boot/grub/grub.conf
 	# timestamp of /etc/grub.conf shows install date
 /etc/gshadow		# shadowed group file
+/etc/image-id		# AWS AMI info
 /etc/init		# Upstart files
 /etc/init/*plymouth*	# startup/shutdown splash screen scripts
 /etc/inittab		# default run level
@@ -115,6 +117,7 @@ beeping the pc speaker
 /etc/nsswitch.conf	# order of resolving lookups
 /etc/ntp.conf		# NTP config file
 /etc/openldap/ldap.conf
+/etc/os-release		# info of O.S. release (Amazon Linux)
 /etc/pam.d/su		# controls who can su to root
 /etc/pam_ldap.conf
 /etc/passwd		# passwords file
@@ -124,7 +127,7 @@ beeping the pc speaker
 /etc/profile.d		# default profile scripts run by /etc/profile
 /etc/rc.d/rc.sysinit	# run by init during boot up
 /etc/rc?.d		# startup/shutdown scripts
-/etc/redhat-release	# version of o.s.
+/etc/redhat-release	# version of O.S.
 /etc/resolv.conf	# DNS resolution
 /etc/rsyslog.conf	# rsyslogd(8) configuration file
 /etc/samba/smb.conf	# samba config file
@@ -149,7 +152,7 @@ beeping the pc speaker
 /etc/sysconfig/nfs	# NFS config file
 /etc/sysconfig/selinux	# SELinux config file
 /etc/sysctl.conf	# sysctl config file (kernel parameters)
-/etc/system-release	# link to redhat-release
+/etc/system-release	# may be links to {redhat,centos}-release
 /etc/udev/rules.d	# custom - dynamic device management (see: /lib/udev)
 	# /etc/udev/rules.d/70-persistent-net.rules
 /etc/vsftpd/vsftpd.conf
@@ -184,6 +187,8 @@ beeping the pc speaker
 /var/lib/nfs/etab		# master table of exports - exports tab
 /var/lib/nfs/rmtab		# table of clients accessing server's exports
 /var/log/audit/audit.log	# SELinux log file
+/var/log/boot.log		# boot messages
+/var/log/cloud-init*.log	# AWS logs
 /var/log/dmesg			# boot messages (also: `dmesg`)
 /var/log/messages		# see /etc/rsyslog.conf
 /var/log/secure			# see /etc/rsyslog.conf, login info
@@ -198,6 +203,8 @@ beeping the pc speaker
 /etc/init.d/lpd					# printer daemon/service
 /etc/init.d/network [start|stop|restart]	# networking/NIC daemon/service
 /etc/init.d/nfs					# NFS daemon/service
+/etc/init.d/ntpd				# Network Time Protocol (NTP) daemon
+/etc/init.d/smb					# Samba daemon
 
 ############################## -|   Commands    |- #############################
 
@@ -217,6 +224,8 @@ apt-cache	- query the APT cache
 	# apt-cache show PACKAGE
 arch		- print machine hardware name (same as uname -m)
 arp		- manipulate the system ARP cache
+	# arp -a
+	# arp inet_addr (192.168.X.Y)
 at		- (at, batch, atq, atrm) queue, examine, del jobs for execution
 	# at -cm now + $SAVEOLD days <<EOF
 	# if [ "$srcsrv" != "$DSTSRV" ]
@@ -249,6 +258,9 @@ aws
 	# aws s3 sync --profile ptu s3://firefall-stabilization-build-1310-publictest/ /data/1310-download/
 badblocks	- search a device for bad blocks
 	# badblocks -c 10240 -s -w -t random -v /dev/sda1
+base64		- base64 encode/decode data and print to standard output
+	# base64 /dev/urandom|head -c 128; echo
+	# base64 /dev/urandom|tr -dc A-Za-z0-9|head -c 29; echo
 bc		- An arbitrary precision calculator language
 	# echo "$GL_Debit - $GL_Credit + $GL_Xfr_to_AR" | bc -q
 	# echo "$GL_Debit > $GL_Credit" | bc -q
@@ -269,11 +281,13 @@ chkconfig	- updates and queries runlevel information for system services
 	# chkconfig --list [SERVICE]
 	# chkconfig SERVICE on
 	# chkconfig --level N SERVICE on|off
+chmod		- change file mode bits
 chroot		- run command or interactive shell with special root directory
 compress	- compress data
 column		- columnate lists
 cksum		- checksum and count the bytes in a file
 createrepo	- create repomd (xml-rpm-metadata) repository
+crontab		-  maintain crontab files for individual users
 cryptsetup	- setup cryptographic volumes for dm-crypt (also LUKS extension)
 	# cryptsetup luksFormat /dev/sda1
 	# cryptsetup luksUUID /dev/sda1 [> sda1uuid]
@@ -335,7 +349,6 @@ ethtool		- Display or change ethernet card settings
 exec		- shell builtin - execute a command
 expand		- expand tabs to spaces
 exportfs	- maintain table of exported NFS file systems
-faillog -> /sbin/pam_tally2
 fdisk		- Partition table manipulator for Linux
 figlet		- display large characters made up of ordinary screen characters (banner)
 file		- determine file type
@@ -362,6 +375,7 @@ getopts		- bash built-in; parse positional parameters
 	# while getopts ":ab:c" opt; do
 	# case $opt in
 getsebool	- get SELinux boolean value(s) (semanage boolean -l)
+git		- the stupid content tracker
 gpg2		- OpenPGP encryption and signing tool
 grep		- grep, egrep, fgrep - print lines matching a pattern
 	# grep "-q" = no - "-q" option not portable
@@ -434,7 +448,7 @@ iptables	- administration tool for IPv4 packet filtering and NAT
 iptables-save	- dump iptables rules to stdout
 isosize		- outputs the length of an iso9660 file system
 	# isosize /dev/scd0
-jq - Command-line JSON processor
+jq		- Command-line JSON processor
 	$ <JSON_OUTPUT> | jq -r '.HostedZones[] | select(.Name=="VALUE").Id'
         $ <JSON_OUTPUT> | jq -r '.HostedZones[] | .Name + " " + .Id'
 kill		- terminate a process
@@ -700,6 +714,7 @@ sftp		- secure file transfer program
 sg		- execute command as different group ID
 shasum		- Print or Check SHA Checksums
 sha1sum		- compute and check SHA1 message digest
+sha512sum	- compute and check SHA512 message digest
 shopt (built-in)- Toggle values of variables controlling optional shell behavior
 showmount	- show mount information for an NFS server
 shuf		- generate random permutations
@@ -713,9 +728,10 @@ ss		- another utility to investigate sockets
 	# ss -lnp	# show listen only, with port numbers and the pid/program
 	# ss -ap	# show all and the pid/program
 ssh		- OpenSSH SSH client (remote login program)
+ssh-add [-l]	- adds private key identities to the authentication agent
 ssh-copy-id	- use locally available keys to authorise logins on a remote machine
 	# ssh-copy-id [$USER@]$HOSTNAME
-ssh-keygen - authentication key generation, management and conversion
+ssh-keygen	- authentication key generation, management and conversion
 	# ssh-keygen -t rsa -b 4096 -C "$(whoami)@$(hostname)-$(date -I)"
 	# ssh-keygen -t rsa			# create RSA key pair
 	# ssh-keygen -q -f /tmp/ssh-key
@@ -723,14 +739,15 @@ ssh-keygen - authentication key generation, management and conversion
 	# ssh-keygen -lf Red5DevTest.pub	# get the fingerprint from a public key
 ssh-keyscan - gather ssh public keys
 	# ssh-keyscan 10.72.216.2 >> ~/.ssh/known_hosts	(/usr/bin/)
-star - unique standard tape archiver
-stat - display file or file system status
+star		- unique standard tape archiver
+stat		- display file or file system status
 	# stat -c %y $FILE
-stress - tool to impose load on and stress test systems
+stress		- tool to impose load on and stress test systems
 	# stress --cpu 2 --timeout 60
-stinint - initialize SCSI magnetic tape drives
-strings - print the strings of printable characters in files.
-strace - trace system calls and signals
+stinint		- initialize SCSI magnetic tape drives
+strings		- print the strings of printable characters in files.
+strace		- trace system calls and signals
+stty		- change and print terminal line settings
 su - run a shell with substitute user and group IDs
 	# su "user" <<ENDOFSU
 	#>	ls
@@ -857,8 +874,9 @@ whoami		- print effective userid
 xargs		- build and execute command lines from standard input
 	# xargs -n1 [-t] [-p]
 	# grep LOGFILE nohup.out | tail -n1 |cut -d= -f2 | xargs tail -f
-xhost - server access control program for X
+xhost		- server access control program for X
 	# xhost -
+xwininfo	- window information utility for X
 yum		- Yellowdog Updater Modified
 	# yum [-y] [-q] install hp-health hpacucli
 	# yum groupinstall "NFS file server"
@@ -913,15 +931,6 @@ YAML	# YAML Ain't Markup Language (Yet Another Markup Language)
 ############################## -| Need to Learn |- #############################
 
 TODO - Need to learn this stuff
- # df -h /maint
- # fuser -vm /maint
- # umount /maint
- # e2fsck -f /dev/vgNN/lvolN
- # lvextend -L +1.5G /dev/vgNN/lvolN
- # resize2fs /dev/vgNN/lvolN
- # mount /maint
- # df -h /maint
- # vgdisplay /dev/vgNN|grep Free
  - SELinux - https://fedoraproject.org/wiki/SELinux
  - kickstart files
  - authconfig - system authentication resources
@@ -990,7 +999,7 @@ fdisk -> pvcreate -> vgcreate|vgextend -> lvcreate|lvextend -> mkfs
   $ vi /etc/fstab
   $ mkfs /dev/mapper/vg01-data
   $ mount /data
-# reduce a size of a LV/Filesystem
+# reduce size of a LV/Filesystem
   # /etc/fstab
   #/dev/mapper/vg0-usr	/usr	ext4	defaults	1 2
   $ umount /usr		# commented out /usr from /etc/fstab and `reboot` then `init 1`
@@ -999,6 +1008,16 @@ fdisk -> pvcreate -> vgcreate|vgextend -> lvcreate|lvextend -> mkfs
   $ lvreduce -L 100G /dev/mapper/vg0-usr
   $ e2fsck -f /dev/mapper/vg0-usr
   $ mount /usr		# or replace original /etc/fstab file and reboot
+# increase size of a LV/Filesystem
+  # vgdisplay /dev/vgNN|grep Free
+  # df -h /maint
+  # fuser -vm /maint
+  # umount /maint
+  # e2fsck -f /dev/vgNN/lvolN
+  # lvextend -L +1.5G /dev/vgNN/lvolN
+  # resize2fs /dev/vgNN/lvolN
+  # mount /maint
+  # df -h /maint
 # create a snapshot volume
   $ lvcreate -s -L 10M -n var_snapshot /dev/mapper/vg0-var
   $ lvcreate --snapshot --size 100M --name usr_snapshot /dev/mapper/vg0-usr
