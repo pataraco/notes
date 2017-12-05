@@ -86,9 +86,10 @@ beeping the pc speaker
 /etc/cron.daily/makewhatis.cron
 /etc/cron.daily/mlocate.cron
 /etc/cron.deny
-/etc/crypttab		# LUKS 
+/etc/crypttab		# LUKS - encrypted block device table 
 	# shared /dev/mapper/LUKSFSNAME none
 /etc/default/grub	# ubuntu - configures /boot/grub/grub.cfg - run update-grub
+/etc/default/useradd	# default useradd settings
 /etc/environment	# environment settings for all
 /etc/exports		# NFS server export table - exported (shared) filesystems
 /etc/fstab		# static information about the filesystems - filesystems to mount
@@ -102,8 +103,8 @@ beeping the pc speaker
 /etc/init/*plymouth*	# startup/shutdown splash screen scripts
 /etc/inittab		# default run level
 /etc/issue		# pre-login message and identification file
-/etc/hosts.allow	# TCP wrapping
-/etc/hosts.deny		# TCP wrapping
+/etc/hosts.allow	# hosts_access(5) - TCP wrapping
+/etc/hosts.deny		# hosts_access(5) - TCP wrapping
 /etc/httpd/conf/httpd.conf	# Apache config file
 /etc/ldap.conf		# LDAP config
 /etc/logrotate.conf	# log rotation configuration
@@ -138,17 +139,17 @@ beeping the pc speaker
 /etc/security/access.conf	# the login access control table file
 /etc/selinux/targeted/setrans.conf
 /etc/selinux/targeted/contexts/files/file_contexts
-/etc/services
+/etc/services		# Internet network services list
 /etc/shadow		# encrypted passwd file
-/etc/skel
+/etc/skel		# default files for user creation
 /etc/ssh/sshd_config	# sshd config file
 /etc/sudoers		# users that can sudo
 /etc/sysconfig/autofs	# default options for autofs
 /etc/sysconfig/clock	# timezone
 /etc/sysconfig/init	# features of the Upstart process
 /etc/sysconfig/iptables	# firewall rules
-/etc/sysconfig/network-scripts/ifcfg-eth0
-/etc/sysconfig/network	# networking config file
+/etc/sysconfig/network-scripts/ifcfg-eth0		# IP address setting(s)
+/etc/sysconfig/network	# networking config file	# hostname setting
 /etc/sysconfig/nfs	# NFS config file
 /etc/sysconfig/selinux	# SELinux config file
 /etc/sysctl.conf	# sysctl config file (kernel parameters)
@@ -199,12 +200,24 @@ beeping the pc speaker
 
 /etc/init.d/autofs				# automounter daemon/service
 /etc/init.d/crond [start|stop|restart]		# cron daemon/service
+/etc/init.d/docker				# Docker daemon
+/etc/init.d/elasticsearch			# ElasticSearch daemon
+/etc/init.d/filebeat				# FileBeat daemon
+/etc/init.d/httpd				# Apache daemon
+/etc/init.d/iptables				# IP packet filtering and NAT
 /etc/init.d/libvirtd				# KVM daemon
 /etc/init.d/lpd					# printer daemon/service
+/etc/init.d/monit				# services monitoring utility
+/etc/init.d/named				# DNS server
 /etc/init.d/network [start|stop|restart]	# networking/NIC daemon/service
+/etc/init.d/nginx				# HTTP and reverse/mail proxy server
 /etc/init.d/nfs					# NFS daemon/service
 /etc/init.d/ntpd				# Network Time Protocol (NTP) daemon
 /etc/init.d/smb					# Samba daemon
+/etc/init.d/sshd				# OpenSSH SSH daemon
+/etc/init.d/svscan				# services monitoring utility
+/etc/init.d/syslog-ng				# system logger daemon
+
 
 ############################## -|   Commands    |- #############################
 
@@ -470,6 +483,7 @@ logger		- a shell command interface to the syslog(3) system log module
 ls		- list directory contents
 lsattr (chattr)	- list file attributes on a Linux second extended file system
 lsblk		- list block devices
+lsinitrd	- tool to show the contents of an initramfs image
 lsmod		- program to show the status of modules in the Linux Kernel
 lsof		- list open files
 	# lsof -i -P -n
