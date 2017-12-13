@@ -10,11 +10,14 @@ http://www.pathname.com/fhs		# FHS
 https://fedoraproject.org/wiki/SELinux
 
 ############################## -|  Tips/Tricks  |- #############################
+
 ubuntu - turn off/on gnome destktop manager
 	[sudo] update-rc.d -f gdm|lightdm remove
 	[sudo] update-rc.d -f gdm|lightdm defaults
 	startx	# start it if disabled
+
 ############################## -|   Misc Info   |- #############################
+
 MAGNETIC TAPE DRIVE OPERATION
   mt "status" bits
 	BOT	- Tape positioned at beginning of first file (Begin of Tape)
@@ -60,105 +63,107 @@ stty -a
 beeping the pc speaker
 	# echo -ne "\a" > /dev/console	# as root
 	# echo -ne "\a" > /dev/tty5	# any unused TTY
+
 ############################## -|    Files      |- #############################
-~root/anaconda-ks.cfg	# Kickstart file
-/boot/config-`uname -r`	# kernel configuration file
-/boot/grub/grub.conf	# timestamp of /etc/grub.conf shows install date
+
+~root/anaconda-ks.cfg		# Kickstart file
+/boot/config-`uname -r`		# kernel configuration file
+/boot/grub/grub.conf		# timestamp of /etc/grub.conf shows install date
 /boot/grub/grub.cfg
 /etc/grub.d
-/boot/initramfs*	# Initial RAM disk
-/dev/cdrom -> /dev/hda	# soft link to optical drive
-/dev/disk		# directories of installed disks
-/dev/dm-?		# drive block files
+/boot/initramfs*		# Initial RAM disk
+/dev/cdrom -> /dev/hda		# soft link to optical drive
+/dev/disk			# directories of installed disks
+/dev/dm-?			# drive block files
 /dev/mapper/vg00-usr -> ../dm-6
-/dev/scd0 -> /dev/sr0	# soft link to optical drive
-/dev/shm		# tmpfs - shared memory - uses virtual memory
+/dev/scd0 -> /dev/sr0		# soft link to optical drive
+/dev/shm			# tmpfs - shared memory - uses virtual memory
 	# mount -o remount,size=8G /dev/shm
-/etc/apt/sources.list	# apt-get repositories
-/etc/auto.master	# master Map for automounter
+/etc/apt/sources.list		# apt-get repositories
+/etc/auto.master		# master Map for automounter
 /etc/auto.misc
 /etc/auto.smb
 /etc/autofs_ldap_auth.conf
-/etc/bashrc		# system wide bashrc file
-/etc/centos-release	# version of O.S.
+/etc/bashrc			# system wide bashrc file
+/etc/centos-release		# version of O.S.
 /etc/cron.allow
 /etc/cron.daily/logrotate
 /etc/cron.daily/makewhatis.cron
 /etc/cron.daily/mlocate.cron
 /etc/cron.deny
-/etc/crypttab		# LUKS 
+/etc/crypttab			# LUKS - encrypted block device table 
 	# shared /dev/mapper/LUKSFSNAME none
-/etc/default/grub	# ubuntu - configures /boot/grub/grub.cfg - run update-grub
-/etc/environment	# environment settings for all
-/etc/exports		# NFS server export table - exported (shared) filesystems
-/etc/fstab		# static information about the filesystems - filesystems to mount
+/etc/default/grub		# ubuntu - configures /boot/grub/grub.cfg - run update-grub
+/etc/default/useradd		# default useradd settings
+/etc/environment		# environment settings for all
+/etc/exports			# NFS server export table - exported (shared) filesystems
+/etc/fstab			# static information about the filesystems - filesystems to mount
 	LABEL=elasticsearch    /mnt/elasticsearch      ext4   defaults       0       0
-/etc/group		# user group file
-/etc/grub.conf -> /boot/grub/grub.conf
-	# timestamp of /etc/grub.conf shows install date
-/etc/gshadow		# shadowed group file
-/etc/image-id		# AWS AMI info
-/etc/init		# Upstart files
-/etc/init/*plymouth*	# startup/shutdown splash screen scripts
-/etc/inittab		# default run level
-/etc/issue		# pre-login message and identification file
-/etc/hosts.allow	# TCP wrapping
-/etc/hosts.deny		# TCP wrapping
+/etc/group			# user group file
+/etc/grub.conf -> /boot/grub/grub.conf	# timestamp of /etc/grub.conf shows install date
+/etc/gshadow			# shadowed group file
+/etc/image-id			# AWS AMI info
+/etc/init			# Upstart files
+/etc/init/*plymouth*		# startup/shutdown splash screen scripts
+/etc/inittab			# default run level
+/etc/issue			# pre-login message and identification file
+/etc/hosts.allow		# hosts_access(5) - TCP wrapping
+/etc/hosts.deny			# hosts_access(5) - TCP wrapping
 /etc/httpd/conf/httpd.conf	# Apache config file
-/etc/ldap.conf		# LDAP config
-/etc/logrotate.conf	# log rotation configuration
-/etc/login.defs		# shadow password suite configuration
-/etc/lvm/archive/	# directory containing lvm scripts
+/etc/ldap.conf			# LDAP config
+/etc/logrotate.conf		# log rotation configuration
+/etc/login.defs			# shadow password suite configuration
+/etc/lvm/archive/		# directory containing lvm scripts
 	# /etc/lvm/archive/vg01_00047-1534171304.vg
-/etc/lvm/backup/vg01	# vg script
-/etc/lvm/lvm.conf	# configuration file for LVM2
-/etc/mtab		# how filesystems are actually mounted
+/etc/lvm/backup/vg01		# vg script
+/etc/lvm/lvm.conf		# configuration file for LVM2
+/etc/mtab			# how filesystems are actually mounted
 /etc/network/interfaces
-/etc/nsswitch.conf	# order of resolving lookups
-/etc/ntp.conf		# NTP config file
+/etc/nsswitch.conf		# order of resolving lookups
+/etc/ntp.conf			# NTP config file
 /etc/openldap/ldap.conf
-/etc/os-release		# info of O.S. release (Amazon Linux)
-/etc/pam.d/su		# controls who can su to root
+/etc/os-release			# info of O.S. release (Amazon Linux)
+/etc/pam.d/su			# controls who can su to root
 /etc/pam_ldap.conf
-/etc/passwd		# passwords file
-/etc/pki/rpm-gpg	# RPM package verification GPG keys
-/etc/printcap		# printer config file
-/etc/profile		# system wide profile file
-/etc/profile.d		# default profile scripts run by /etc/profile
-/etc/rc.d/rc.sysinit	# run by init during boot up
-/etc/rc?.d		# startup/shutdown scripts
-/etc/redhat-release	# version of O.S.
-/etc/resolv.conf	# DNS resolution
-/etc/rsyslog.conf	# rsyslogd(8) configuration file
-/etc/samba/smb.conf	# samba config file
+/etc/passwd			# passwords file
+/etc/pki/rpm-gpg		# RPM package verification GPG keys
+/etc/printcap			# printer config file
+/etc/profile			# system wide profile file
+/etc/profile.d			# default profile scripts run by /etc/profile
+/etc/rc.d/rc.sysinit		# run by init during boot up
+/etc/rc?.d			# startup/shutdown scripts
+/etc/redhat-release		# version of O.S.
+/etc/resolv.conf		# DNS resolution
+/etc/rsyslog.conf		# rsyslogd(8) configuration file
+/etc/samba/smb.conf		# samba config file
 /etc/samba/smb.creds2
-/etc/samba/lmhosts	# samba hosts
-/etc/samba/smbusers	# samba users
-/etc/securetty		# tty's/consoles root allowed to log in to
+/etc/samba/lmhosts		# samba hosts
+/etc/samba/smbusers		# samba users
+/etc/securetty			# tty's/consoles root allowed to log in to
 /etc/security/access.conf	# the login access control table file
 /etc/selinux/targeted/setrans.conf
 /etc/selinux/targeted/contexts/files/file_contexts
-/etc/services
-/etc/shadow		# encrypted passwd file
-/etc/skel
-/etc/ssh/sshd_config	# sshd config file
-/etc/sudoers		# users that can sudo
-/etc/sysconfig/autofs	# default options for autofs
-/etc/sysconfig/clock	# timezone
-/etc/sysconfig/init	# features of the Upstart process
-/etc/sysconfig/iptables	# firewall rules
-/etc/sysconfig/network-scripts/ifcfg-eth0
-/etc/sysconfig/network	# networking config file
-/etc/sysconfig/nfs	# NFS config file
-/etc/sysconfig/selinux	# SELinux config file
-/etc/sysctl.conf	# sysctl config file (kernel parameters)
-/etc/system-release	# may be links to {redhat,centos}-release
-/etc/udev/rules.d	# custom - dynamic device management (see: /lib/udev)
+/etc/services			# Internet network services list
+/etc/shadow			# encrypted passwd file
+/etc/skel			# default files for user creation
+/etc/ssh/sshd_config		# sshd config file
+/etc/sudoers			# users that can sudo
+/etc/sysconfig/autofs		# default options for autofs
+/etc/sysconfig/clock		# timezone
+/etc/sysconfig/init		# features of the Upstart process
+/etc/sysconfig/iptables		# firewall rules
+/etc/sysconfig/network-scripts/ifcfg-eth0		# IP address setting(s)
+/etc/sysconfig/network		# networking config file	# hostname setting
+/etc/sysconfig/nfs		# NFS config file
+/etc/sysconfig/selinux		# SELinux config file
+/etc/sysctl.conf		# sysctl config file (kernel parameters)
+/etc/system-release		# may be links to {redhat,centos}-release
+/etc/udev/rules.d		# custom - dynamic device management (see: /lib/udev)
 	# /etc/udev/rules.d/70-persistent-net.rules
 /etc/vsftpd/vsftpd.conf
-/etc/yum.conf		# basic yum config file
-/etc/yum.repos.d	# yum repositories
-/lib/udev/rules.d	# defaults - dynamic device management (see: /etc/udev)
+/etc/yum.conf			# basic yum config file
+/etc/yum.repos.d		# yum repositories
+/lib/udev/rules.d		# defaults - dynamic device management (see: /etc/udev)
 /media/[iso]/repodata
 /proc/cpuinfo
 	flags
@@ -199,12 +204,24 @@ beeping the pc speaker
 
 /etc/init.d/autofs				# automounter daemon/service
 /etc/init.d/crond [start|stop|restart]		# cron daemon/service
+/etc/init.d/docker				# Docker daemon
+/etc/init.d/elasticsearch			# ElasticSearch daemon
+/etc/init.d/filebeat				# FileBeat daemon
+/etc/init.d/httpd				# Apache daemon
+/etc/init.d/iptables				# IP packet filtering and NAT
 /etc/init.d/libvirtd				# KVM daemon
 /etc/init.d/lpd					# printer daemon/service
+/etc/init.d/monit				# services monitoring utility
+/etc/init.d/named				# DNS server
 /etc/init.d/network [start|stop|restart]	# networking/NIC daemon/service
+/etc/init.d/nginx				# HTTP and reverse/mail proxy server
 /etc/init.d/nfs					# NFS daemon/service
 /etc/init.d/ntpd				# Network Time Protocol (NTP) daemon
 /etc/init.d/smb					# Samba daemon
+/etc/init.d/sshd				# OpenSSH SSH daemon
+/etc/init.d/svscan				# services monitoring utility
+/etc/init.d/syslog-ng				# system logger daemon
+
 
 ############################## -|   Commands    |- #############################
 
@@ -266,6 +283,7 @@ bc		- An arbitrary precision calculator language
 	# echo "$GL_Debit > $GL_Credit" | bc -q
 	# dec=.1;ul=15;ll=10; while ((`echo "$ul >= $ll"|bc`));do echo "ul=$ul"; ul=`echo "$ul - $dec" |bc`; done
 bind		- bash built-in - set up macros/keyboard shortcuts
+		- (or just use `vi` command-line editing)
 	# bind Space:magic-space
 blkid		- command-line utility to locate/print block device attributes
 bzcat		- decompresses files to stdout
@@ -470,6 +488,7 @@ logger		- a shell command interface to the syslog(3) system log module
 ls		- list directory contents
 lsattr (chattr)	- list file attributes on a Linux second extended file system
 lsblk		- list block devices
+lsinitrd	- tool to show the contents of an initramfs image
 lsmod		- program to show the status of modules in the Linux Kernel
 lsof		- list open files
 	# lsof -i -P -n
@@ -900,7 +919,9 @@ yum-config-manager - manage yum configuration options and yum repositories
 zcat		- expand data (identical to `uncompress -c`)
 zip		- package and compress (archive) files
 	# zip -ru "zipfile" "files"	# update and recursive
+
 ############################## -|   Glossary    |- #############################
+
 AJAJ	# Asynchronous JavaScript and JSON
 AJAX	# Asynchronous JavaScript and XML
 APT	# Advanced Package Tool
@@ -928,6 +949,7 @@ VRRP	# Virtual Router Redundancy Protocol
 XML	# Extensible Markup Language
 XMPP	# Extensible Messaging and Presence Protocol
 YAML	# YAML Ain't Markup Language (Yet Another Markup Language)
+
 ############################## -| Need to Learn |- #############################
 
 TODO - Need to learn this stuff
@@ -942,14 +964,18 @@ TODO - Need to learn this stuff
  ----
 /tech/ProlLiant/BIOS ML350G5/SmartArray-E200-v1.84-CP011557.scexe
 SSHFS: http://www.cyberciti.biz/faq/how-to-mount-remote-directory-filesystems-with-sshfs-on-linux/
+
 ############################## -| Stuff to Try  |- #############################
+
 cat <<'EOF' - test.html | /usr/sbin/sendmail -t
 To: to@address
 Subject: hello
 Content-Type: text/html
 
 EOF
+
 ############################## -|  Networking   |- #############################
+
 netstat				/etc/sysconfig/network-scripts/ifcfg-eth0
 ifconfig			/etc/sysconfig/network
 ss				/etc/networks
@@ -972,6 +998,7 @@ ubuntu
 ############################## -|  Performance  |- #############################
 
 ############################## -| File Sharing  |- #############################
+
 smbclient			/etc/samba/smb.conf	smb
 showmount, portreserve		/etc/samba/smbusers	nfsd
 showmount -e SERVER
@@ -981,7 +1008,9 @@ exportfs, nfsiostat, nfsstat	/etc/exports		rpc.statd, rpc.mountd, rpc.svcgssd
 mount.nfs, mount.nfs4		/var/lib/nfs/etab	# master table of exports - exports tab
 mount -t nfs SERVER:/PATH MOUNT_POINT 
 umount.nfs, umount.nfs4		/var/lib/nfs/rmtab	# table of clients accessing server's exports
+
 ############################## -| File Systems  |- #############################
+
 fdisk, sfdisk, cfdisk, parted, partprobe, kpartx	/etc/fstab		
 mkfs, mkfs.ext[2|3|4], mke2fs, mkswap, mkdosfs
 fsck, fsck.ext[2|3|4], e2fsck
@@ -1021,14 +1050,19 @@ fdisk -> pvcreate -> vgcreate|vgextend -> lvcreate|lvextend -> mkfs
 # create a snapshot volume
   $ lvcreate -s -L 10M -n var_snapshot /dev/mapper/vg0-var
   $ lvcreate --snapshot --size 100M --name usr_snapshot /dev/mapper/vg0-usr
+
 ############################## -|  Automounter  |- #############################
+
 /etc/init.d/autofs		/etc/sysconfig/autofs, /misc, /net		automount
 showmount			/etc/auto.master, /etc/auto.misc, /etc/auto.net
 ports: 892,982,32803,32903	/etc/auto.smb
+
 ############################## -| Directory Srv |- #############################
+
 authconfig			/etc/pam_ldap.conf
 system-config-authentication	/etc/ldap.conf
 				/etc/openldap/ldap.conf
+
 ############################## -|  Email Admin  |- #############################
 
 ############################## -|  Apache Admin |- #############################
@@ -1036,30 +1070,37 @@ system-config-authentication	/etc/ldap.conf
 (in httpd.conf) DocumentRoot "/var/www/html"	# location of the root dir served
 
 ############################## -| Device Admin  |- #############################
+
 udev				/dev/input/mice
 				/dev/disk [by-id|by-path|by-uuid]
 				/dev/cciss
 				/lib/udev/rules.d, /etc/udev/rules.d
+
 ############################## -| Boot Process  |- #############################
+
 POST -> BIOS/UEFI -> BOOTLOADER (GRUB) -> KERNEL -> SERVICES
 grub> find | root | cat | kernel | boot
 /etc/init/rc.conf -> /etc/rc -> /etc/rc.d/rc -> /etc/rc?.d/S* -> /etc/init.d/*
+
 ############################## -|  FTP    Admin |- #############################
+
 /etc/vsftpd/vsftpd.conf
 anony user uses ftp user - # home directory - root directory
 
 ############################## -| Security Admn |- #############################
+
 getenforce, setenforce		/etc/selinux, /etc/sysconfig/selinux
 semanage, sestatus		/selinux, /var/log/audit/audit.log
 secon, chcon, restorecon
 sealert, ausearch		# logs info
 getsebool, setsebool, togglesebool	/selinux/booleans
 ls -Z, ps -Z, id -Z
+
 ############################## -| Services Admn |- #############################
 
 
 ############################## -| Package Mgmnt |- #############################
-	/etc/grub.conf -> /boot/grub/grub.conf
+
 added packages:
  bind-utils
  cryptsetup-luks
@@ -1092,7 +1133,9 @@ added packages:
  unzip
  vim-common
  vinagre
+
 ############################## -|  User Admin   |- #############################
+
 w, who, whoami, id			/etc/passwd, /etc/group
 vipw, vigr, visudo, passwd, gpasswd	/etc/shadow, /etc/gshadow
 useradd, groupadd, userdel, groupdel	/etc/login.defs, /etc/skel, /etc/shells
@@ -1103,7 +1146,9 @@ chfn, chsh, chage			/etc/sudoers, /etc/securetty
 umask					.bashrc, .bash_logout, .bash_profile
 motd					/etc/bashrc, /etc/profile, /etc/profile.d
 					/etc/nologin.txt, /etc/motd
+
 ############################## -|  Applications |- #############################
+
 Awesomium
 FogBugz
 Mercurial
@@ -1118,5 +1163,7 @@ Lua
 Stripe
 Ruby, RubyGems, gem
 VirtualBox
+
 ############################## -|   Hardware  |- #############################
+
 AMD SeaMicro SM15000
