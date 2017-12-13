@@ -1,0 +1,74 @@
+CodeCommit Access Notes
+-----------------------
+
+QUESTIONS:
+---------------
+	
+STEPS:
+---------------
+	
+- create CodeCommit repo		(e.g. repo_tcs_adev)
+   # does it already exist?
+	$ aws codecommit get-repository --repository-name repo_tcs_adev
+	$ aws codecommit list-repositories --region us-east-1 | grep REPO_NAME
+   # if not, create it
+	$ aws codecommit create-repository --repository-name REPO_NAME --repository-description "REPO DESCRIPTION"
+	arn:aws:codecommit:us-west-2:033362729015:repo_pdev_infostretch
+- create IAM group			(e.g. CodeCommit_repo_tcs_adev)
+   # does it already exist?
+	$ aws iam get-group --group-name CodeCommit_repo_tcs_adev | jq .Group
+	$ aws iam list-groups | grep GROUP_NAME
+   # if not, create it
+	$ aws iam create-group --group-name GROUP_NAME
+	arn:aws:iam::033362729015:group/CodeCommit_repo_tcs_adev
+- create IAM policy			(e.g. CodeCommit_repo_tcs_adev)
+   # does it already exist?
+	$ aws iam list-policies | grep POLICY_NAME
+   # if not, create it
+	$ aws iam create-policy --policy-name POLICY_NAME --policy-document file://FILE_NAME.json
+	arn:aws:iam::033362729015:policy/CodeCommit_repo_tcs_adev
+- attach policy to group
+   # is policy already attached? (list attached policies)
+	$ aws iam list-attached-group-policies --group-name GROUP_NAME
+   # is policy already attached? (list inline policies)
+	$ aws iam list-group-policies --group-name GROUP_NAME
+   # if not, attach the policy to the group
+	$ aws iam attach-group-policy --group-name GROUP_NAME --policy-arn POLICY-ARN
+- create user
+   # does user already exist?
+	$ aws iam list-users | grep USER_NAME
+   # if not, create user
+	$ aws iam create-user --user-name USER_NAME
+- create AWS keys for user
+   # does user already have AWS keys?
+	$ aws iam list-access-keys --user-name USER_NAME
+   # if not, create them
+	$ aws iam create-access-key --user-name USER_NAME
+- add user to group
+   # is user already in the group?
+	$ aws iam list-groups-for-user --user-name USER_NAME		# list all groups user is in
+	$ aws iam get-group --group-name GROUP_NAME | grep UserName	# get all users
+	$ aws iam get-group --group-name GROUP_NAME | grep USER_NAME	# search for specific user
+   # if not, add them to the group
+	$ aws iam add-user-to-group --group-name GROUP_NAME --user-name USER_NAME
+- upload public ssh key (if applicable)
+- email user(s)
+
+script to perform:
+(needs some minor mods)
+	~/cloud_automation/tools/aws_cloud/iam/repotools.py
+
+POLICY EXAMPLE:
+---------------
+Name: CodeCommitAccessToRepo-repo_tcs_adev
+{
+	"Version": "2012-10-17",
+	"Statement": [
+		{
+			"Sid": "CodeCommitAccessToRepo",
+			"Effect": "Allow",
+			"NotAction": "codecommit:DeleteRepository",
+			"Resource": "arn:aws:codecommit:us-east-1:033362729015:repo_tcs_adev"
+		}
+	]
+}

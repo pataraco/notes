@@ -1,0 +1,246 @@
+CertBOT
+-------
+
+install
+-------
+$ wget https://dl.eff.org/certbot-auto
+$ chmod +x certbot-auto
+$ sudo mv certbot-auto /usr/local/bin/certbot-auto
+
+
+# run interactively (no options)
+/usr/local/bin/certbot-auto
+
+root@vmedix-app_nginx2 ~ # certbot-auto
+FATAL: Amazon Linux support is very experimental at present...
+if you would like to work on improving it, please ensure you have backups
+and then run this script again with the --debug flag!
+Alternatively, you can install OS dependencies yourself and run this script
+again with --no-bootstrap.
+
+dependancies
+------------
+gcc				# available
+augeas-libs			# available
+openssl				# installed
+openssl-devel			# installed
+libffi-devel			# installed
+redhat-rpm-config
+ca-certificates			# installed
+
+python27			# installed
+python27-devel			# installed
+python27-virtualenv		# installed
+python27-tools			# available
+python27-pip			# installed
+
+mod_ssl	# (if httpd?)	# available
+
+files
+-----
+/etc/letsencrypt/live/consult.firecrackerhealth.com
+ln -s /etc/letsencrypt/live/consult.firecrackerhealth.com/fullchain.pem /etc/ngninx/ssl/consult.firecrackerhealth.com.crt
+ln -s /etc/letsencrypt/live/consult.firecrackerhealth.com/privkey.pem /etc/ngninx/ssl/consult.firecrackerhealth.com.key
+
+installed
+---------
+$ yum install gcc		# installs gcc & gcc48
+$ yum install augeas-libs	# 
+$ yum install python27-tools	# 
+$ certbot-auto --no-bootstrap
+
+steps
+-----
+
+$ wget https://dl.eff.org/certbot-auto
+$ chmod +x certbot-auto
+$ sudo mv certbot-auto /usr/local/bin/certbot-auto
+$ yum install gcc		# installs gcc & gcc48
+$ yum install augeas-libs	# 
+$ yum install python27-tools	# 
+$ certbot-auto --no-bootstrap	# configures certbot
+# set up cert for auto-renewal
+$ certbot-auto certonly -n --webroot -w /var/www/fire/dist -d consult.firecrackerhealth.com
+$ certbot-auto renew
+
+crontab
+-------
+# Run once after reboot
+@reboot /usr/local/bin/certbot-auto renew
+	   
+log rotate
+----------
+
+
+automation
+----------
+6. Set up logrotate
+
+setup_app_nginx playbook
+
+app_nginx role
+1. app_nginx role | install packages (when: lets_encrypt_certs defined)
+$ yum install gcc		# installs gcc & gcc48
+$ yum install augeas-libs	# 
+$ yum install python27-tools	# 
+2. app_nginx role | install certbot-auto (when: lets_encrypt_certs defined)
+$ wget https://dl.eff.org/certbot-auto
+$ chmod +x certbot-auto
+$ sudo mv certbot-auto /usr/local/bin/certbot-auto
+3. app_nginx role | configure certbot (when: lets_encrypt_certs defined)
+$ certbot-auto --no-bootstrap	# configures certbot
+4. set-up Let's Encrypt cert(s) for auto-renewal # requires proper DNS settings)
+# set up cert for auto-renewal (when: lets_encrypt_certs defined)
+$ certbot-auto certonly -n --webroot -w /var/www/fire/dist -d consult.firecrackerhealth.com
+$ certbot-auto certonly -n --agree-tos -m NIM-OPS@telecomsys.com --webroot -w /var/www/fire/dist -d consult.firecrackerhealth.com
+5. set-up crontabs
+	renew cert(s) upon reboot (have to verify if this works for AWS Autoscaling
+	renew cert(s) twice a day
+$ certbot-auto renew
+
+OPTION A - ansible lets_encrypt module
+--------------------------------------
+MOP
+	1. build the app_nginx servers
+	2. flip DNS
+	3. run playbook (w/lets_encrypt module) to:
+		a. install the certs
+		b. set up crontab to run said playbook to renew
+Autoscaling
+	1. build app_nginx server
+	2. run playbook to:
+		a. install the certs
+		b. set up crontab
+notes:
+	have to install/create a script that runs the playbook
+	have to run the module twice, 1 - config, 2 - provide challenge, 3 - get cert
+
+OPTION B - install certobt-auto
+-------------------------------
+MOP
+	1. build the app_nginx servers, to:
+		a. install packages and certbot
+		b. configure certbot
+	2. flip DNS
+	3. run playbook to: (or re-run ansilbe-pull)
+		a. enable the cert for auto-renewel with certbot-auto
+		b. set up crontab to run `certbot-auto renew` to keep cert up to date
+Autoscaling
+	1. run's ansible-pull which does all above
+	
+Actual
+------
+MOP
+- build the server
+- install the cert from encrypted in nginx/ssl
+- cut over DNS (so QA can test & certbot can renew)
+- run ansible-pull to update nginx.conf
+- once certbot enabled - change nginx conf to point to let's encrypt certs
+
+PROD (autoscaled events)
+- server get's built
+- ansible pulll configs certbot and points nginx.conf to le.live
+
+TODO
+----
+1. add to cronjob
+-/usr/local/bin/certbot-auto renew >> /var/log/letsencrypt/letsencrypt.log 2>&1"
++/usr/local/bin/certbot-auto renew --renew-hook "service nginx restart" >> /var/log/letsencrypt/letsencrypt.log 2>&1"
+2. add "test" certs to staging builds
+3. call lets_encrypt role after nginx and vm_app_nginx roles
+
+
+DESIGN
+------
+Staging
+-------
+- set up manually acquired cert
+- install/configure certbot
+- set up cert for auto renewal with test cert (just to test the prod code)
+	- use test certs to mot hit limits
+
+PREP/TEST
+---------
+- set up manually acquired cert
+- install/cofigure certbot
+- set up cert for auto renewal with test cert (just to test the prod code)
+	- must be able to fail if reached limits
+
+MOP
+---
+- set up manually acquired cert
+- install/config certbot
+- set up cert for auto renewal
+	- must be able to fail if reached limits
+
+Production - auto scaling
+----------
+- set up manually acquired cert
+- install/config certbot
+- set up cert for auto renewal 
+	- must be able to handle limits reached
+	- change config, restart nginx
+
+Results
+-------
+root@vmedix-app_nginx1 # certbot-auto certificates
+Saving debug log to /var/log/letsencrypt/letsencrypt.log
+
+-------------------------------------------------------------------------------
+Found the following certs:
+  Certificate Name: consult.firecrackerhealth.com
+    Domains: consult.firecrackerhealth.com
+    Expiry Date: 2017-08-15 22:01:00+00:00 (VALID: 89 days)
+    Certificate Path: /etc/letsencrypt/live/consult.firecrackerhealth.com/fullchain.pem
+    Private Key Path: /etc/letsencrypt/live/consult.firecrackerhealth.com/privkey.pem
+-------------------------------------------------------------------------------
+
+root@vmedix-app_nginx1 # /usr/local/bin/certbot-auto renew --renew-hook 'service nginx reload'
+Saving debug log to /var/log/letsencrypt/letsencrypt.log
+
+-------------------------------------------------------------------------------
+Processing /etc/letsencrypt/renewal/consult.firecrackerhealth.com.conf
+-------------------------------------------------------------------------------
+Cert not yet due for renewal
+
+The following certs are not due for renewal yet:
+  /etc/letsencrypt/live/consult.firecrackerhealth.com/fullchain.pem (skipped)
+No renewals were attempted.
+No hooks were run.
+
+root@vmedix-app_nginx1 # grep ssl /etc/nginx/conf.d/fire.conf 
+    listen 443 ssl;
+    ssl_certificate      /etc/letsencrypt/live/consult.firecrackerhealth.com/fullchain.pem;
+    ssl_certificate_key  /etc/letsencrypt/live/consult.firecrackerhealth.com/privkey.pem;
+    ssl_protocols        TLSv1 TLSv1.1 TLSv1.2;
+
+root@vmedix-app_nginx1 # ls /etc/letsencrypt/live/consult.firecrackerhealth.com/
+cert.pem       chain.pem      fullchain.pem  privkey.pem    README         
+
+root@vmedix-app_nginx1 # tail /var/log/letsencrypt/letsencrypt.log
+2017-05-17 23:01:27,422:DEBUG:certbot.storage:Writing full chain to /etc/letsencrypt/live/consult.firecrackerhealth.com/fullchain.pem.
+2017-05-17 23:01:27,423:DEBUG:certbot.storage:Writing README to /etc/letsencrypt/live/consult.firecrackerhealth.com/README.
+2017-05-17 23:01:29,655:DEBUG:certbot.storage:Writing new config /etc/letsencrypt/renewal/consult.firecrackerhealth.com.conf.
+2017-05-17 23:01:29,656:DEBUG:certbot.reporter:Reporting to user: Congratulations! Your certificate and chain have been saved at /etc/letsencrypt/live/consult.firecrackerhealth.com/fullchain.pem. Your cert will expire on 2017-08-15. To obtain a new or tweaked version of this certificate in the future, simply run certbot-auto again. To non-interactively renew *all* of your certificates, run "certbot-auto renew"
+2017-05-17 23:01:29,656:DEBUG:certbot.reporter:Reporting to user: If you like Certbot, please consider supporting our work by:
+
+Donating to ISRG / Let's Encrypt:   https://letsencrypt.org/donate
+Donating to EFF:                    https://eff.org/donate-le
+
+root@vmedix-app_nginx1 # crontab -l
+#Ansible: cleanup mailq
+@hourly find /var/spool/mqueue -type f -delete
+#Ansible: Drop cache
+@hourly /bin/bash /usr/local/tcs/drop_cache.sh
+#Ansible: certbot-auto renewal of Let's Encrypt cert(s)
+25 1 * * * /usr/local/bin/certbot-auto renew --renew-hook 'service nginx reload' >> /var/log/letsencrypt/letsencrypt.log 2>&1
+
+FAILURES
+--------
+Ansible
+"cmd": /usr/local/bin/certbot-auto certonly -n --agree-tos -m NIM-OPS@telecomsys.com --webroot -w /var/www/fire/dist -d consult.firecrackerhealth.com
+$ certbot-auto certonly -n --agree-tos -m NIM-OPS@telecomsys.com --webroot -w /var/www/fire/dist -d consult.firecrackerhealth.com
+---
+TASK [letsencrypt : Set up auto-renewal of customer's Let's Encrypt certs using certbot-auto] ***
+fatal: [localhost]: FAILED! => {"changed": true, "cmd": ["/usr/local/bin/certbot-auto", "certonly", "-n", "--agree-tos", "-m", "NIM-OPS@telecomsys.com", "--webroot", "-w", "/var/www/fire/dist", "-d", "consult.firecrackerhealth.com"], "delta": "0:00:05.180404", "end": "2017-05-17 23:17:40.965916", "failed": true, "failed_when_result": true, "rc": 1, "start": "2017-05-17 23:17:35.785512", "stderr": "Saving debug log to /var/log/letsencrypt/letsencrypt.log\nObtaining a new certificate\nPerforming the following challenges:\nhttp-01 challenge for consult.firecrackerhealth.com\nUsing the webroot path /var/www/fire/dist for all unmatched domains.\nWaiting for verification...\nCleaning up challenges\nFailed authorization procedure. consult.firecrackerhealth.com (http-01): urn:acme:error:unauthorized :: The client lacks sufficient authorization :: Invalid response from http://consult.firecrackerhealth.com/.well-known/acme-challenge/d_tTyhXy0Z3EzuScTTq4ukr9x7_lKwOH9MES0UD-HU4: \"<!DOCTYPE html>\n<html lang=\"en\">\n  <head>\n    <meta charset=\"utf-8\">\n    <title>Page Not Found :(</title>\n    <style>\n      ::-m\"", "stdout": "IMPORTANT NOTES:\n - The following errors were reported by the server:\n\n   Domain: consult.firecrackerhealth.com\n   Type:   unauthorized\n   Detail: Invalid response from\n   http://consult.firecrackerhealth.com/.well-known/acme-challenge/d_tTyhXy0Z3EzuScTTq4ukr9x7_lKwOH9MES0UD-HU4:\n   \"<!DOCTYPE html>\n   <html lang=\"en\">\n     <head>\n       <meta charset=\"utf-8\">\n       <title>Page Not Found :(</title>\n       <style>\n         ::-m\"\n\n   To fix these errors, please make sure that your domain name was\n   entered correctly and the DNS A record(s) for that domain\n   contain(s) the right IP address.", "stdout_lines": ["IMPORTANT NOTES:", " - The following errors were reported by the server:", "", "   Domain: consult.firecrackerhealth.com", "   Type:   unauthorized", "   Detail: Invalid response from", "   http://consult.firecrackerhealth.com/.well-known/acme-challenge/d_tTyhXy0Z3EzuScTTq4ukr9x7_lKwOH9MES0UD-HU4:", "   \"<!DOCTYPE html>", "   <html lang=\"en\">", "     <head>", "       <meta charset=\"utf-8\">", "       <title>Page Not Found :(</title>", "       <style>", "         ::-m\"", "", "   To fix these errors, please make sure that your domain name was", "   entered correctly and the DNS A record(s) for that domain", "   contain(s) the right IP address."], "warnings": []}
+

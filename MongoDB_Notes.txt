@@ -1,0 +1,56 @@
+MongoDB Notes
+-------------
+
+files
+-----
+/etc/mongod.conf   # config file
+   logpath = /var/log/mongo/mongod.log
+   dbpath = /var/lib/mongo
+   sslPEMKeyFile = /data/mongo/ssl/mongodb.pem
+
+/var/log/mongo/mongod.log   # log file - defined by 'logpath' in config
+
+services
+--------
+$ service mongod status|stop|start
+
+commands
+--------
+# To start a mongod instance in master mode, invoke mongod as follows:
+mongod --master --dbpath /data/masterdb/
+# To start a mongod instance in slave mode, invoke mongod as follows:
+mongod --slave --source <masterhostname><:<port>> --dbpath /data/slavedb/
+
+# enter the shell (from one of the servers)
+mongo --ssl --sslAllowInvalidCertificates --host mongo1
+# and show master/slaves info
+vmrs0:SECONDARY> db.runCommand("ismaster")
+{
+        "setName" : "vmrs0",
+        "setVersion" : 3,
+        "ismaster" : false,
+        "secondary" : true,
+        "hosts" : [
+                "mongo1:27017",
+                "mongo2:27017",
+                "mongo3:27017"
+        ],
+        "primary" : "mongo3:27017",				# <-------- lists primary/master
+        "me" : "mongo1:27017",
+        "maxBsonObjectSize" : 16777216,
+        "maxMessageSizeBytes" : 48000000,
+        "maxWriteBatchSize" : 1000,
+        "localTime" : ISODate("2017-11-15T09:15:50.340Z"),	# <---- causes `jq`|`from_json` to FAIL
+        "maxWireVersion" : 3,
+        "minWireVersion" : 0,
+        "ok" : 1
+}
+vmrs0:SECONDARY>
+
+# try running CLI
+mongo test --eval "printjson(db.getCollectionNames())" # example
+
+mongo --quiet --ssl --sslAllowInvalidCertificates --host mongo2 --eval "printjson(db.runCommand('ismaster'))"
+
+
+

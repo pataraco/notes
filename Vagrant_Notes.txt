@@ -1,0 +1,42 @@
+			Using Vagrant
+		------------------------
+
+use: Vagrant
+	* Install Vagrant
+		$ sudo rpm -ivh https://releases.hashicorp.com/vagrant/1.8.1/vagrant_1.8.1_x86_64.rpm
+	* Install VirtualBox
+		$ sudo rpm -ivh http://download.virtualbox.org/virtualbox/5.0.20/VirtualBox-5.0-5.0.20_106931_el6-1.x86_64.rpm
+	* commands 		($ cd ~/cloud_automation/vagrant/CentOS65)
+		$ vagrant help			# show help
+		$ vagrant destroy		# stops and deletes all traces of the vagrant machine
+		$ vagrant up 			# create a VM via Vagrant
+		$ vagrant reload 		# reload a VM
+		$ vagrant status		# reload a VM
+		$ vagrant ssh [-- -vvv]	# log in to a vagrant machine
+
+-------------------
+
+inventory file: ~/cloud_automation/ansible/inventory/vagrant
+
+	# contents
+	vagrant ansible_ssh_host=127.0.0.1 ansible_ssh_port=2222 ansible_ssh_user=vagrant
+
+-------------------
+
+# make sure this link exists
+~/.ssh$ ln -s /home/praco/repos/cloud_automation/vagrant/CentOS65/.vagrant/machines/default/virtualbox/private_key vagrant
+
+-------------------
+
+# run playbooks against the vagrant VM:
+# playbook: manage_users.yml
+# vars: roles/users/vars/scm_users_present.yml
+
+	$ ansible-playbook [--check|-vvv] -i inventory/vagrant --private-key=~/.ssh/vagrant playbooks/util/manage_users.yml
+
+-------------------
+
+# log in to the Vagrant VM:
+$ ssh 127.0.0.1 -p 2222
+# OR
+$ cd ~/cloud_automation/vagrant/CentOS65; vagrant ssh

@@ -1,0 +1,104 @@
+Virtual Environments
+--------------------
+
+PyEnv and VirtualEnv
+
+Pyenv and virtualenv are very different tools that work in different ways to do different things:
+
+PyEnv
+-----
+PyEnv is a bash extension - will not work on Windows - that intercepts your calls to python, pip, etc., to direct them to one of several of the system python tool-chains. So you always have all the libraries that you have installed in the selected python version available - as such it is good for users who have to switch between different versions of python.
+
+VirtualEnv
+----------
+http://docs.python-guide.org/en/latest/dev/virtualenvs/
+
+virtualenv (https://pypi.python.org/pypi/virtualenv) is a tool to create isolated Python environments. virtualenv creates a folder which contains all the necessary executables to use the packages that a Python project would need.
+
+VirtualEnv is pure python so works everywhere, it makes a copy of, optionally as specific version of, python and pip local to the activate environment which may or may not include links to the current system tool-chain, if it does not you can install just a known subset of libraries into that environment. As such it is almost certainly much better for testing and deployment as you know exactly which libraries, at which versions, are used and a global change will not impact your module.
+
+Installation
+------------
+Install virtualenv via pip:
+
+$ pip install virtualenv
+
+Basic Usage
+-----------
+# Create a virtual env
+$ cd PROJECT_FOLDER
+$ virtualenv VIRTUAL_ENV_NAME	# creates a folder in the current dir
+
+# to use a Python interpreter of your choice
+$ virtualenv -p /usr/bin/python2.7 VIRTUAL_ENV_NAME
+
+# or change globally in ~/.bashrc
+$ export VIRTUALENVWRAPPER_PYTHON=/usr/bin/python2.7
+
+# begin using the virtual environment
+$ source /PATH/TO/PROJECT_FOLDER/VIRTUAL_ENV_NAME/bin/activate
+
+# install packages as usual, e.g.
+$ pip install PACKAGE
+
+# when done, and to return to system's default environment
+$ deactivate
+
+# to disable the evironment in the prompt
+VIRTUAL_ENV_DISABLE_PROMPT=YES
+
+Additional Tools
+----------------
+
+There are a number of tools that it is worth mentioning, and considering, as they can help with the use of one or more of the above:
+
+VirtualEnvWrapper (https://pypi.python.org/pypi/virtualenvwrapper)
+-----------------
+VirtualEnvWrapper Manage and simplify the use and management of VirtualEnv - Cross Platform.
+
+pyenv-virtualenv (https://github.com/yyuu/pyenv-virtualenv)
+----------------
+pyenv-virtualenv, installed by pyenv-installer (https://github.com/yyuu/pyenv-installer), which gives PyEnv tools for managing and interfacing to VirtualEnv - with this you can have a base installation that includes more than one version of python and create isolated environments within each of them - Linux Only. Suggested by Johann Visagie
+
+PyInstaller (http://www.pyinstaller.org/)
+-----------
+PyInstaller can take your python code, possibly developed & tested under VirtualEnv, and bundle it up so that it can run one platforms that do not have your version of python installed - Note that it is not a cross compiler you will need a Windows (virtual-)machine to build Windows installs, etc., but it can be handy even where you can be sure that python will be installed but cannot be sure that the version of python and all the libraries will be compatible with your code.
+
+Environments:
+------------
+
+Ansible_1.x
+-----------
+VIRTUAL_ENV=/usr/local/home/praco/envs/Ansible_1.x
+PATH=/usr/local/home/praco/envs/Ansible_1.x/bin:/home/praco/repos/pyenv/shims:/home/praco/repos/pyenv/shims:/home/praco/repos/pyenv/shims:/home/praco/repos/pyenv/shims:/home/praco/repos/pyenv/bin:/usr/lib64/qt-3.3/bin:/usr/kerberos/sbin:/usr/kerberos/bin:/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin:/home/praco/repos/phacility/arcanist/bin
+
+$ sudo yum install libffi-devel		# NOT NEEDED (?)
+$ sudo pip install -U ansible==1.9.1 credstash==1.3.1 httplib2==0.9.2 awscli==1.9.12 boto==2.38.0 botocore==1.3.12
+$ sudo pip install --ignore-installed PyCrypto==2.6.1
+
+ansible (1.9.1)
+awscli (1.9.12)
+boto (2.38.0)
+botocore (1.3.12)
+credstash (1.3.1)
+httplib2 (0.9.2)
+pycrypto (2.6.1)
+
+Ansible_2.x
+-----------
+VIRTUAL_ENV=/usr/local/home/praco/envs/Ansible_2.x
+PATH=/usr/local/home/praco/envs/Ansible_2.x/bin:/home/praco/repos/pyenv/shims:/home/praco/repos/pyenv/shims:/home/praco/repos/pyenv/shims:/home/praco/repos/pyenv/shims:/home/praco/repos/pyenv/bin:/usr/lib64/qt-3.3/bin:/usr/kerberos/sbin:/usr/kerberos/bin:/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin:/home/praco/repos/phacility/arcanist/bin
+
+ansible (2.1.1.0)
+ansible-playbook-debugger (0.2.4)
+ansible-role-manager (0.4)
+awscli (1.10.62)
+boto (2.42.0)
+boto3 (1.4.0)
+botocore (1.4.52)
+credstash (1.11.0)
+pycrypto (2.6.1)
+
+Ansible_2.2
+-----------
+VIRTUAL_ENV=/usr/local/home/praco/envs/Ansible_2.2

@@ -1,0 +1,187 @@
+Linux Box Notes
+---------------
+
+TODO
+----
+IP	- install credstash
+		(https://comtech-et.atlassian.net/wiki/display/DEVOPS/Managing+Credentials+with+AWS+Key+Management+Service+and+credstash)
+	- tmuxinator
+	- change the sudo timeout
+	- change vim highlighting color for tmux
+ok	- log in and change passwd on ph01.phoenix.nim
+	- browse around on acm1 (e.g. /home/mlyda/bin)
+	- learn `pdsh`
+	- perform CodeCommit instructions
+
+Info
+----
+praco.dev.local (172.18.17.58)
+CentOS 6.7 (64 bit) 8GB RAM 500GB
+praco@praco:~/repos/notes│$ uname -a
+Linux praco.dev.local 2.6.32-573.18.1.el6.x86_64 #1 SMP Tue Feb 9 22:46:17 UTC 2016 x86_64 x86_64 x86_64 GNU/Linux
+praco@praco:~/repos/notes│$ cat /etc/system-release
+CentOS release 6.7 (Final)
+
+
+Fixed
+-----
+	- touched /etc/yum.conf in order to get `yum` to work
+	- created an ssh key for Tim (`ssh-keygen -t rsa -C praco@telecomsys.com`)
+	
+	
+Installed
+---------
+	- downloaded my .bash* stuff
+	- downloaded my .vimrc stuff
+	- downloaded my script stuff
+	- cloned my python github repo
+	- cloned my notes github repo
+	- # rpm -ivh http://dl.fedoraproject.org/pub/epel/6/x86_64/epel-release-6-8.noarch.rpm
+	- # yum install epel-release
+	- # yum install python-pip
+	- # yum install -y gcc python-devel python-pip git	# all already installed
+	- # pip install --upgrade pip
+	- # pip install --upgrade PyCrypto ansible awscli boto ansible-role-manager ansible-playbook-debugger
+	- # pip install retry
+	- get cloud_automation repo
+		$ cd ~/repos
+		$ git clone git://stor2/cloud_automation.git
+		$ pushd ~/repos/cloud_automation/ansible
+		$ git checkout main
+	- set up Ansible
+		- add following to ~/.bashrc
+			ANSIBLE_LIBRARY=/home/praco/repos/cloud_automation/ansible/library
+			ANSIBLE_HOME=/home/praco/repos/cloud_automation/ansible
+			ANSIBLE_CONFIG=/home/praco/repos/cloud_automation/ansible/inventory/ansible.cfg
+		- create ansible dir in /etc
+			# mkdir /etc/ansible
+		- create links
+			# ln -s $EC2_HOME/cloud_automation/ansible/inventory/ansible.cfg /etc/ansible/ansible.cfg
+			# ln -s $EC2_HOME/cloud_automation/ansible/inventory/ec2.ini /etc/ansible/ec2.ini
+			# ln -s $EC2_HOME/cloud_automation/ansible/inventory/ec2.py /etc/ansible/hosts
+		- test
+			$ ansible localhost -m setup
+	- # yum install tree
+	- # yum install php
+	- # yum install tmux
+	- # yum install htop
+	- # yum install xterm
+	- # yum install colordiff
+	- # installed pyenv (https://github.com/yyuu/pyenv)
+		- installed python 2.7.9, 2.7.11 & 3.5.1
+	- # yum install s3cmd
+	- python 2.6.6
+		$ sudo pip install --upgrade|-U pip
+		$ sudo pip install --upgrade PyCrypto ansible awscli boto ansible-role-manager ansible-playbook-debugger
+	- python 2.7.11
+		$ sudo pip install --upgrade|-U pip
+		$ sudo pip install --upgrade PyCrypto ansible awscli boto ansible-role-manager ansible-playbook-debugger
+		$ sudo pip install credstash		# also installed boto3
+	- performed ~/cloud_automation/CodeCommit.txt instructions (first half - adding ssh key and AWS CodeCommit origin)
+  21-JUN-2016
+	- VirtualEnv
+		$ sudo pip install --upgrade pip (8.1.1 -> 8.1.2)
+		$ sudo pip install virtualenv
+  15-JUL-2016
+    # Install the latest tmux (2.2) on CentOS 6.7
+	## you may need sudo permission to execute some commands or switch to root
+	# if installed old version by yum, remove it first
+	sudo yum remove tmux libevent libevent-devel libevent-headers
+
+	# install deps
+	sudo yum install gcc kernel-devel make ncurses-devel
+
+	# create temp dir
+	mkdir /tmp/for-latest-tmux && cd /tmp/for-latest-tmux
+	
+	# downloads libenvent and install
+	mkdir ./libevent && cd ./libevent
+	wget https://github.com/libevent/libevent/releases/download/release-2.0.22-stable/libevent-2.0.22-stable.tar.gz
+	tar -zxvf libevent-2.0.22-stable.tar.gz
+	cd libevent-2.0.22-stable/
+	./configure && make
+	sudo make install
+
+	# downloads tmux and install
+	cd /tmp/for-latest-tmux/ && mkdir ./tmux && cd ./tmux
+	wget https://github.com/tmux/tmux/releases/download/2.2/tmux-2.2.tar.gz
+	tar -zxvf tmux-2.2.tar.gz
+	cd tmux-2.2/
+	./configure && make
+	sudo make install
+
+	# kill the running tmux
+	# close your terminal window (flushes cached tmux executable)
+	# open new shell and check tmux version
+	pkill tmux
+	tmux -V
+
+	# remove temp dir if needed
+	rm -rf /tmp/for-latest-tmux
+  17-AUG-2016
+	yum install jq	# Command-line JSON processor
+  19-AUG-2016
+	yum install clusterssh
+  01-DEC-2016	# Installed Redis
+	yum install wget tcl
+	wget http://download.redis.io/redis-stable.tar.gz
+	tar xvzf redis-stable.tar.gz
+	cd redis-stable
+	make
+	make test             # optional
+        sudo make install
+  12-DEC-2016
+	yum install xorg-x11-utils	# for xwininfo
+  14-DEC-2016	# upgrade Java
+	sudo rpm -e java-1.6.0-openjdk-devel
+	sudo rpm -e java-1.6.0-openjdk
+        sudo yum remove java-1.7.0-openjdk
+	sudo yum install java-1.8.0-openjdk
+  14-DEC-2016	# Installed ElasticSearch
+	rpm --import https://artifacts.elastic.co/GPG-KEY-elasticsearch
+	vi /etc/yum.repos.d/elasticsearch.repo
+	sudo yum install elasticsearch
+	sudo chkconfig --add elasticsearch
+	sudo -i service elasticsearch start
+  07-JUL-2017	# Installed pssh
+	sudo yum install pssh
+  21-JUL-2017	# Installed bash-completion
+	sudo yum install bash-completion
+  ??-???-2017	# Installed createrepo
+	sudo yum install createrepo
+  09-NOV-2017	# Installed golang
+	sudo yum install golang
+		
+Done
+----
+	- reduced size of /usr to 100G
+		# /etc/fstab
+		#/dev/mapper/vg0-usr	/usr	ext4	defaults	1 2
+		umount /usr							# commented out /usr from /etc/fstab and `reboot` then `init 1`
+		e2fsck -f /dev/mapper/vg0-usr		# -f = force fsck even if clean
+		resize2fs /dev/mapper/vg0-usr 100G
+		lvreduce -L 100G /dev/mapper/vg0-usr
+		e2fsck -f /dev/mapper/vg0-usr
+		mount /usr
+	- created /data (150G)
+	- created snapshot volume(s): /root, /var, /usr
+	- installed pyenv
+	- install python 2.7.9 & 2.7.11
+	
+	----------------------------------------------------
+	#
+# /etc/fstab
+# Created by anaconda on Sun Dec 26 02:04:42 2010
+#
+# Accessible filesystems, by reference, are maintained under '/dev/disk'
+# See man pages fstab(5), findfs(8), mount(8) and/or blkid(8) for more info
+#
+/dev/mapper/vg0-root    /                       ext4    defaults        1 1
+UUID=3477dad2-c479-4598-ae3c-ff373851976b /boot                   ext4    defaults        1 2
+/dev/mapper/vg0-usr     /usr                    ext4    defaults        1 2
+/dev/mapper/vg0-var     /var                    ext4    defaults        1 2
+/dev/mapper/vg0-swap    swap                    swap    defaults        0 0
+tmpfs                   /dev/shm                tmpfs   defaults        0 0
+devpts                  /dev/pts                devpts  gid=5,mode=620  0 0
+sysfs                   /sys                    sysfs   defaults        0 0
+proc                    /proc                   proc    defaults        0 0

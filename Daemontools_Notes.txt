@@ -1,0 +1,60 @@
+Daemontools
+-----------
+
+daemontools-0.76-20.el6.amzn1.NIM.x86_64
+
+svc - controls services monitored by supervise(8).
+	syntax:  # svc [-u|-d] SERVICE
+	example: # svc -u /service/gunicorn
+	example: # svc -d /service/gun*
+svok - checks whether supervise(8) is running.
+	syntax:  # svok SERVICE
+	example: # svok /service/gunicorn
+	output:  (NONE)	returns 0 or 100 status
+svstat - prints the status of services monitored by supervise(8).
+	syntax:  # svstat SERVICE
+	example: # svstat /service/gunicorn
+		looks for /service/gunicorn/supervise/ok
+	output:  /service/gunicorn: up (pid 21035) 1100780 seconds
+svscanboot - starts svscan(8) in the /service directory, with output and error messages logged through readproctitle(8).
+svscan - starts and monitors a collection of services
+supervise - starts and monitors a service.
+
+EXAMPLES
+--------
+/bin/svc -u /service/*
+/bin/svc -u /service/gun*
+/bin/svc -d /service/redis*
+
+
+service Directory Tree
+----------------------
+/service
+	gunicorn/
+		run -> /usr/local/virtumedix/tools/gunicorn.run
+		supervise/
+			control  (fifo - named pipe)
+			lock     empty
+			ok       (fifo - named pipe)
+			status   data
+
+syntax:  /service/SERVICE/run -> /PATH/TO/SERVICE
+example: /service/gunicorn/run -> /usr/local/virtumedix/tools/gunicorn.run
+			
+		
+NIM created wrappers
+--------------------
+/bin/sstat   -> /bin/local/nb/scripts/sstat => /bin/svstat
+/bin/sdown   -> /bin/local/nb/scripts/nbctl => /bin/svc -d *
+/bin/sup     -> /bin/local/nb/scripts/nbctl => /bin/svc -u *
+/bin/sbounce -> /bin/local/nb/scripts/nbctl => /bin/svc -d *; /bin/svc -u *
+
+config: /usr/local/nb/scripts/nbscripts.conf
+---
+# Define default configuration for various scripts here
+emailAddress=devnull
+
+# Source the nbscripts.conf.local if it exists
+[ -f /usr/local/nb/scripts/nbscripts.conf.local ] && \
+. /usr/local/nb/scripts/nbscripts.conf.local
+---

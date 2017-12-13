@@ -53,9 +53,9 @@ COMMANDS
  	$ aws iam get-ssh-public-key --ssh-public-key-id APKAJE6JPZ2K3KPTRYAQ --encoding SSH --user-name praco
 	$ aws elb create-load-balancer-listeners --load-balancer-name elb-virtumedix-vm4 --listeners "Protocol=TCP,LoadBalancerPort=443,InstanceProtocol=tcp,InstancePort=443"
 	$ aws sts assume-role --role-arn "arn:aws:iam::801178088653:role/ModifyMobileLocationStudioR53FromTeleComSys" --role-session-name "R53-Update" --output json
-		$ export AWS_ACCESS_KEY_ID=ASIAJLNZBIGWWYCJMCFA
-		$ export AWS_SECRET_ACCESS_KEY=Bz7CIFjblG511bTwEtBm9Jn1eqn7EeDxgSqIG0uK
-		$ export AWS_SECURITY_TOKEN=FQoDYXdzEH4aDFUiQGZY5B2MD+4GOiLNAZUFEqCDxB79wBWjV34wXCM5pVWGOspS9se81sb96c
+		$ export AWS_ACCESS_KEY_ID=ASIXXXXXXXGWWYCJMCFA
+		$ export AWS_SECRET_ACCESS_KEY=Bz7CIXXXXXXX1bTwEtBm9JXXXXXXXeD
+		$ export AWS_SECURITY_TOKEN=FQoDYXdzXXXXXXXiQGZY5B2MD+XXXXXXXZUFEqCDxB79wXXXXXXXXCM5pXXXXXX
 	$ aws route53 list-resource-record-sets --hosted-zone-id Z3MWE1Z2JT5DNN
 	$ aws route53 change-resource-record-sets --hosted-zone-id Z3MWE1Z2JT5DNN --change-batch file:///tmp/r53.add.json
 	$ cat /tmp/r53.add.json
