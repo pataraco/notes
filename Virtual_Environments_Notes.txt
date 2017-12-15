@@ -1,3 +1,4 @@
+--------------------
 Virtual Environments
 --------------------
 
@@ -5,10 +6,42 @@ PyEnv and VirtualEnv
 
 Pyenv and virtualenv are very different tools that work in different ways to do different things:
 
+-----
 PyEnv
 -----
 PyEnv is a bash extension - will not work on Windows - that intercepts your calls to python, pip, etc., to direct them to one of several of the system python tool-chains. So you always have all the libraries that you have installed in the selected python version available - as such it is good for users who have to switch between different versions of python.
 
+Installation
+------------
+# get it
+  $ git clone https://github.com/pyenv/pyenv ~/repos/pyenv
+# link it
+  $ ln -s ~/repos/pyenv ~/.pyenv
+# add pyenv bin to PATH
+  $ vi ~/.bash_profile
+  #-----
+   pyenv_repo=$HOME/repos/pyenv
+   if [ -d $pyenv_repo ]; then
+      export PYENV_ROOT=$pyenv_repo
+      pyenv_bin=$PYENV_ROOT/bin
+      [[ -d $pyenv_bin && ! $PATH =~ ^$pyenv_bin:|:$pyenv_bin:|:$pyenv_bin$ ]] && export PATH="$pyenv_bin:$PATH"
+   fi
+  #-----
+# add `pyenv init` to shell to enable shims and autcompletion
+# (place at the end of ~/.bash_profile)
+  $ vi ~/.bash_profile
+  #-----
+  [ $(command -v pyenv) ] && eval "$(pyenv init -)"
+  #-----
+# restart the shell
+  $ source ~/.bash_profile   # OR $ exec "$SHELL"
+# install desired Python versions
+  $ pyenv install 2.7.11
+# use `pyenv` to set/use the version of Python desired
+  $ pyenv help   # OR pyenv commands
+
+
+----------
 VirtualEnv
 ----------
 http://docs.python-guide.org/en/latest/dev/virtualenvs/

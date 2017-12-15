@@ -67,9 +67,7 @@ Installed
 	- # yum install htop
 	- # yum install xterm
 	- # yum install colordiff
-	- # installed pyenv (https://github.com/yyuu/pyenv)
-		OR
-	- # installed pyenv (https://github.com/pyenv/pyenv)
+	- # installed pyenv (https://github.com/pyenv/pyenv OR https://github.com/yyuu/pyenv)
 		- installed python 2.7.9, 2.7.11 & 3.5.1
 	- # yum install s3cmd
 	- python 2.6.6
