@@ -967,12 +967,24 @@ SSHFS: http://www.cyberciti.biz/faq/how-to-mount-remote-directory-filesystems-wi
 
 ############################## -| Stuff to Try  |- #############################
 
+----- send email via sendmail -----
 cat <<'EOF' - test.html | /usr/sbin/sendmail -t
 To: to@address
 Subject: hello
 Content-Type: text/html
 
 EOF
+----- Get rid of GUI (Ubuntu) -----
+sudo cp [-i] /etc/default/grub{,.orig}
+sudo vi /etc/default/grub
+	#GRUB_CMDLINE_LINUX_DEFAULT=”quiet splash”
+	GRUB_CMDLINE_LINUX=”text”
+	GRUB_TERMINAL=console
+sudo update-grub
+sudo reboot
+------ revert ------
+sudo cp /etc/default/grub{.orig,}
+sudo update-grub
 
 ############################## -|  Networking   |- #############################
 
