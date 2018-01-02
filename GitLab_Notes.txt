@@ -19,9 +19,9 @@ Questions / Things to Address
       - One to build staging directly from pushes to Dev repo if/when there are no infrastructure changes (i.e. no automation changes), and
       - another if/when there are automation changes.
    - Dev could have control over their pipeline and it could be configured in a way for them to [click] when they are done with testing and the pipeline can destroy staging.
-   - Using tags, our pipeline can run project specific jobs depending on what got pushed to our repo. 
+   - Using tags, our pipeline can run project specific jobs depending on what got pushed to our repo.
 - Where to build the GitLab runner
-   - Bastion instance in AWS account?	 
+   - Bastion instance in AWS account?
 - Runner: How create/use a Docker image to not allow DevOps repo publicly available
    - Maybe create/use a Docker image that has the correct Ansible and Python versions and then add DevOps repo using KMS. only issue is that it will be slow.
 - Runner: do not use a public docker image in case it goes away - no control
