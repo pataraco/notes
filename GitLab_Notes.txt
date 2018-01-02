@@ -7,24 +7,28 @@ CI/CD
 
 Questions / Things to Address
 -----------------------------
-1. Designate a repo for iSpace team to use and push to
- 	I’m not sure where they are pushing to now. But eventually the RPMs are ending up in the TCS repo which is getting synced up (only the VMedix RPMs) into a VMedix repo that iSpace has access to.
-2. Develop tests to test the changes before building staging
-	I believe this should be done by Dev if no automation changes exist. We would build the tests for automation changes
-3. Decide whether or not to automatically build staging once Dev pushes to the repo
-	Do we want to allow Dev to be able to build/destroy staging without our intervention? Again, only if/when there is no automation changes.
-4. Have the GitLab CI/CD build staging from new pushes to iSpace’s repo or our repo
-	Maybe would need 2 separate pipelines. One to build staging directly from pushes to their repo if/when there are no infrastructure changes (i.e. no automation changes) and another if/when there are automation changes. They could have control over their pipeline and it could be configure in a way for the to [click] when they are done with testing and the pipeline can destroy staging.
-Using tags, our pipeline can run project specific jobs depending on what got pushed to our repo. 
-5. Where to build the GitLab runner
-	Bastion host in CORS other?	 
-6. Cannot create/use a Docker image because it will make our Cloud_Automation publicly available
-7. Can create/use a Docker image that has the correct Ansible and Python versions and then add our cloud_automation repo using KMS. only issue is that it will be a little slow.
-8. Not use a public docker image in case it goes away - no control
-9. Need to come up with tests when building out staging to know if/when to proceed with specific steps
-	e.g. when MongoDB cluster is up to perform DB "restore" and when ElasticSearch cluster is ready for DB "restore"
-10. Need a script to take PCR steps to create a script to standup staging or just create on the side
-11. After completion of pipeline, need email confirming success and IP's of staging
+- Designate a repo for Dev team to use and push to which will also contain the pipeline file
+- Develop tests to test the changes before building a staging environment
+   - can be done by Dev if no automation changes exist.
+   - DevOps to build the tests for automation changes
+- Decide whether or not to automatically build a staging environment once Dev pushes to the repo
+   - Do we want to allow Dev to be able to build/destroy staging without our intervention?
+     (only if/when there are no automation changes)
+- Have the GitLab CI/CD build staging from new pushes to Dev repo or DevOps repo
+   - May be a need for 2 separate pipelines.
+      - One to build staging directly from pushes to Dev repo if/when there are no infrastructure changes (i.e. no automation changes), and
+      - another if/when there are automation changes.
+   - Dev could have control over their pipeline and it could be configured in a way for them to [click] when they are done with testing and the pipeline can destroy staging.
+   - Using tags, our pipeline can run project specific jobs depending on what got pushed to our repo. 
+- Where to build the GitLab runner
+   - Bastion instance in AWS account?	 
+- Runner: How create/use a Docker image to not allow DevOps repo publicly available
+   - Maybe create/use a Docker image that has the correct Ansible and Python versions and then add DevOps repo using KMS. only issue is that it will be slow.
+- Runner: do not use a public docker image in case it goes away - no control
+- Need to come up with tests when building out staging to know if/when to proceed with specific steps
+   - e.g. when MongoDB cluster is up to perform DB "restore" and when ElasticSearch cluster is ready for DB "restore"
+- Need a script to take PCR steps to create a script to standup staging or just create on the side
+- After completion of pipeline, need email confirming success and DNS of staging
 
 TO-DO
 -----
@@ -37,7 +41,7 @@ TO-DO
 
 Docs
 ----
-  GitLab Ci/CD: https://about.gitlab.com/features/gitlab-ci-cd/
+  GitLab CI/CD: https://about.gitlab.com/features/gitlab-ci-cd/
   (/) Quick Start: https://docs.gitlab.com/ee/ci/quick_start/
                https://docs.gitlab.com/ee/ci/quick_start/README.html
   GitLab CI: https://docs.gitlab.com/ee/ci/
@@ -84,6 +88,4 @@ Runners
 - configure it   # should be done already - look on runners page
   https://docs.gitlab.com/ee/ci/runners/README.html#registering-a-specific-runner
 # Shared Runner
-
-
 
