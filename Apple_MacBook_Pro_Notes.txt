@@ -1,0 +1,75 @@
+-----------------------
+Apple MacBook Pro Notes
+-----------------------
+
+Applications Installed
+----------------------
+- Homebrew (https://brew.sh)
+  $ /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+
+- Xcode
+  - App Store
+
+- pip
+  $ curl -O https://raw.github.com/pypa/pip/master/contrib/get-pip.py
+  $ python get-pip.py
+
+- AWS CLI
+  $ brew install awscli
+
+- jq
+  $ brew install jq
+
+- PyEnv
+  $ brew install pyenv-virtualenv
+
+- VirtualEnv
+  $ sudo pip install virtualenv
+
+- tmux and tmux-cssh
+  $ brew install tmux
+  $ brew install tmux-cssh
+
+- Ansible
+  $ brew install ansible
+
+- stacker (http://engineering.remind.com/introduction-to-stacker/)
+  $ pip install --user stacker
+
+- tree
+  $ brew install tree
+
+- GitDB (https://pypi.python.org/pypi/gitdb)
+  $ pip install gitdb
+
+- Python Nose (https://nose.readthedocs.io/en/latest/)
+  $ sudo -H pip install nose
+
+- Mock (http://www.voidspace.org.uk/python/mock.html)
+  $ sudo pip install mock
+
+- GitPython (https://pypi.python.org/pypi/GitPython)
+  $ pip install gitpython
+
+- ChefDK (https://downloads.chef.io/chefdk)
+  download & install (Mac OX X/macOS 10.13):
+    https://packages.chef.io/files/stable/chefdk/2.4.17/mac_os_x/10.13/chefdk-2.4.17-1.dmg
+
+- Terraform (https://www.terraform.io/)
+  https://www.terraform.io/intro/getting-started/install.html
+  https://www.terraform.io/downloads.html
+  - download and unzip
+  - install executable into /usr/local/bin (or somewhere in $PATH)
+
+- flake8 (https://pypi.python.org/pypi/flake8)
+  $ sudo pip install flake8
+
+- pydocstyle (https://pypi.python.org/pypi/pydocstyle)
+  $ sudo pip install pydocstyle
+
+- pylint (https://pypi.python.org/pypi/pylint)
+  (following installs requirements: astroid and isort)
+  $ sudo pip install pylint
+
+- yamllint (https://pypi.python.org/pypi/yamllint)
+  $ sudo pip install yamllint
