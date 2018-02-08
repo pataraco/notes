@@ -73,3 +73,16 @@ Applications Installed
 
 - yamllint (https://pypi.python.org/pypi/yamllint)
   $ sudo pip install yamllint
+
+- colordiff
+  $ brew install colordiff
+
+- passlib
+  $ pip install --user passlib
+
+- Docker (Docker version 17.12.0-ce, build c97c6d6)
+  (Install the application)
+  https://www.docker.com/docker-mac
+
+- Onica SSO
+  $ pip install --user https://s3.amazonaws.com/sturdy-sso-client/onica_sso-4.0.2-py2.py3-none-any.whl
