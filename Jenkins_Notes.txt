@@ -73,6 +73,13 @@ sudo apt-get install jenkins
 /etc/default/jenkins		# launch config parameters
 /var/lib/jenkins/secrets/initialAdminPassword	# initial passsword location
 
+/var/lib/jenkins/plugins
+/usr/share/doc/jenkins
+/usr/share/jenkins
+/var/cache/jenkins
+/run/jenkins
+/etc/logrotate.d/jenkins
+/var/lib/jenkins/workspace
 
 # Jenkins File (Jenkinsfile)
 # --------------------------
