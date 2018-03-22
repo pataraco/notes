@@ -84,5 +84,9 @@ Applications Installed
   (Install the application)
   https://www.docker.com/docker-mac
 
+- Mac App Store
+  (https://github.com/mas-cli/mas)
+  $ brew install mas
+
 - Onica SSO
   $ pip install --user https://s3.amazonaws.com/sturdy-sso-client/onica_sso-4.0.2-py2.py3-none-any.whl

@@ -168,7 +168,7 @@ getopts			- bash built-in; parse positional parameters
 count=$((count+1))
 count=$[count+1]
 rpm -ql $pkg | while read file; do; echo $file; done
-find RPMS/ -type f -name '*.rpm' | while read file; do; echo $file; done          
+find RPMS/ -type f -name '*.rpm' | while read file; do; echo $file; done
 
 
 --------------
