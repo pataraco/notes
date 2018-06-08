@@ -71,7 +71,7 @@ git remote -v				# see a list of Git project's remotes
    git remote set-url origin git@stor2:cloud_automation
    git remote set-url --add --push origin git@stor2:cloud_automation
    git remote set-url --add --push origin ssh://git-codecommit.us-east-1.amazonaws.com/v1/repos/cloud_automation
-git rm [--cached] \*.zip		# remove cached files
+git rm [--cached] \*.zip		# remove cached files (that were tracked and now in gitignore)
 git show HEAD|<BRANCH>			# show info on 
 git stash				# stash the changes in a dirty working dir away
    git stash list
@@ -125,3 +125,27 @@ curl https://raw.githubusercontent.com/git/git/master/contrib/completion/git-pro
 # (careful running the following - save copy of config first. or just change $repo/.git/config manually)
 $ git remote rm origin
 $ git remote add origin $URL
+
+ _____________________________________
+|        GitHub Rebase Workflow       |
+# single environment (master & FEATURE_BRANCH)
+[master] git fetch upstream -p
+[master] git rebase upstream/master master -i
+[master] git co FEATURE_BRANCH
+[FEATURE_BRANCH] git rebase master FEATURE_BRANCH -i
+[master] git co master
+[master] git merge FEATURE_BRANCH
+... hack, commit...
+[master] git tag -a VERSION HEAD
+[master] git push upstream master --tags
+
+# multiple environments (DEV, TEST, PROD, etc.)
+... hack, test, commit...
+[DEV] git fetch -p upstream
+[DEV] git rebase -i upstream/DEV DEV
+[DEV] git push upstream DEV
+[DEV] git co PROD
+[PROD] git merge --no-ff DEV
+[PROD] git push upstream PROD
+|________GitHub_Rebase_Workflow_______|
+
