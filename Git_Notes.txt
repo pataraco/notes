@@ -75,7 +75,6 @@ git rm [--cached] \*.zip		# remove cached files (that were tracked and now in gi
 git show HEAD|<BRANCH>			# show info on 
 git stash				# stash the changes in a dirty working dir away
    git stash list
-   git stash list
    git stash apply [stash@{2}]
 git status				# show staging area status
 git tag					# create, list, del, verify tag object
@@ -129,23 +128,24 @@ $ git remote add origin $URL
  _____________________________________
 |        GitHub Rebase Workflow       |
 # single environment (master & FEATURE_BRANCH)
-[master] git fetch upstream -p
-[master] git rebase upstream/master master -i
-[master] git co FEATURE_BRANCH
-[FEATURE_BRANCH] git rebase master FEATURE_BRANCH -i
+[master] git fetch -p origin
+[master] git rebase origin/master master -i
+[master] git co $FEATURE_BRANCH
+[FEATURE_BRANCH] git rebase master $FEATURE_BRANCH -i
+
 [master] git co master
-[master] git merge FEATURE_BRANCH
+[master] git merge $FEATURE_BRANCH
 ... hack, commit...
-[master] git tag -a VERSION HEAD
-[master] git push upstream master --tags
+[master] git tag -a $VERSION HEAD
+[master] git push origin master --tags
 
 # multiple environments (DEV, TEST, PROD, etc.)
 ... hack, test, commit...
-[DEV] git fetch -p upstream
-[DEV] git rebase -i upstream/DEV DEV
-[DEV] git push upstream DEV
+[DEV] git fetch -p origin
+[DEV] git rebase -i origin/DEV DEV
+[DEV] git push origin DEV
 [DEV] git co PROD
 [PROD] git merge --no-ff DEV
-[PROD] git push upstream PROD
+[PROD] git push origin PROD
 |________GitHub_Rebase_Workflow_______|
 
