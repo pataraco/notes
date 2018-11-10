@@ -17,6 +17,12 @@ git branch [-a|-d|-r] [<BRANCH_NAME>]	# list|create|delete branches & current
      4. git commit -m "commit messages"	# commit your changes
      5. git checkout master		# switch to master
      6. git merge NEW_BRANCH		# merge changes on to master
+
+# rename a branch locally and remotely and reset upstream
+git branch -m [OLD_NAME] NEW_NAME       # use OLD_NAME if not on branch
+git push origin :OLD_NAME NEW_NAME      # delete OLD from remote and push NEW
+git push origin -u NEW_NAME             # reset uptream to NEW
+
 git checkout [-b] <BRANCH>|<TAG> [<FILE>]	# checkout a git reference
    git checkout <BRANCH> <FILE>		# revert changes to <FILE>
    git checkout HEAD aws_tags.py	# revert changes made to aws_tags.py
@@ -56,8 +62,8 @@ git merge <BRANCH>			# after switching to the receiving branch
 git merge origin/master
 git push [-u] [origin <BRANCH>]
    git push -u origin new_branch	# add upstream (tracking) ref for branches too
-   git push [-f] --delete origin ref	# (force) delete ref's from remote repo
-   git push origin :ref			# delete ref from remote repo
+   git push [-f] origin --delete ref	# (force) delete ref's from remote repo
+   git push origin :ref			# (deprecated) delete ref from remote repo
    git push --repo=REPO :ref		# delete ref from specified remote repo
    git push -u origin master
 git rebase -i HEAD~3			# change commit messages
@@ -129,7 +135,7 @@ $ git remote add origin $URL
 |        GitHub Rebase Workflow       |
 # single environment (master & FEATURE_BRANCH)
 [master] git fetch -p origin
-[master] git rebase origin/master master -i
+[master] git rebase -i origin/master
 [master] git co $FEATURE_BRANCH
 [FEATURE_BRANCH] git rebase master $FEATURE_BRANCH -i
 
@@ -149,3 +155,24 @@ $ git remote add origin $URL
 [PROD] git push origin PROD
 |________GitHub_Rebase_Workflow_______|
 
+ ___________________________________________
+|        Git Merge Conflicts Workflow       |
+[FEATURE] git fetch -p origin
+[FEATURE] git rebase -i origin/master
+[FEATURE] vi CONFLICTING_FILE(s)           # repeat for additional conflicts
+[FEATURE] git add CONFLICTING_FILE(s)      #   "     "     "           "
+[FEATURE] git rebase --continue            #   "     "     "           "
+[FEATURE] git push origin FEATURE --force  #   "     "     "           "
+
+   --- OR ---
+
+[master]$ git fetch -p origin
+[master]$ git merge origin/master
+[master]$ git checkout FEATURE
+[FEATURE]$ git rebase -i master            # using local master now because 
+                                           # it is in sync with origin/master
+[FEATURE]$ vi $CONFLICTING_FILE
+[FEATURE]$ git add $CONFLICTING_FILE
+[FEATURE]$ git rebase --continue           # performs git commit
+[FEATURE]$ git push origin FEATURE --force
+|________Git Merge Conflicts Workflow_______|

@@ -239,6 +239,8 @@ apt-get		- APT package handling utility -- command-line interface
 apt-cache	- query the APT cache
 	# apt-cache search PATTERN
 	# apt-cache show PACKAGE
+apt             - command-line interface
+        # apt list --installed
 arch		- print machine hardware name (same as uname -m)
 arp		- manipulate the system ARP cache
 	# arp -a
