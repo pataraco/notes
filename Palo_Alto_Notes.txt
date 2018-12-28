@@ -1,0 +1,8 @@
+> set cli terminal type xterm
+> show session info
+> request system fqdn show
+> show system info | match app
+> show system info | except vm
+
+# reset FQDN resolution
+> request system fqdn refresh
