@@ -83,6 +83,14 @@ two
 $ declare -p y
 declare -a y='([0]="zero" [1]="one" [2]="two")'
 ----------------
+$ declare -A x=([one]=1 [two]=2)
+$ echo "two: ${x[two]} - one ${x[one]}"
+two: 2 - one: 1
+$ echo ${!x[@]}
+one two
+$ echo ${#x[@]}
+2
+----------------
 for ((x=0; x <= 127; x++)); do
    printf '%3d | %04o | 0x%02x\n' "$x" "$x" "$x"
 done
