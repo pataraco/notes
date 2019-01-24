@@ -1,0 +1,102 @@
+PowerShell Notes
+================
+
+# get all but the system disk
+Get-Disk | where-object IsSystem -eq $False
+
+# initialize a disk
+Initialize-Disk <DiskNumber>
+Initialize-Disk -Number 4 –PartitionStyle MBR
+
+# remove partition data (can't be undone)
+Clear-Disk -Number 6 -RemoveData
+
+# list offline disks
+Get-Disk | Where-Object IsOffline –Eq $True
+
+# get partition info
+Get-Partition
+Get-Partition –DiskNumber <DiskNumber>
+
+# create new partition on a new disk
+New-Partition –DiskNumber <DiskNumber> -UseMaximumSize -AssignDriveLetter
+New-Partition –DiskNumber <DiskNumber> -UseMaximumSize -DriveLetter <DriveLetter>
+New-Partition –DiskNumber 1 -UseMaximumSize -DriveLetter T
+
+Get-Volume
+Format-Volume -DriveLetter <DriveLetter>
+
+
+
+------------------
+foreach ($disk_number in (Get-Disk | where-object IsSystem -eq $False).Number) {
+  Write-Output ("working on Drive: {0}" -f $disk_number)
+  $dev_name_output = (C:\Users\Administrator\ebsnvme-id.exe $disk_number)[2]
+  $dev_name = $dev_name_output.Replace("Device Name: ","")
+  $drive_letter = $dev_name.Replace("xvd","")
+  Write-Output ("got this device name: {0} and drive letter: {1}" -f $dev_name, $drive_letter)
+  Write-Output ("initializing the disk...")
+  Initialize-Disk -Number $disk_number
+  Write-Output ("creating the new partition...")
+  New-Partition –DiskNumber $disk_number -UseMaximumSize -DriveLetter $drive_letter
+  Write-Output ("formating the volume...")
+  Format-Volume -DriveLetter $drive_letter
+}
+------------------
+------------------
+--------- < 2012 R2 ---------
+C:\Program Files\Amazon\Ec2ConfigService\Settings\DriveLetterConfig.xml
+------------------
+<?xml version="1.0" standalone="yes"?>
+<DriveLetterMapping>
+  <Mapping>
+    <VolumeName>d-drive</VolumeName>
+    <DriveLetter>D:</DriveLetter>
+  </Mapping>
+  <Mapping>
+    <VolumeName>e-drive</VolumeName>
+    <DriveLetter>E:</DriveLetter>
+  </Mapping>
+  <Mapping>
+    <VolumeName>t-drive</VolumeName>
+    <DriveLetter>T:</DriveLetter>
+  </Mapping>
+</DriveLetterMapping>
+--------- > 2012 R2 ---------
+C:\ProgramData\Amazon\EC2-Windows\Launch\Scripts\InitializeDisks.ps1
+------------------
+C:\ProgramData\Amazon\EC2-Windows\Launch\Config\DriveLetterMappingConfig.json
+------------------
+{
+  "driveLetterMapping": [
+    {
+      "volumeName": "sample volume",
+      "driveLetter": "H"
+    }
+  ]
+}
+------------------
+
+pnputil -e
+
+Get-Alias ALIAS
+
+
+PS C:\Users\Administrator\Downloads> iwr https://s3.amazonaws.com/ec2-windows-drivers-downloads/EBSNVMeID/Latest/ebsnvme
+-id.zip -OutFile ebsnvme-id.zip
+
+PS C:\Users\Administrator\Downloads> add-type -AssemblyName system.io.compression.filesystem
+
+PS C:\Users\Administrator\Downloads> [System.io.compression.zipfile]::ExtractToDirectory('.\downloads\ebsnvme-id.zip','.
+')
+
+Invoke-WebRequest -Outfile  AWSCLISetup.exe https://s3.amazonaws.com/aws-cli/AWSCLISetup.exe
+iwr -outf AWSCLI64PY3.msi https://s3.amazonaws.com/aws-cli/AWSCLI64PY3.msi
+
+PS C:\Users\Administrator> $disk_2=(get-disk 2).SerialNumber.split('_')[0] -replace "vol","vol-"
+PS C:\Users\Administrator> $disk_2
+vol-04a8edbd431afc7ca
+
+PS C:\Users\Administrator> (aws ec2 describe-volumes --volume-ids $disk_2 | ConvertFrom-Json).Volumes[0].Attachments[0].
+Device[3]
+f

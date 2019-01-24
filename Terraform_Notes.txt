@@ -1,0 +1,44 @@
+Terrform Notes
+==============
+
+Installation
+------------
+- standalone binary: find it and install it - easy!
+
+MacOS
+  - brew install terraform
+
+Commands
+--------
+terraform version
+---
+terraform init
+
+terraform plan (< .11)
+
+terraform apply \
+  -var 'var1=foo' \
+  -var 'var2=bar'
+    or
+  -var-file="path/to/file.tfvars"  # if not "terraform.tfvars | *.auto.tfvars"
+    or
+  export TF_VAR_var1=foo
+  export TF_VAR_var2=bar
+
+  variable "var1" {
+    type = "string
+  }
+  variable "amis" {
+    default = {
+      "us-west-1" = "ami-12345"
+      "us-west-2" = "ami-67890"
+    }
+    type = "map"
+  }
+     
+  setting = "${var.var1}"
+  ami = "${lookup(var.amis, var.region)}"
+---
+terraform show
+
+terraform output [output]
