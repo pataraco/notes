@@ -13,6 +13,8 @@ Commands
 terraform version
 ---
 terraform init
+terraform init -backend=true -backend-config="$PATH" -backend-config="$KEY=$VAL" $DIR
+terraform init -backend=true -backend-config="key=baas/dev/data-tier.tfstate" baas-3.0/data-tier
 
 terraform plan (< .11)
 
@@ -42,3 +44,131 @@ terraform apply \
 terraform show
 
 terraform output [output]
+
+terraform destroy [-target=RESOURCE_TYPE.RESOURCE_ID]
+terraform apply \
+   [-var-file=./qa.us-west-2.tfvars] \
+   [-target=RESOURCE_TYPE.RESOURCE_ID]
+terraform destroy -var-file=./qa.us-west-2.tfvars -target=module.bos_sql_1
+
+examples
+-------
+terraform apply -var-file=local.tfvars -var='name="*SQL*"'
+
+-------------
+Backends
+------------
+- terraform init
+  - when adding, changing or removing backend configs
+- terraform state pull
+- terraform state push [-force] (extremely dangerous)
+- terraform force-unlock [-force] LOCK_ID [DIR]
+
+-------------
+Modules
+------------
+versioning not available with local modules
+
+ - terraform init [-upgrade]  # upgrade module versions
+
+-------------
+Workspaces
+------------
+Technically equivalent to renaming the state file.
+- Local state
+  - workspace states stored in directory: terraform .tfstate.d
+- Remote state
+  - S3 Backend
+    - workspace stored in:
+
+      ${bucket}/${workspace_key_prefix}/${workspace}/${key}
+
+- terraform workspace [delete|list|new|select|show]
+- interpolate with:
+    ${terraform.workspace}
+  e.g.:
+    count = "${terraform.workspace == "prod" ? 5 : 2}"
+
+  resource "aws_instance" "example" {
+    tags {
+      Name = "web - ${terraform.workspace}"
+    }
+    # ... other arguments
+  }
+-
+
+###########################
+tags = "${merge(var.tags, map("Name", var.instance_count > 1 ? format("%s-%d", var.name, count.index+1) : var.name))}"
+
+-------- -------- --------
+Workflow (environments and deployments)
+-------- -------- --------
+
+Presteps/Prep
+-------------
+1. create s3 bucket to hold state files
+2. create dynamodb table to lock state file access
+3. setup terraform workspaces
+  $ terraform workspace new blue
+  $ terraform workspace new green
+
+backend config location/name:
+
+  $REPO/terraform/projects/$PROJECT/$TIER/backend.tf 
+
+backend config contents:
+(partially configured to allow remaining configs via command line arguments)
+
+  ---
+  | terraform {
+  |     required_version = ">= 0.11.0"
+  |     backend "s3" {}
+  | }
+  ---
+
+backend configuration file location/name:
+(used to configure backend via command line arguments)
+
+  $REPO/terraform/projects/$PROJECT/backend.config
+
+backend configuration file contents:
+
+  ---
+  | bucket = "${var.state_file_bucket}"
+  | region = "${var.region}"
+  | encrypt = "true"
+  | dynamodb_table = "${var.state_file_lock_table}"
+  | workspace_key_prefix = "deployment"
+  ---
+  ---
+  | bucket = "${var.state_file_bucket}"
+  | region = "${var.region}"
+  | encrypt = "true"
+  | dynamodb_table = "${var.state_file_lock_table}"
+  | workspace_key_prefix = "deployment"
+  ---
+  ---
+  | bucket = "onica-praco-lab-gd-terraform"
+  | key = "baas-3-0/qa/data-tier.tfstate"
+  | key = "${var.project}/${var.environment}/data-tier.tfstate"
+  | region = "us-west-2"
+  | encrypt = true
+  | dynamodb_table = "terraform-locks-qa"  # for state file locking
+  | workspace_key_prefix = "deployment"    # default: 'env:'
+  ---
+
+  I. Launch "blue" in QA
+    1. cd to root directory of project
+      $ cd $REPO/terraform/projects/$PROJECT
+    2. switch to "qa" `git` branch
+      $ git checkout qa
+    3. switch to blue workspace
+      $ terraform workspace select blue
+    4. initialize the backend
+      $ terraform init -backend=true \ -backend-config="backend.config" \
+         -backend-config="key=$PROJECT/$ENV/$TIER.tfstate" $TIER
+    4. launch infrastructure
+      $ terraform apply -var-file=$TIER/$ENVIRONMENT.$REGION.tfvars]
+ II. Launch "green" in QA
+III. Launch "blue" in PROD
+ IV. Launch "green" in PROD

@@ -1,0 +1,84 @@
+Perforce (P4) Notes
+-------------------
+
+Questions
+---------
+- jobs
+- labels
+- changelists
+
+
+Install
+-------
+
+
+Configure
+---------
+- mkdir ~/workspaces/gdc
+- cd !$
+- export P4CLIENT=gdc
+    - p4 set P4CLIENT=$WORKSPACE
+- p4 client
+   (Edit "View"s if desired)
+- p4 sync
+- ignore files
+    - create ignore file (e.g. at workspace root dir)
+    - set P4IGNORE to path/name of ignore file
+
+.bash_rc
+--------
+# set up for Helix Perforce
+export P4PORT=$SERVER:$PORT   # 5050?
+export P4CLIENT=$P4_WORKSAPCE_DIR
+export P4EDITOR=$(which nvim)
+export P4IGNORE=$HOME/workspaces/$P4_WORKSPACE_DIR/.p4ignore
+export P4DIFF="$(which colordiff) -u"
+
+p4o () {
+   p4o=$(p4 opened | grep "${1:-}" | cut -d '#' -f1 | cut -d '/' -f8-9)
+   echo "$p4o"
+}
+--------
+
+Workflow
+--------
+ Don't change file permissions manually in the workspace,
+ use `p4 edit $FILE`
+
+- p4 sync $FILE(s)
+- p4 edit $FILE(s)
+- <hack>
+- p4 add [-c $CSN] $FILE(s)
+  (Or: p4 change; to specify changset)
+- p4 opened [-c $CSN]   # confirm files are added correctly
+- p4 submit [-c $CSN]
+
+Change lists
+------------
+- p4 edit -c $CSN $FILE
+- p4 submit [-c $CSN]
+- p4 submit $FILE
+- p4 submit "*".tf
+- p4 changes
+
+Commands
+------------
+- p4 add $FILE(s)           # add a file to the depoy
+- p4 change                 # change changeset info 
+- p4 changes [-m count] [-u user]
+- p4 client                 # set up workspace
+- p4 client -d $WORKSPACE   # set up workspace
+- p4 clients -u praco       # show workspaces
+- p4 describe $CSN
+- p4 diff */qa.us-west-2.tfvars
+- p4 diff2 app-tier/scripts/user_data.ps1#{7,6}
+- p4 files app-tier/scripts/user_data.ps1
+- p4 ignores [-v]           # show ignored files
+- p4 opened                 # show files opened
+- p4 reconcile              # show/edit new files for addition to depot
+- p4 revert $DIR[/…]        # reverts [all files with ...]
+- p4 revert */qa.us-west-2.tfvars  # undo all changes, grab file from depot
+- p4 set                    # set variables
+- p4 shelve (note changeset number)
+- p4 unshelve -s $CSN
+- p4 undo                   # undo submit
