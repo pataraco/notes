@@ -28,11 +28,12 @@ Configure
 .bash_rc
 --------
 # set up for Helix Perforce
-export P4PORT=$SERVER:$PORT   # 5050?
 export P4CLIENT=$P4_WORKSAPCE_DIR
+export P4CONFIG=$HOME/.p4.config
+export P4DIFF="$(which colordiff) -u"
 export P4EDITOR=$(which nvim)
 export P4IGNORE=$HOME/workspaces/$P4_WORKSPACE_DIR/.p4ignore
-export P4DIFF="$(which colordiff) -u"
+export P4PORT=$SERVER:$PORT   # 5050?
 
 p4o () {
    p4o=$(p4 opened | grep "${1:-}" | cut -d '#' -f1 | cut -d '/' -f8-9)
@@ -48,8 +49,9 @@ Workflow
 - p4 sync $FILE(s)
 - p4 edit $FILE(s)
 - <hack>
-- p4 add [-c $CSN] $FILE(s)
+- p4 add [-c $CSN] $FILE(s)  (only new files)
   (Or: p4 change; to specify changset)
+- p4 delete [-c $CSN] $FILE(s)  (only files to delete)
 - p4 opened [-c $CSN]   # confirm files are added correctly
 - p4 submit [-c $CSN]
 
@@ -63,22 +65,25 @@ Change lists
 
 Commands
 ------------
-- p4 add $FILE(s)           # add a file to the depoy
+- p4 add $FILE(s)           # add a file to the depot
 - p4 change                 # change changeset info 
 - p4 changes [-m count] [-u user]
-- p4 client                 # set up workspace
-- p4 client -d $WORKSPACE   # set up workspace
-- p4 clients -u praco       # show workspaces
+- p4 client
+- p4 client -d $WORKSPACE
+- p4 clients -u praco
+- p4 describe $CHANGESET  # shows changes
 - p4 describe $CSN
-- p4 diff */qa.us-west-2.tfvars
-- p4 diff2 app-tier/scripts/user_data.ps1#{7,6}
-- p4 files app-tier/scripts/user_data.ps1
-- p4 ignores [-v]           # show ignored files
-- p4 opened                 # show files opened
-- p4 reconcile              # show/edit new files for addition to depot
-- p4 revert $DIR[/…]        # reverts [all files with ...]
-- p4 revert */qa.us-west-2.tfvars  # undo all changes, grab file from depot
-- p4 set                    # set variables
-- p4 shelve (note changeset number)
+- p4 diff [file[rev]]             # show diff of opened files or revisions
+- p4 diff2 files#{7,6}            # show diff of 2 files[revisions] 
+- p4 diff2 file1[rev] file2[rev]. # show diff of 2 files[revisions] 
+- p4 filelog [files]              # show revision history of files
+- p4 files file[revRange]         # list files in the depot
+- p4 have [files]                 # show which revision you have
+- p4 ignores [-v]                 # show ignored files
+- p4 opened                       # show files opened
+- p4 reconcile                    # show/edit new files for addition to depot
+- p4 revert $DIR[/…]              # reverts changes [all files with ...]
+- p4 set                          # set variables
+- p4 shelve (note changeset no.)  # store pending changelist files into depot
+- p4 undo                         # undo submit
 - p4 unshelve -s $CSN
-- p4 undo                   # undo submit
