@@ -15,6 +15,12 @@ terraform version
 terraform init
 terraform init -backend=true -backend-config="$PATH" -backend-config="$KEY=$VAL" $DIR
 terraform init -backend=true -backend-config="key=baas/dev/data-tier.tfstate" baas-3.0/data-tier
+terraform init \
+     -backend-config "bucket=$TF_VAR_tf_state_bucket" \
+     -backend-config "lock_table=$TF_VAR_tf_state_table" \
+     -backend-config "region=$TF_VAR_region" \
+     -backend-config "key=$TF_VAR_application/$TF_VAR_environment"
+terraform init -backend-config backend-foo-blue-us-east-1.tfvars -reconfigure
 
 terraform plan (< .11)
 
@@ -37,7 +43,7 @@ terraform apply \
     }
     type = "map"
   }
-     
+
   setting = "${var.var1}"
   ami = "${lookup(var.amis, var.region)}"
 ---
@@ -50,6 +56,7 @@ terraform apply \
    [-var-file=./qa.us-west-2.tfvars] \
    [-target=RESOURCE_TYPE.RESOURCE_ID]
 terraform destroy -var-file=./qa.us-west-2.tfvars -target=module.bos_sql_1
+terraform destroy -var-file=qa.us-west-2.tfvars -target module.asg
 
 examples
 -------
@@ -114,7 +121,7 @@ Presteps/Prep
 
 backend config location/name:
 
-  $REPO/terraform/projects/$PROJECT/$TIER/backend.tf 
+  $REPO/terraform/projects/$PROJECT/$TIER/backend.tf
 
 backend config contents:
 (partially configured to allow remaining configs via command line arguments)
