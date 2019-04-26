@@ -126,7 +126,7 @@ beeping the pc speaker
 /etc/pam.d/su			# controls who can su to root
 /etc/pam_ldap.conf
 /etc/passwd			# passwords file
-/etc/pki/rpm-gpg		# RPM package verification GPG keys
+petc/pki/rpm-gpg		# RPM package verification GPG keys
 /etc/printcap			# printer config file
 /etc/profile			# system wide profile file
 /etc/profile.d			# default profile scripts run by /etc/profile
