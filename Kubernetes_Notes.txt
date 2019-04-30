@@ -1,0 +1,249 @@
+Kubernetes (k8s) Notes
+----------------------
+
+My kubernetes notes.
+
+Components
+----------
+
+Master Components
+-----------------
+control plane. global decisions. events.
+
+ - kube-apiserver: exposes API, scales
+ - etcd: key/val store of cluster data, always backup
+ - kube-scheduler: schedules newly created pods to run on specific nodes
+ - controller: control loop that watches the shared state of the cluster
+     through the apiserver and makes changes attempting to move the current
+     state towards the desired state.
+ - kube-controller-manager: runs controllers
+   - node controller: notices/responds to nodes going down
+   - replication controller: maintains correct number of pods for replication
+     controller objects
+   - endpoints controller: populates the Endpoints object (joins Services & Pods)
+   - service account & token controllers: create default accounts and API access
+     tokens for new namespaces
+ - cloud-controller-manager: runs controllers that interact with the underlying
+     cloud providers
+   - node controller: checks cloud provider it a node has been deleted in the
+     cloud after it sops responding
+   - route controller: set up routes in the underlying cloud infra
+   - service controller: create, update, deleted cloud provider load balancers
+   - volume controller: create, attach, mount volumes and interacting with the
+     cloud provider to orchestrate volumes
+
+Node Components
+---------------
+run on every node, maintain running pods, provide k8s runtime environment
+
+ - kubelet: agent, makes sure that containers are running in a pod with PodSpecs
+ - kube-proxy: enables the k8s service abstraction my maintaining network rules
+   on the host and performing connection forwarding
+ - container runtime: software responsible for running containers (docker,
+   containerd, cri-o, rktlet, and any k8s CRI (container Runtime interface))
+
+Addons
+------
+pods and services that implement cluster features. managed by deployments, 
+replication controllers, etc.
+
+ - extended list:
+   https://kubernetes.io/docs/concepts/cluster-administration/addons/
+
+ - DNS: all k8s clusters should have cluster DNS. DNS server, serves DNS records
+   for k8s services. containers started by k8s automatically include this DNS
+   server in the DNS searches
+   <service-name>.<namespace-name>.svc.cluster.local
+ - Web UI (dashboard): general purpose, web-based UI for k8s clusters. allows
+   management, troubleshooting of cluster applications and the cluster
+ - Container resource monitoring: records generic time-series container metrics 
+   in a central db and a UI to browse the data
+ - Cluster-level Logging: saves container logs to a central log store with
+   search/browsing interface
+
+Objects
+-------
+persistent entities in the k8s system which represent the state of the cluster
+ - which containerized apps are running and on which nodes
+ - resources available to those applications
+ - applications policies: restart, upgrades, fault-tolerance
+ - "record of intent": k8s contantly work to ensure that create objects exist
+   k8s desired state
+ - use k8s API to create, modify, delete objects
+ - object spec: describes desired state - characteristics
+ - object status: actual state
+ - required fields:
+   - apiVersion: version of the k8s API using to create the object
+   - kind: kind of object to create
+   - metadata: data to uniquely identify the object, including a `name`, `UID`
+     and `namespace`
+   - spec: precise object format
+   - name: client provided
+   - UID: k8s system generated
+   - namespace: virtual cluster backed by the same physical cluster, unique 
+     objects within
+   - labels/selectors: identifying attributes, organize, select
+   - annotations: arbitrary, non-identifying metadata. uri's, version, etc.
+   - field selectors: select resources based on the value of one or more
+     resource fields (metadata.name=my_service, metadata.namespace!=default)
+
+
+   Spec formats:
+   - https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.14/
+
+Architecture
+------------
+ - Nodes: worker machine (minion). managed by the master components.
+   - status:
+     - addresses: HostName, ExternlIp, InternalIp
+     - condition: OutOfDisk, Ready, MemoryPressure, PIDPressure, DiskPressure, NetworkUnavailable
+     - capacity: resouces available on the node: CPU, memory, max number of pods
+     - info: general info, kernel version, k8s version, Docker version, O.S. name
+   - not inherently created by k8s. created externally by cloud provider
+   - interacting components: node controller, kubelet, kubectl
+   - registration: with kubelet flag --register-node (default)
+ - Master-Node communication
+Containers
+----------
+   - Images
+   - Container Environment Variables
+   - Runtime Class
+   - container Lifecycle Hooks
+Workloads
+---------
+ - Pods: managed by controllers
+ - Controllers:
+   - ReplicaSet: maintains a stable set of replica Pods running, owner of a set
+     of Pods
+   - ReplicationController: ensures specified number of pod replicas are running
+   - Deployments: roll out ReplicaSets, declare pods states, rollback, scale,
+     pause, statuses, cleanup
+     (a Deployment that configures a ReplicaSet in now the recommended way to
+      set up replication)
+   - StatefulSets: stable, unique network identifiers, persistent storage,
+     ordered, graceful deployments and scaling, automated rolling updates
+   - DaemonSet: ensures that all (or some) Nodes run a copy of a Pod, run cluster
+     storage daemon, run logs collection daemon on every node, run monitoring
+     daemon on every node. one set per each type of daemon
+   - Garbage Collection: deletes certain objects (dependents) that once had an
+     owner, but no longer have an owner. metadata.ownerReferences
+   - TTL Controller: limit the lifetime of resource objects that have finished
+     execution (currently only handles jobs)
+   - Jobs: creates one or more Pods and ensuers that a specified number of them
+     successfully terminate
+   - CronJob: create Jobs on a time-based schedule
+Services, Load Balancing, Networking
+------------------------------------
+ - Services: defines a logical set of Pods and access policy determined by 
+   Label Selector
+   https://kubernetes.io/docs/concepts/services-networking/service
+ - DNS for Services and Pods
+ - Connnectiong Applications with Services
+ - Ingress
+ - Ingress controllers
+ - Network Policies
+ - Adding entries to Pod /etc/hosts with HostAliases
+
+Building Blocks (Primary)
+-------------------------
+if you can explain what each one of these do and how they build on each other,
+then you'll have a good grasp of k8s:
+
+ - Container
+ - Pod
+ - ReplicaSet or Controller
+ - Deployment
+ - Service
+ - Ingress Rule
+
+Building Blocks (Secondary)
+---------------------------
+ - Namespaces
+ - Configmap
+ - Secrets
+ - Limits
+ - env and envFrom
+ - Node and Pod Affinity and Antiaffinity
+ - Resource limits
+ - Daemon Set
+ - Stateful Set
+ - Persistent Volume
+ - Persistent Volume Claim
+
+Instalation
+------------
+
+Configuration
+-------------
+
+Commands
+--------
+Kubectl book: https://kubectl.docs.kubernetes.io/
+
+Reference:
+  https://kubernetes.io/docs/reference/
+
+ - Imperative vs. Declaritive
+
+ - kubectl
+ - kubectl get namespace
+ - kubectl [--namespace=$NAMESPACE] get pods
+ - kubectl config set-context $(kubectl config current-context) --namespace=$NAMESPACE
+ - kubectl config view
+ - kubectl api-resources --namespaced=true|false
+ - kubectl get pods -l env==prod,tier==web
+ - kubectl get pods -l 'env in (prod),tier in (web)'
+ - kubectl get pods -l 'env in (prod, qa),tier in (web)'
+ - kubectl get pods -l 'env,env notin (qa)'
+ - kubectl get pods --field-selector status.phase=Running
+ - kubectl get pods --field-selector status.phase=Running,spec.restartPolicy=Always
+ - kubectl get statefulsets,services --field-selector metadata.namespace!=default
+
+API
+---
+API Conventions:
+  https://github.com/kubernetes/community/blob/master/contributors/devel/sig-architecture/api-conventions.md
+API Overview:
+  https://kubernetes.io/docs/reference/using-api/api-overview/
+Access:
+  https://kubernetes.io/docs/reference/access-authn-authz/controlling-access/
+Python Client:
+  https://github.com/kubernetes-client/python
+
+"selector": {
+    "component" : "redis"
+}
+
+Labels & Selectors
+------------------
+
+Recommended Labels
+------------------
+https://kubernetes.io/docs/concepts/overview/working-with-objects/common-labels/
+
+a common set of labels allows tools to work interoperably, describing object in
+a common manner that all tools can underststand. and describe applications in a
+way that can be queried
+
+ - organized around the cnocept of an application
+ - applications described with metadata
+ - shared labels and annotations share a common prefix: `app.kubernetes.io`
+ - labels without a prefix are private to users
+ - a shared prefix ensures that shared labels do not interfere with custom user 
+   labels
+
+selector:
+    component: redis
+
+selector:
+  matchLabels:
+    componect: redis
+  matchExpressions:
+    - {key: env, operator: In, values: [prod, qa]}
+    - {key: tier, operator: NotIn, values: [web]}
+
+(operators: In, NotIn, Exists, DoesNotExist)
+
+
+Issues
+------
