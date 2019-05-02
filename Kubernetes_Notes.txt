@@ -3,6 +3,18 @@ Kubernetes (k8s) Notes
 
 My kubernetes notes.
 
+Questions
+----------
+1) Are you ready to handle k8s release schedule?
+  - major releases: 4 x year
+  - minor releases: 12+ x year
+  - support: N-2 ~ 9 months
+2) How many clusters will you need?
+  - need to be ready to expand/deploy to (N)
+  - 1 cluster / team|project
+3) How mature is your SDN (SW Defined Network)?
+  - L7/LB
+
 Components
 ----------
 
@@ -103,12 +115,14 @@ Architecture
    - interacting components: node controller, kubelet, kubectl
    - registration: with kubelet flag --register-node (default)
  - Master-Node communication
+
 Containers
 ----------
    - Images
    - Container Environment Variables
    - Runtime Class
    - container Lifecycle Hooks
+
 Workloads
 ---------
  - Pods: managed by controllers
@@ -132,11 +146,12 @@ Workloads
    - Jobs: creates one or more Pods and ensuers that a specified number of them
      successfully terminate
    - CronJob: create Jobs on a time-based schedule
+
 Services, Load Balancing, Networking
 ------------------------------------
+https://kubernetes.io/docs/concepts/services-networking/service
  - Services: defines a logical set of Pods and access policy determined by 
    Label Selector
-   https://kubernetes.io/docs/concepts/services-networking/service
  - DNS for Services and Pods
  - Connnectiong Applications with Services
  - Ingress
@@ -170,8 +185,31 @@ Building Blocks (Secondary)
  - Persistent Volume
  - Persistent Volume Claim
 
-Instalation
+Installation
 ------------
+brew install kubectl
+kubectl version
+brew cask install virtualbox
+brew cask install minikube
+minikube version
+minikube start
+minikube start \
+    --network-plugin=cni \
+    --enable-default-cni \
+    --container-runtime=containerd \
+    --container-runtime=cri-o \
+    --container-runtime=rkt \
+    --bootstrapper=kubeadm
+kubectl run hello-minikube --image=gcr.io/google_containers/echoserver:1.4 --port=8080
+kubectl run hello-minikube --image=k8s.gcr.io/echoserver:1.10 --port=8080
+kubectl expose deployment hello-minikube --type=NodePort
+kubectl get pod
+minikube service hello-minikube --url
+kubectl delete deployment hello-minikube
+minikube addons list
+minikube addons enable ADDON
+minikube stop
+
 
 Configuration
 -------------
@@ -185,7 +223,10 @@ Reference:
 
  - Imperative vs. Declaritive
 
- - kubectl
+ - kubectl [--help]
+ - kubectl cluster-info
+ - kubectl get nodes
+ - kubectl get deployments
  - kubectl get namespace
  - kubectl [--namespace=$NAMESPACE] get pods
  - kubectl config set-context $(kubectl config current-context) --namespace=$NAMESPACE
@@ -198,6 +239,12 @@ Reference:
  - kubectl get pods --field-selector status.phase=Running
  - kubectl get pods --field-selector status.phase=Running,spec.restartPolicy=Always
  - kubectl get statefulsets,services --field-selector metadata.namespace!=default
+ - kubectl config use-context minikube
+ - kubectl get pods --context=minikube
+ - kubectl proxy
+ - kubectl get pods -o go-template --template '{{range .items}}{{.metadata.name}}{{"\n"}}{{end}}'
+ - curl http://localhost:8001/api/v1/namespaces/default/pods/$POD_NAME/proxy/
+ 
 
 API
 ---
@@ -243,6 +290,7 @@ selector:
     - {key: tier, operator: NotIn, values: [web]}
 
 (operators: In, NotIn, Exists, DoesNotExist)
+
 
 
 Issues
