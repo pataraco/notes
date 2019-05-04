@@ -15,6 +15,13 @@ Questions
 3) How mature is your SDN (SW Defined Network)?
   - L7/LB
 
+TODO
+----
+- https://github.com/ahmetb/kubectx
+- https://kubernetes.io/docs/reference/kubectl/cheatsheet/
+- https://kubernetes.io/docs/reference/kubectl/jsonpath/
+- source <(kubectl completion bash)
+
 Components
 ----------
 
@@ -150,6 +157,9 @@ Workloads
 Services, Load Balancing, Networking
 ------------------------------------
 https://kubernetes.io/docs/concepts/services-networking/service
+https://kubernetes.io/docs/tutorials/services/source-ip/
+https://kubernetes.io/docs/concepts/services-networking/connect-applications-service
+
  - Services: defines a logical set of Pods and access policy determined by 
    Label Selector
  - DNS for Services and Pods
@@ -158,6 +168,7 @@ https://kubernetes.io/docs/concepts/services-networking/service
  - Ingress controllers
  - Network Policies
  - Adding entries to Pod /etc/hosts with HostAliases
+ - ClusterIP -> NodePort -> LoadBalancer, ExternalName
 
 Building Blocks (Primary)
 -------------------------
@@ -223,7 +234,12 @@ Reference:
 
  - Imperative vs. Declaritive
 
- - kubectl [--help]
+kubectl get      - list resources
+kubectl describe - show detailed information about a resource
+kubectl logs     - print the logs from a container in a pod
+kubectl exec     - execute a command on a container in a pod
+
+ - kubectl $CMD [--help] [-o wide|json|yaml] [-l $KEY=$VAL]
  - kubectl cluster-info
  - kubectl get nodes
  - kubectl get deployments
@@ -242,9 +258,23 @@ Reference:
  - kubectl config use-context minikube
  - kubectl get pods --context=minikube
  - kubectl proxy
- - kubectl get pods -o go-template --template '{{range .items}}{{.metadata.name}}{{"\n"}}{{end}}'
+ - kubectl get pods -o go-template --template '{{range .items}}{{.metadata.name}}{{"\n"}}{{end}}
+ - kubectl get services/$SERVICE -o go-template='{{(index .spec.ports 0).nodePort}}'
+ - minikube ip
+ # API of the pod
  - curl http://localhost:8001/api/v1/namespaces/default/pods/$POD_NAME/proxy/
- 
+ - kubectl describe pods [$POD_NAME]
+ - kubectl describe services $SERVICE
+ - kubectl describe services/$SERVICE
+ - kubectl log $POD_NAME
+ - kubectl exec [-ti] $POD_NAME $CMD
+ - kubectl expose deployment/$DEPOLYMENT --type=NodePort --port=8080
+ - kubectl expose deployment/$DEPOLYMENT --type NodePort --port 8080
+ - kubectl label <OBJECT> $OBJECT_NAME $KEY=$VAL
+ - kubectl delete service $SERVICE
+ - kubectl delete service -l $KEY=$VAL
+ - kubectl exec -ti $POD_NAME curl localhost:8080
+ - kubectl scale deployments $DEPLOYMENT --replicas=$X
 
 API
 ---
