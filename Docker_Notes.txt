@@ -19,7 +19,7 @@ yum-config-manager --disable docker-ce-edge
 # update the yum package index
 yum makecache fast
 # install
-yum install docker-ce	# didn't work, need CentOS 7
+yum install docker-ce   # didn't work, need CentOS 7
 yum install docker-io
 # list versions to install a specific
 yum list docker\* --showduplicates | sort -r
@@ -43,49 +43,58 @@ docker-machine version
 
 Docker Commands
 ---------------
-build		- build an image
-	docker build -t docker-whalesay . # build from ./Dockerfile
-	docker run docker-whalesay
-	docker build -t pataraco/myfirstapp .
-image rm	- remove image
-	docker image rm -f 2cde513e9c25
-images		- list images loaded
-	docker images
-inspect		- Return low-level information on a container or image
-	docker inspect
-login		- log in to Docker account
-	docker login # then enter username/passwd/email
-port		- lookup the public-facing port that is NAT-ed to PRIVATE_PORT
-	docker port IMAGE
-ps [-a]		- list containers
-	docker ps [-a]
-pull		- pull from Docker Hub
-	docker pull alpine	# lightweight linux distro
-push		- push to Docker Hub
-	docker push pataraco/docker-whale
-rm		- remove container
-	docker rm CONTAINER-ID|NAME
-rmi		- remove one or more images
-	docker rmi -f 2cde513e9c25
-run [-it]	- load image into container and run it
-	docker run docker/whalesay cowsay boo
-search		- search for an image on the Docker Hub
-stop		- stop a running container
-	docker stop CONTAINER-ID|NAME
-tag		- tag an image
-	docker tag 2cde513e9c25 pataraco/docker-whale:latest
+build     - build an image
+   docker build -t docker-whalesay . # build from ./Dockerfile
+   docker run docker-whalesay
+   docker build -t pataraco/myfirstapp .
+create    - create a new container
+exec      - run a command in a running container
+   docker exec -it CONTAINER  # interactive and pseudo-TTY
+image rm  - remove image
+   docker image rm -f 2cde513e9c25
+images    - list images loaded
+   docker images
+inspect   - Return low-level information on a container or image
+   docker inspect
+kill      - kill one or more running containers
+   docker kill [-s|--signal string] CONTAINER
+login     - log in to Docker account
+   docker login # then enter username/passwd/email
+logs      - fetch the logs of a container
+   docker logs [-f|--follow|--tail]
+port      - lookup the public-facing port that is NAT-ed to PRIVATE_PORT
+   docker port IMAGE
+ps [-a]   - list containers
+   docker ps [-a|--all]  # list all, not just running
+pull      - pull from Docker Hub
+   docker pull alpine    # lightweight linux distro
+push      - push to Docker Hub
+   docker push pataraco/docker-whale
+rm        - remove container
+   docker rm CONTAINER-ID|NAME
+rmi       - remove one or more images
+   docker rmi -f 2cde513e9c25
+run [-it] - load image into container and run it
+   docker run docker/whalesay cowsay boo
+search    - search for an image on the Docker Hub
+start     - start one or more stopped containers
+   docker start -ia  # interactive and attach
+stop      - stop a running container
+   docker stop [-t|--time int] CONTAINER-ID|NAME
+tag       - tag an image
+   docker tag 2cde513e9c25 pataraco/docker-whale:latest
 
 Docker Machine Commands
 -----------------------
 docker-machine version
 docker-machine create MACHINE
-docker-machine ls			# list machines
-docker-machine env MACHINE		# how to connect to client
-docker-machine ip MACHINE		# get IP of machine
-eval $(docker-machine env MACHINE)	# connect shell to machine and verify
-docker-machine ls			# look for the "*"
-docker-machine ssh MACHINE		# ssh to machine
-docker-machine stop MACHINE		# stop a machine
+docker-machine ls   # list machines
+docker-machine env MACHINE   # how to connect to client
+docker-machine ip MACHINE   # get IP of machine
+eval $(docker-machine env MACHINE)   # connect shell to machine and verify
+docker-machine ls   # look for the "*"
+docker-machine ssh MACHINE   # ssh to machine
+docker-machine stop MACHINE   # stop a machine
 ------------
 # initialize the swarm
 # log into a "manager"
@@ -112,9 +121,9 @@ manager|$ docker stack deploy --compose-file docker-stack.yml APP-NAME
 # Verify that the stack deployed as expected
 manager|$ docker stack services APP-NAME
 # Test out
-<manager-ip>:5000	# vote
-<manager-ip>:5001	# see results
-<manager-ip>:8080	# visualizer
+<manager-ip>:5000   # vote
+<manager-ip>:5001   # see results
+<manager-ip>:8080   # visualizer
 # Stop the voting app (by stopping the machines)
 docker-machine stop worker
 docker-machine stop manager

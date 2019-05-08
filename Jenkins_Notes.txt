@@ -47,6 +47,8 @@ Re-Read:
   $ wget http://mirrors.jenkins.io/war-stable/latest/jenkins.war
   $ java -jar jenkins.war
   $ http://localhost:8080		# follow instructions to finish install
+# brew
+  $ brew install jenkins
 
 # Advance Jenkins installation: https://jenkins.io/doc/book/appendix/advanced-installation/
 # - experimentation, staging or production
