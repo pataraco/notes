@@ -3,11 +3,15 @@ Jenkins
 
 # TO-DO
 # -----
+https://www.cloudbees.com/sites/default/files/cje-study-guide-2018.pdf
+https://go.cloudbees.com/
+https://go.cloudbees.com/training/index.html  (google)
 
 # Docs
 # ----
 * https://jenkins.io/doc/
 * Jenkins Handbook - https://jenkins.io/doc/book/
+* https://stackoverflow.com/questions/tagged/jenkins
 
 Done:
 ----
@@ -38,7 +42,26 @@ Re-Read:
   # run a container running the image
   #  - map data directory from the container to the host (TO_HOST_DIR:FROM_CONTAINER_DIR)
   #  - expose port to host: CONTAINER_PORT EXPOSED_PORT
-  $ docker run -d -p $EXPOSED_PORT:$CONTAINER_PORT -v $TO_HOST_DIR:$FROM_CONTAINER_DIR -t jenkins/jenkins
+  $ docker run \
+     -d -p $EXPOSED_PORT:$CONTAINER_PORT \
+     -v $TO_HOST_DIR:$FROM_CONTAINER_DIR \
+     -t jenkins/jenkins
+# docker	# TODO: Try this!!!  (use jenkins/jenkin)
+  $ docker run \
+     -p 8080:8080 -p 50000:50000 \
+     -v $$PWD/jenkins:/var/jenkins_home \
+     jenkins/jenkins:lts
+  $ docker exec -it $CONT_ID /usr/local/bin/install-plugins.sh $PLUG_INS
+  $ http://$JENKINS_URL/safeRestart
+
+  OR (build your own image)
+
+  Dockerfile
+  ---
+  FROM jenkins/jenkins:lts
+  COPY plugins.txt /usr/share/jenkins/ref/plugins.txt
+  RUN /usr/local/bin/install-plugins.sh < /usr/share/jenkins/ref/plugins.txt
+  ---
 # linux					# <----- performed this one
   $ sudo wget -O /etc/yum.repos.d/jenkins.repo https://pkg.jenkins.io/redhat-stable/jenkins.repo
   $ sudo rpm --import https://pkg.jenkins.io/redhat-stable/jenkins.io.key
@@ -64,6 +87,16 @@ sudo apt-get install jenkins
 # - grab security token from log and use with "Setup Wizard" in Web UI
 # - token also for admin default password
 # - Setup wizard installs most common plugins
+
+# Plug-In (recommended)
+-----------------------
+- Build Monitor View           # highly visible view of jobs statuses
+- Job Configuration History    # Saves copies of job/system configs
+- Job DSL                      # DSL programmatic creation of projects
+- Throttle Concurrent Builds   # Throttles concurrent builds per node
+- Timestamper                  # Adds timestamps to the Console Output
+- Version Number               # Richer version numbers to be created and used
+- Build Name Setter            # Sets build display name other than #1, #2, #3
 
 # Files
 # -------

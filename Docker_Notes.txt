@@ -44,9 +44,11 @@ docker-machine version
 Docker Commands
 ---------------
 build     - build an image
+   docker build -t $USER/$PROJECT:$TAG .
    docker build -t docker-whalesay . # build from ./Dockerfile
    docker run docker-whalesay
    docker build -t pataraco/myfirstapp .
+commit    - craete a new image from a container's changes
 create    - create a new container
 exec      - run a command in a running container
    docker exec -it CONTAINER  # interactive and pseudo-TTY
@@ -83,6 +85,41 @@ stop      - stop a running container
    docker stop [-t|--time int] CONTAINER-ID|NAME
 tag       - tag an image
    docker tag 2cde513e9c25 pataraco/docker-whale:latest
+
+Dockerfile
+----------
+# parser directives  # must appear first, blank line separations
+# directive=value
+# syntax=[remote image reference]  # only enabled if BuildKit backend is used
+# excape=`                         # sets character used to escape characters
+
+# comment
+
+# syntax
+INSTRUCTION arguments
+
+# instructions
+ARG <name>[=<default value>]  # defines a variable that users can pass at
+                              # build-time to the builder with the docker build
+                              # command using --build-arg <name>=<value> flag
+ARG VERSION=latest
+ENV <key> <value>             # sets environment vare <key> to value <value>.
+                              # view with: docker inspect
+                              # change/set: docker run --env <key>=<value>
+ENV <key>=<value> <key2>=<value2> ...
+FROM base:${VERSION}
+FROM <image> [AS <name>]      # initializes new build stage and sets Base Image
+FROM <image>[:<tag>] [AS <name>]
+FROM <image>[@<digest>] [AS <name>]
+WORKDIR /path/to/dir     # sets working dir for RUN, CMD, ENTRYPOINT, COPY, ADD
+RUN <command>                           # shell form, command is run in a shell
+RUN ["executable", "param1", "param2"]  # exec form
+COPY [--chown=<user>:<group>] <src>... <dest>
+COPY [--chown=<user>:<group>] ["<src>",... "<dest>"]  # paths with whitespaces
+CMD ["executable","param1","param2"]    # exec form, the preferred form
+CMD ["param1","param2"]                 # as default parameters to ENTRYPOINT
+CMD command param1 param2               # shell form
+
 
 Docker Machine Commands
 -----------------------
