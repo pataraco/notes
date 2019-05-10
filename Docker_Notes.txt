@@ -77,6 +77,8 @@ rm        - remove container
 rmi       - remove one or more images
    docker rmi -f 2cde513e9c25
 run [-it] - load image into container and run it
+   docker run [-it] USER/PROJECT:TAG CMD
+   docker run [-d] USER/PROJECT:TAG [CMD]  # run in background
    docker run docker/whalesay cowsay boo
 search    - search for an image on the Docker Hub
 start     - start one or more stopped containers
@@ -120,6 +122,12 @@ CMD ["executable","param1","param2"]    # exec form, the preferred form
 CMD ["param1","param2"]                 # as default parameters to ENTRYPOINT
 CMD command param1 param2               # shell form
 
+Docker Compose Commands
+-----------------------
+docker-compose
+docker-compose up [--build] [-d]
+docker-compose down
+docker-compose ps
 
 Docker Machine Commands
 -----------------------
