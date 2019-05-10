@@ -52,6 +52,7 @@ Workflow
 - p4 add [-c $CSN] $FILE(s)  (only new files)
   (Or: p4 change; to specify changset)
 - p4 delete [-c $CSN] $FILE(s)  (only files to delete)
+- p4 move [-c $CSN] $FILE(s)  (only files to delete)
 - p4 opened [-c $CSN]   # confirm files are added correctly
 - p4 submit [-c $CSN]
 
