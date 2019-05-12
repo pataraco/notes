@@ -285,7 +285,10 @@ ${var/%pat/repl}	Use value of var, with match of pat replaced with repl.
 ${!var}			Use value of var as name of variable to use (indirect reference).
 
 EXAMPLES
+--------
 $ z=hello
 $ echo ${z/ll/LL}
 heLLo
 ---
+${CFG_FILE##*/}		# gets rid of the "/" in the variable
+${fname##*[.,~\#]}	# gets rid of the ".,~#" in the variable
