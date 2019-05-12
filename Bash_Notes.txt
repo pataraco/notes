@@ -291,4 +291,4 @@ $ echo ${z/ll/LL}
 heLLo
 ---
 ${CFG_FILE##*/}		# gets rid of the "/" in the variable
-${fname##*[.,~\#]}	# gets rid of the ".,~#" in the variable
+${filename##*[.,~\#]}	# gets rid of the ".,~#" in the variable
