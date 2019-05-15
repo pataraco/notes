@@ -88,6 +88,7 @@ git tag					# create, list, del, verify tag object
    git tag -f vm-1605-rc-1
    git push origin --tags
    git tag -l vm-1517*			# list remote tags
+   git fetch --all --tags --prune       # fetch all remotes/tags
 # check if need to pull
 $ git remote update
 $ git status -uno
