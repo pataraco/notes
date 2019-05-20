@@ -3,6 +3,13 @@ Docker Notes
 
 - created a Docker cloud account
 
+TODO
+--------------
+- test out lists in Dockerfile
+
+Bookmark (Udemy: Docker & Kubernetes)
+- Executing Tests; Section 6, Lecture 74
+
 Install Docker
 --------------
 # remove old
@@ -48,6 +55,7 @@ build     - build an image
    docker build -t docker-whalesay . # build from ./Dockerfile
    docker run docker-whalesay
    docker build -t pataraco/myfirstapp .
+   docker build -f DOCKERFILE .
 commit    - craete a new image from a container's changes
 create    - create a new container
 exec      - run a command in a running container
@@ -59,32 +67,33 @@ images    - list images loaded
 inspect   - Return low-level information on a container or image
    docker inspect
 kill      - kill one or more running containers
-   docker kill [-s|--signal string] CONTAINER
+   docker kill [-s | --signal string] CONTAINER
 login     - log in to Docker account
    docker login # then enter username/passwd/email
 logs      - fetch the logs of a container
-   docker logs [-f|--follow|--tail]
+   docker logs [-f | --follow | --tail]
 port      - lookup the public-facing port that is NAT-ed to PRIVATE_PORT
    docker port IMAGE
 ps [-a]   - list containers
-   docker ps [-a|--all]  # list all, not just running
+   docker ps [-a | --all]  # list all, not just running
 pull      - pull from Docker Hub
    docker pull alpine    # lightweight linux distro
 push      - push to Docker Hub
    docker push pataraco/docker-whale
 rm        - remove container
-   docker rm CONTAINER-ID|NAME
+   docker rm CONTAINER-ID | NAME
 rmi       - remove one or more images
    docker rmi -f 2cde513e9c25
 run [-it] - load image into container and run it
    docker run [-it] USER/PROJECT:TAG CMD
    docker run [-d] USER/PROJECT:TAG [CMD]  # run in background
    docker run docker/whalesay cowsay boo
+   docker run [-v SERVER_VOL:CONTAINER_VOL] [-p SERVER_PORT:CONTAINER_PORT] IMAGE
 search    - search for an image on the Docker Hub
 start     - start one or more stopped containers
    docker start -ia  # interactive and attach
 stop      - stop a running container
-   docker stop [-t|--time int] CONTAINER-ID|NAME
+   docker stop [-t | --time int] CONTAINER-ID | NAME
 tag       - tag an image
    docker tag 2cde513e9c25 pataraco/docker-whale:latest
 
@@ -125,9 +134,10 @@ CMD command param1 param2               # shell form
 Docker Compose Commands
 -----------------------
 docker-compose
-docker-compose up [--build] [-d]
 docker-compose down
+docker-compose logs [-f | --follow]
 docker-compose ps
+docker-compose up [--build] [-d]  # start [build] [daemon/background]
 
 Docker Machine Commands
 -----------------------
