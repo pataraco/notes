@@ -1,0 +1,22 @@
+_________________
+AWS Amplify Notes
+=================
+
+TODO
+----
+
+IN PROG	-	Enable autoscaling of stats
+PEND	-	Try to get rid on double `chef-client` runs when creating (inside the user-data file)
+PEND	-	WTF is up with CMS?
+PEND	-	Why so many characters?
+PEND	-	Make settings less aggressive
+
+Installation
+------------
+- Pre-reqs
+  $ node -v  # Node.js
+  $ npm -v   # npm
+- Install
+  $ npm install -g @aws-amplify/cli
+  $ amplify -v | -h
+  $ amplify configure

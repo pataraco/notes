@@ -1,0 +1,21 @@
+PHP Notes
+---------
+
+Composer
+--------
+
+https://getcomposer.org/
+
+Description:
+
+ Composer is an application-level package manager for the PHP programming
+ language that provides a standard format for managing dependencies of PHP
+ software and required libraries
+
+Composer is a tool for dependency management in PHP. It allows you to declare
+the libraries your project depends on and it will manage (install/update) them
+for you.
+
+Composer Installation
+---------------------
+$ brew install composer

@@ -1,6 +1,19 @@
 Terrform Notes
 ==============
 
+Docs
+----
+v12+
+- https://github.com/hashicorp/terraform/blob/v0.12.0/CHANGELOG.md
+# Configuration
+- [Configuration Language](https://www.terraform.io/docs/configuration/index.html)
+# Expressions are used to refer to or compute values within a configuration
+- [Expressions](https://www.terraform.io/docs/configuration/expressions.html)
+# Type constraints: validate user-provided values for their input variables and resource arguments
+- [Type Constraints](https://www.terraform.io/docs/configuration/types.html)
+# Functions: built-ins that you can call from within expressions to transform and combine values
+- [Functions](https://www.terraform.io/docs/configuration/functions.html)
+
 Installation
 ------------
 - standalone binary: find it and install it - easy!

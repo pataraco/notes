@@ -8,7 +8,7 @@ git branch [-a|-d|-r] [<BRANCH_NAME>]	# list|create|delete branches & current
    git branch -a			# list both remote and local branches
    git branch -r			# list remote branches
    git branch -d [-r]			# delete local[remote] branch
-      # git branch -d -r origin/nubranch
+      # git branch -d -r origin/nubranch  # deletes remote-tracking
    # using branches to make then merge changes in a new branch on to master
      1. git checkout -b NEW_BRANCH	# create and checkout new branch
        (or `git branch NEW_BRANCH; git checkout NEW_BRANCH)
@@ -177,3 +177,20 @@ $ git remote add origin $URL
 [FEATURE]$ git rebase --continue           # performs git commit
 [FEATURE]$ git push origin FEATURE --force
 |________Git Merge Conflicts Workflow_______|
+
+ ___________________________________________
+|        Git Pre Commit Hooks              |
+example (.pre-commit-config.yaml)
+---
+repos:
+  - repo: git://github.com/antonbabenko/pre-commit-terraform
+    rev: v1.12.0
+    hooks:
+      - id: terraform_fmt
+      - id: terraform_docs
+  - repo: git://github.com/pre-commit/pre-commit-hooks
+    rev: v1.3.0
+    hooks:
+      - id: check-merge-conflict
+---
+|________Git Pre Commit Hooks______________|

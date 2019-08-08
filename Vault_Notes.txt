@@ -1,0 +1,17 @@
+Vault Notes
+-----------
+
+Learn Vault!
+
+https://learn.hashicorp.com/vault/
+
+Commands
+--------
+
+set/export VAULT_ADDR or use '-address=<string>'
+
+- vault login -method=github token=$TOKEN
+   ( check out 'vl' alias )
+- vault auth help github
+- vault status
+- vault list secret

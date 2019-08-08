@@ -2,14 +2,20 @@
 Virtual Environments
 --------------------
 
-PyEnv and VirtualEnv
+PipEnv, PyEnv and VirtualEnv
 
-Pyenv and virtualenv are very different tools that work in different ways to do different things:
+PipEnv, Pyenv and virtualenv are very different tools that work in different ways to do different things:
 
 -----
 PyEnv
 -----
 PyEnv is a bash extension - will not work on Windows - that intercepts your calls to python, pip, etc., to direct them to one of several of the system python tool-chains. So you always have all the libraries that you have installed in the selected python version available - as such it is good for users who have to switch between different versions of python.
+
+------ ------ ------ ------ ------ ------
+pyenv (https://github.com/yyuu/pyenv)
+------ ------ ------ ------ ------ ------
+is used to isolate Python versions. For example, you may want to test your code against Python 2.6, 2.7, 3.3, 3.4 and 3.5, so you'll need a way to switch between them. Once activated, it prefixes the PATH environment variable with ~/.pyenv/shims, where there are special files matching the Python commands (python, pip). These are not copies of the Python-shipped commands; they are special scripts that decide on the fly which version of Python to run based on the PYENV_VERSION environment variable, or the .python-version file, or the ~/.pyenv/version file. pyenv also makes the process of downloading and installing multiple Python versions easier, using the command pyenv install.
+
 
 Installation
 ------------
@@ -50,6 +56,14 @@ virtualenv (https://pypi.python.org/pypi/virtualenv) is a tool to create isolate
 
 VirtualEnv is pure python so works everywhere, it makes a copy of, optionally as specific version of, python and pip local to the activate environment which may or may not include links to the current system tool-chain, if it does not you can install just a known subset of libraries into that environment. As such it is almost certainly much better for testing and deployment as you know exactly which libraries, at which versions, are used and a global change will not impact your module.
 
+------ ------ ------ ------ ------ ------
+virtualenv (https://pypi.python.org/pypi/virtualenv)
+------ ------ ------ ------ ------ ------
+is a very popular tool that creates isolated Python environments for Python libraries. If you're not familiar with this tool, I highly recommend learning it, as it is a very useful tool, and I'll be making comparisons to it for the rest of this answer.
+
+It works by installing a bunch of files in a directory (eg: env/), and then modifying the PATH environment variable to prefix it with a custom bin directory (eg: env/bin/). An exact copy of the python or python3 binary is placed in this directory, but Python is programmed to look for libraries relative to its path first, in the environment directory. It's not part of Python's standard library, but is officially blessed by the PyPA (Python Packaging Authority). Once activated, you can install packages in the virtual environment using pip.
+
+
 Installation
 ------------
 Install virtualenv via pip:
@@ -80,6 +94,16 @@ $ deactivate
 # to disable the evironment in the prompt
 VIRTUAL_ENV_DISABLE_PROMPT=YES
 
+
+------ ------ ------ ------ ------ ------
+pipenv  (https://pypi.python.org/pypi/pipenv)
+------ ------ ------ ------ ------ ------
+by Kenneth Reitz (the author of requests), is the newest project in this list. It aims to combine Pipfile, pip and virtualenv into one command on the command-line. The virtualenv directory typically gets placed in ~/.local/share/virtualenvs/XXX, with XXX being a hash of the path of the project directory. This is different from virtualenv, where the directory is typically in the current working directory.
+
+The Python Packaging Guide recommends pipenv when developing Python applications (as opposed to libraries). There does not seem to be any plans to support venv instead of virtualenv (#15). Confusingly, its command-line option --venv refers to the virtualenv directory, not venv, and similarly, the environment variable PIPENV_VENV_IN_PROJECT affects the location of the virtualenv directory, not venv directory (#1919).
+
+
+----------------
 Additional Tools
 ----------------
 

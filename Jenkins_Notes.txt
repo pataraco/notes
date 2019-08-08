@@ -88,6 +88,20 @@ sudo apt-get install jenkins
 # - token also for admin default password
 # - Setup wizard installs most common plugins
 
+# Global Tool Configuration
+---------------------------
+JDK installations
+- Add JDK
+  JAVA_HOME: /Library/Java/JavaVirtualMachines/openjdk-12.0.1.jdk/Contents/Home
+     OR    : /Library/Java/JavaVirtualMachines/jdk1.8.0_101.jdk/Contents/Home
+Git installations
+Path to Git executable: git
+Maven installations
+- Add Maven
+  MAVEN_HOME: /usr/local/Cellar/maven/3.6.1
+
+  
+
 # Plug-In (recommended)
 -----------------------
 - Build Monitor View           # highly visible view of jobs statuses

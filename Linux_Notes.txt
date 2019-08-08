@@ -241,6 +241,7 @@ apt-cache	- query the APT cache
 	# apt-cache show PACKAGE
 apt             - command-line interface
         # apt list --installed
+        # apt install PACKAGE
 arch		- print machine hardware name (same as uname -m)
 arp		- manipulate the system ARP cache
 	# arp -a

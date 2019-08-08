@@ -8,7 +8,8 @@ TODO
 - test out lists in Dockerfile
 
 Bookmark (Udemy: Docker & Kubernetes)
-- Executing Tests; Section 6, Lecture 74
+- Section 6, Lecture 78; Need for Ngnix
+- Section 7, Lecture 91; Automated Deployments
 
 Install Docker
 --------------
@@ -50,6 +51,7 @@ docker-machine version
 
 Docker Commands
 ---------------
+attach    - attach local standard in/out/err streams to a running container
 build     - build an image
    docker build -t $USER/$PROJECT:$TAG .
    docker build -t docker-whalesay . # build from ./Dockerfile

@@ -1,0 +1,34 @@
+CloudFormation Notes
+--------------------
+
+
+Deployment Tools/Methods
+------------------------
+- Ansible
+   - https://docs.ansible.com/ansible/latest/modules/cloudformation_module.html
+   - example:
+      - https://github.com/YPlan/ansible-python-lambda
+- Stacker
+   - https://stacker.readthedocs.io/en/latest/
+   - https://engineering.remind.com/introduction-to-stacker/
+   - https://github.com/cloudtools/stacker
+   - https://github.com/cloudtools/troposphere
+- Sceptre
+   - https://sceptre.cloudreach.com/latest/about.html
+   - https://sceptre.cloudreach.com/latest/docs/get_started.html
+   - https://sceptre.cloudreach.com/latest/docs/index.html
+   - https://github.com/cloudreach/sceptre
+- Formica
+   - https://theserverlessway.com/tools/formica/
+   - https://github.com/theserverlessway/formica
+- StackMaster
+   - https://github.com/envato/stack_master
+- SparkleFormation
+   - https://www.sparkleformation.io/
+   - https://github.com/sparkleformation/sparkle_formation
+   - https://github.com/sparkleformation/sfn
+- CodePipeline ?
+
+# Deploy a stack viw HTTPS
+https://console.aws.amazon.com/cloudformation/home?region=us-east-2#/stacks/new?stackName=mysfits-fargate&templateURL=https://s3.amazonaws.com/mythical-mysfits-website/fargate/core.yml
+
