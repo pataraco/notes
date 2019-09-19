@@ -75,6 +75,15 @@ replication controllers, etc.
    <service-name>.<namespace-name>.svc.cluster.local
  - Web UI (dashboard): general purpose, web-based UI for k8s clusters. allows
    management, troubleshooting of cluster applications and the cluster
+   (https://github.com/kubernetes/dashboard)
+
+   1. To deploy Dashboard, execute following command:
+      $ kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/v1.10.1/src/deploy/recommended/kubernetes-dashboard.yaml
+   2. To access Dashboard from locahost create a secure channel to the Kubernetes cluster. Run the following command:
+      $ kubectl proxy
+   3. Now access Dashboard at:
+      http://localhost:8001/api/v1/namespaces/kube-system/services/https:kubernetes-dashboard:/proxy/.
+
  - Container resource monitoring: records generic time-series container metrics 
    in a central db and a UI to browse the data
  - Cluster-level Logging: saves container logs to a central log store with
@@ -150,7 +159,7 @@ Workloads
      owner, but no longer have an owner. metadata.ownerReferences
    - TTL Controller: limit the lifetime of resource objects that have finished
      execution (currently only handles jobs)
-   - Jobs: creates one or more Pods and ensuers that a specified number of them
+   - Jobs: creates one or more Pods and ensures that a specified number of them
      successfully terminate
    - CronJob: create Jobs on a time-based schedule
 
@@ -198,8 +207,9 @@ Building Blocks (Secondary)
 
 Installation
 ------------
-brew install kubectl
-kubectl version
+brew install kubernetes-cli
+   (or install with [Docker Desktop](www.docker.com/products/docker-desktop))
+kubectl version [--short]  # get client and server versions
 brew cask install virtualbox
 brew cask install minikube
 minikube version
@@ -213,8 +223,10 @@ minikube start \
     --bootstrapper=kubeadm
 kubectl run hello-minikube --image=gcr.io/google_containers/echoserver:1.4 --port=8080
 kubectl run hello-minikube --image=k8s.gcr.io/echoserver:1.10 --port=8080
+kubectl run --generator=run-pod/v1
+s
 kubectl expose deployment hello-minikube --type=NodePort
-kubectl get pod
+kubectl get pods
 minikube service hello-minikube --url
 kubectl delete deployment hello-minikube
 minikube addons list
@@ -224,6 +236,27 @@ minikube stop
 
 Configuration
 -------------
+EKS
+---
+1. create EKS cluster (creates master nodes)
+2. create worker nodes
+3. enable worker nodes to join the cluster (via ConfigMap)
+   e.g. docs.aws.amazon.com/eks/latest/userguide/getting-started-console.html
+   --- aws-auth-cm.yaml (begin) ---
+   apiVersion: v1
+   kind: ConfigMap
+   metadata:
+     name: aws-auth
+     namespace: kube-system
+   data:
+     mapRoles: |
+       - rolearn: <ARN of instance role>
+         username: system:node:{{EC2PrivateDNSName}}
+         groups:
+           - system:bootstrappers
+           - system:nodes
+   --- aws-auth-cm.yaml (end) ---
+   kubectl apply -f aws-auth-cm.yaml
 
 Commands
 --------
@@ -234,46 +267,65 @@ Reference:
 
  - Imperative vs. Declaritive
 
-kubectl get      - list resources
-kubectl describe - show detailed information about a resource
-kubectl logs     - print the logs from a container in a pod
+kubectl get      - list one or many resources.
+kubectl describe - show detailed information about a specific or many resources.
+kubectl logs     - print the logs from a container in a pod or specified resource.
 kubectl exec     - execute a command on a container in a pod
+kubectl apply    - execute a command on a container in a pod
 
- - kubectl $CMD [--help] [-o wide|json|yaml] [-l $KEY=$VAL]
- - kubectl cluster-info
- - kubectl get nodes
- - kubectl get deployments
- - kubectl get namespace
- - kubectl [--namespace=$NAMESPACE] get pods
- - kubectl config set-context $(kubectl config current-context) --namespace=$NAMESPACE
- - kubectl config view
- - kubectl api-resources --namespaced=true|false
- - kubectl get pods -l env==prod,tier==web
- - kubectl get pods -l 'env in (prod),tier in (web)'
- - kubectl get pods -l 'env in (prod, qa),tier in (web)'
- - kubectl get pods -l 'env,env notin (qa)'
- - kubectl get pods --field-selector status.phase=Running
- - kubectl get pods --field-selector status.phase=Running,spec.restartPolicy=Always
- - kubectl get statefulsets,services --field-selector metadata.namespace!=default
- - kubectl config use-context minikube
- - kubectl get pods --context=minikube
- - kubectl proxy
- - kubectl get pods -o go-template --template '{{range .items}}{{.metadata.name}}{{"\n"}}{{end}}
- - kubectl get services/$SERVICE -o go-template='{{(index .spec.ports 0).nodePort}}'
  - minikube ip
  # API of the pod
  - curl http://localhost:8001/api/v1/namespaces/default/pods/$POD_NAME/proxy/
- - kubectl describe pods [$POD_NAME]
- - kubectl describe services $SERVICE
- - kubectl describe services/$SERVICE
- - kubectl log $POD_NAME
- - kubectl exec [-ti] $POD_NAME $CMD
- - kubectl expose deployment/$DEPOLYMENT --type=NodePort --port=8080
- - kubectl expose deployment/$DEPOLYMENT --type NodePort --port 8080
- - kubectl label <OBJECT> $OBJECT_NAME $KEY=$VAL
+
+ - kubectl $CMD [--help] [-o wide|json|yaml] [-l $KEY=$VAL]
+ - kubectl api-resources [--namespaced=true|false]  #  list supported API resources
+ - kubectl cluster-info
+ - kubectl config current-context
+ - kubectl config get-clusters
+ - kubectl config get-contexts
+ - kubectl config set-context $(kubectl config current-context) --namespace=$NAMESPACE
+ - kubectl config use-context $CONTEXT
+ - kubectl config use-context minikube
+ - kubectl config view
+ - kubectl create secret generic $SECRET_NAME --from-literal=$KEY=$VAL [-n $NAMESPACE]
+ - kubectl delete secret $SECRET_NAME [-n $NAMESPACE]
  - kubectl delete service $SERVICE
  - kubectl delete service -l $KEY=$VAL
+ - kubectl describe daemonset aws-node -n kube-system [| grep Image]
+ - kubectl describe deployment coredns -n kube-system [| grep Image]
+ - kubectl describe configmap aws-auth -n kube-system
+ - kubectl describe namespace [$NAMESPACE_NAME]
+ - kubectl describe pods [$POD_NAME]
+ - kubectl describe secrets [$SECRET]
+ - kubectl describe services [$SERVICE] [-n $NAMESPACE]
+ - kubectl describe services/$SERVICE
  - kubectl exec -ti $POD_NAME curl localhost:8080
+ - kubectl exec [-ti] $POD_NAME $CMD
+ - kubectl expose deployment/$DEPOLYMENT --type NodePort --port 8080
+ - kubectl expose deployment/$DEPOLYMENT --type=NodePort --port=8080
+ - kubectl expose deployment $DEPOLYMENT --port=8080 --target-port=80 --name nginx
+ - kubectl get configmap
+ - kubectl get deployments
+ - kubectl get namespace
+ - kubectl get nodes
+ - kubectl get pods -n kube-system -l k8s-app=kube-dns
+ - kubectl get pods --context=minikube
+ - kubectl get pods --field-selector status.phase=Running
+ - kubectl get pods --field-selector status.phase=Running,spec.restartPolicy=Always
+ - kubectl get pods -l 'env in (prod),tier in (web)'
+ - kubectl get pods -l 'env in (prod, qa),tier in (web)'
+ - kubectl get pods -l 'env,env notin (qa)'
+ - kubectl get pods -l env==prod,tier==web
+ - kubectl get pods -o go-template --template '{{range .items}}{{.metadata.name}}{{"\n"}}{{end}}
+ - kubectl get pods [-n $NAMESPACE | --namespace=$NAMESPACE]
+ - kubectl get secrets
+ - kubectl get services
+ - kubectl get services/$SERVICE -o go-template='{{(index .spec.ports 0).nodePort}}'
+ - kubectl get statefulsets,services --field-selector metadata.namespace!=default
+ - kubectl port-forward TYPE/NAME [options] [LOCAL_PORT:]REMOTE_PORT [...[LOCAL_PORT_N:]REMOTE_PORT_N]
+ - kubectl label <OBJECT> $OBJECT_NAME $KEY=$VAL
+ - kubectl log $POD_NAME
+ - kubectl proxy
  - kubectl scale deployments $DEPLOYMENT --replicas=$X
 
 API
@@ -321,7 +373,30 @@ selector:
 
 (operators: In, NotIn, Exists, DoesNotExist)
 
-
-
 Issues
 ------
+
+Upgrading
+------
+EKS
+---
+1. upgrade EKS cluster version
+  a. Terraform v0.11 and eks module (terraform-aws-modules/terraform-aws-eks)
+   - you can update/specify to the next higher version and terraform will update EKS and the ASG/LC.
+  b. Or via AWS CLI
+   - aws eks --region REGION update-cluster-version --name CLUSTER_NAME --kubernetes-version VERSION
+   - aws eks --region region describe-update --name prod --update-id UPDATE_ID
+2. move pods
+  a. with AWS AutoScaling (included with terraform-aws-modules/terraform-aws-eks)
+   - Increase the ASG desired count and move the containers to the new host(s), drain the old host(s), stop ASG processes, terminate instances, reduce ASG desired count, enable ASG processes
+3. check/patch the kube-proxy daemonset to match k8s version (1.12=>1.12.6, 1.13=>1.13.7, 1.14=> 1.14.6)
+   - kubectl describe ds kube-proxy -n kube-system | grep Image
+   - kubectl set image daemonset.apps/kube-proxy -n kube-system kube-proxy=602401143452.dkr.ecr.us-west-2.amazonaws.com/eks/kube-proxy:v1.12.6
+4. check if your cluster is running CoreDNS
+   - kubectl get pod -n kube-system -l k8s-app=kube-dns
+5. check/set version of coredns deployment (1.12=>1.2.2, 1.13=>1.2.6, 1.14=> 1.3.1)
+   - kubectl describe deployment coredns -n kube-system | grep Image
+   - kubectl set image deployment.apps/coredns -n kube-system coredns=602401143452.dkr.ecr.us-west-2.amazonaws.com/eks/coredns:v1.2.2
+6. check/set version of cluster's Amazon VPC CNI Plugin for Kubernetes (> 1.5.3)
+   - kubectl describe daemonset aws-node --namespace kube-system | grep Image
+   - kubectl apply -f https://raw.githubusercontent.com/aws/amazon-vpc-cni-k8s/release-1.5/config/v1.5/aws-k8s-cni.yaml

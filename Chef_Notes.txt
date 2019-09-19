@@ -23,10 +23,12 @@ Chef server
          $ sudo dpkg -i /tmp/chef-server-core-<version>.deb
       - start all services
          $ chef-server-ctl reconfigure
-      - create an adminitrator
+      - create an administrator
+         $ chef-server-ctl user-list|user-show
          $ chef-server-ctl org-user-add raco raco --admin
          $ chef-server-ctl user-create USER_NAME FIRST_NAME LAST_NAME EMAIL 'PASSWORD' --filename FILE_NAME
       - create an organization
+         $ chef-server-ctl org-list|org-show
          $ chef-server-ctl org-create short_name 'full_organization_name' --association_user user_name --filename ORGANIZATION-validator.pem
 
       - marketplace-setup

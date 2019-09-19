@@ -73,7 +73,7 @@ kill      - kill one or more running containers
 login     - log in to Docker account
    docker login # then enter username/passwd/email
 logs      - fetch the logs of a container
-   docker logs [-f | --follow | --tail]
+   docker logs [-f | --follow | --tail] CONTAINER
 port      - lookup the public-facing port that is NAT-ed to PRIVATE_PORT
    docker port IMAGE
 ps [-a]   - list containers
@@ -86,16 +86,18 @@ rm        - remove container
    docker rm CONTAINER-ID | NAME
 rmi       - remove one or more images
    docker rmi -f 2cde513e9c25
-run [-it] - load image into container and run it
+run [-it] - load image into container and run it (create & start)
    docker run [-it] USER/PROJECT:TAG CMD
    docker run [-d] USER/PROJECT:TAG [CMD]  # run in background
-   docker run docker/whalesay cowsay boo
+   docker run [--name NAME] docker/whalesay cowsay boo
    docker run [-v SERVER_VOL:CONTAINER_VOL] [-p SERVER_PORT:CONTAINER_PORT] IMAGE
 search    - search for an image on the Docker Hub
 start     - start one or more stopped containers
    docker start -ia  # interactive and attach
 stop      - stop a running container
    docker stop [-t | --time int] CONTAINER-ID | NAME
+system    - manage docker
+   docker system prune - remove unused data
 tag       - tag an image
    docker tag 2cde513e9c25 pataraco/docker-whale:latest
 

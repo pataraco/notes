@@ -15,9 +15,11 @@ WHERE resrooms_seq=4308710
 CREATE DATABASE movies;
 USE movies;
 SELECT DATABASE();
+SHOW DATABASES;
 ---- DATABASE COMMANDS (end) --------------
 ---- TABLE COMMANDS (begin) --------------
 CREATE TABLE movies (id INTEGER, name TEXT, genre TEXT, year INTEGER, rating REAL)
+SHOW tables;
 ---- TABLE COMMANDS (end) --------------
 ------------------
 SELECT created_at,updated_at,deleted_at,hostname FROM instances WHERE node='node-344.domain.tld'
@@ -226,3 +228,15 @@ BEGIN WORK;
 UPDATE ls_hotelconfig 
 SET param_value='/opt/jboss/lightspeed/configuration/logos/sanjoseairporthotel.jpg' 
 WHERE hotelnum=NNNN AND parameter='util_mail_folio_pdf_logo'
+------ user stuff (begin) ------------
+SELECT user, password, host FROM mysql.user;
+CREATE USER 'newuser'@'host' IDENTIFIED BY 'password';
+! host: '%' = all hosts
+GRANT ALL PRIVILEGES ON database.table TO 'newuser'@'%' IDENTIFIED BY 'password';
+GRANT ALL PRIVILEGES ON *.* TO 'username'@'host';
+GRANT ALL PRIVILEGES ON *.* TO 'newuser'@'host' IDENTIFIED BY 'password';
+GRANT ALL PRIVILEGES ON database.* TO 'username'@'host';
+GRANT ALL PRIVILEGES ON database.* TO 'newuser'@'host' IDENTIFIED BY 'password';
+SHOW GRANTS FOR 'username'@'host';
+DROP USER username[@host]
+------ user stuff (end) ------------

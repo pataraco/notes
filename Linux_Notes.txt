@@ -469,6 +469,8 @@ iptables	- administration tool for IPv4 packet filtering and NAT
 iptables-save	- dump iptables rules to stdout
 isosize		- outputs the length of an iso9660 file system
 	# isosize /dev/scd0
+journalctl	- Query the systemd journal
+	# journalctl -fu docker.service
 jq		- Command-line JSON processor
 	$ <JSON_OUTPUT> | jq -r '.HostedZones[] | select(.Name=="VALUE").Id'
         $ <JSON_OUTPUT> | jq -r '.HostedZones[] | .Name + " " + .Id'
@@ -790,7 +792,11 @@ system-config-firewall
 system-config-firewall-tui
 system-config-lvm
 system-config-services
-systemctl restart/start/stop/condrestart/reload SERVICE		# smb.service
+systemctl - Control the systemd system and service manager
+	systemctl restart/start/stop/status/condrestart/reload SERVICE
+	# systemctl staus docker.service
+	# systemctl stop td-agent.service
+	# systemctl disable td-agent.service
 sysv-rc-conf
 tac		- concatenate and print files in reverse
 tar		- GNU tar saves many files together into a single archive

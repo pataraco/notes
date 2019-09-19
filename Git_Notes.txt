@@ -66,10 +66,12 @@ git push [-u] [origin <BRANCH>]
    git push origin :ref			# (deprecated) delete ref from remote repo
    git push --repo=REPO :ref		# delete ref from specified remote repo
    git push -u origin master
-git rebase -i HEAD~3			# change commit messages
-   (editor opens with list of commits, change "pick" to "edit")
-   git commit --amend
-   git commit --continue
+git rebase -i HEAD~n			# change commit messages
+   a) (editor opens with list of commits, change "pick" to "edit")
+      git commit --amend
+      git commit --continue
+   b) (editor opens with list of commits, change "pick" to "reword")
+      git push --force
 git reset [HEAD] <FILE>			# revert changes | unstage a file
 git reset <SHA>				# revert back to a SHA (can use first 7 chars)
 git remote -v				# see a list of Git project's remotes
