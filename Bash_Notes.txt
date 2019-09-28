@@ -2,6 +2,11 @@
 		bash tips and tricks
 	###############################
 	
+# remember this
+no : result=$(echo $variable | grep $pattern)
+yes: result=$(grep $pattern <<< $variable)
+and: result=$(grep -o $pattern <<< $variable)  # matched pattern only
+
 # debugging tips
 set -x  # turn on "debugging"
 set +x  # turn off "debugging"
