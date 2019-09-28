@@ -14,7 +14,7 @@ WHERE resrooms_seq=4308710
 ---- DATABASE COMMANDS (begin) --------------
 CREATE DATABASE movies;
 USE movies;
-SELECT DATABASE();
+SELECT DATABASE();  -- show which database is being used
 SHOW DATABASES;
 ---- DATABASE COMMANDS (end) --------------
 ---- TABLE COMMANDS (begin) --------------
@@ -229,9 +229,9 @@ UPDATE ls_hotelconfig
 SET param_value='/opt/jboss/lightspeed/configuration/logos/sanjoseairporthotel.jpg' 
 WHERE hotelnum=NNNN AND parameter='util_mail_folio_pdf_logo'
 ------ user stuff (begin) ------------
-SELECT user, password, host FROM mysql.user;
+SELECT user, password, host FROM mysql.user;  -- show all users
 CREATE USER 'newuser'@'host' IDENTIFIED BY 'password';
-! host: '%' = all hosts
+/* ! host: '%' = all hosts
 GRANT ALL PRIVILEGES ON database.table TO 'newuser'@'%' IDENTIFIED BY 'password';
 GRANT ALL PRIVILEGES ON *.* TO 'username'@'host';
 GRANT ALL PRIVILEGES ON *.* TO 'newuser'@'host' IDENTIFIED BY 'password';

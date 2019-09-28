@@ -794,7 +794,7 @@ system-config-lvm
 system-config-services
 systemctl - Control the systemd system and service manager
 	systemctl restart/start/stop/status/condrestart/reload SERVICE
-	# systemctl staus docker.service
+	# systemctl status docker.service
 	# systemctl stop td-agent.service
 	# systemctl disable td-agent.service
 sysv-rc-conf
