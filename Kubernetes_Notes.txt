@@ -63,7 +63,7 @@ run on every node, maintain running pods, provide k8s runtime environment
 
 Addons
 ------
-pods and services that implement cluster features. managed by deployments, 
+pods and services that implement cluster features. managed by deployments,
 replication controllers, etc.
 
  - extended list:
@@ -84,7 +84,7 @@ replication controllers, etc.
    3. Now access Dashboard at:
       http://localhost:8001/api/v1/namespaces/kube-system/services/https:kubernetes-dashboard:/proxy/.
 
- - Container resource monitoring: records generic time-series container metrics 
+ - Container resource monitoring: records generic time-series container metrics
    in a central db and a UI to browse the data
  - Cluster-level Logging: saves container logs to a central log store with
    search/browsing interface
@@ -108,7 +108,7 @@ persistent entities in the k8s system which represent the state of the cluster
    - spec: precise object format
    - name: client provided
    - UID: k8s system generated
-   - namespace: virtual cluster backed by the same physical cluster, unique 
+   - namespace: virtual cluster backed by the same physical cluster, unique
      objects within
    - labels/selectors: identifying attributes, organize, select
    - annotations: arbitrary, non-identifying metadata. uri's, version, etc.
@@ -169,7 +169,7 @@ https://kubernetes.io/docs/concepts/services-networking/service
 https://kubernetes.io/docs/tutorials/services/source-ip/
 https://kubernetes.io/docs/concepts/services-networking/connect-applications-service
 
- - Services: defines a logical set of Pods and access policy determined by 
+ - Services: defines a logical set of Pods and access policy determined by
    Label Selector
  - DNS for Services and Pods
  - Connnectiong Applications with Services
@@ -358,7 +358,7 @@ way that can be queried
  - applications described with metadata
  - shared labels and annotations share a common prefix: `app.kubernetes.io`
  - labels without a prefix are private to users
- - a shared prefix ensures that shared labels do not interfere with custom user 
+ - a shared prefix ensures that shared labels do not interfere with custom user
    labels
 
 selector:
@@ -376,27 +376,52 @@ selector:
 Issues
 ------
 
-Upgrading
-------
-EKS
----
-1. upgrade EKS cluster version
-  a. Terraform v0.11 and eks module (terraform-aws-modules/terraform-aws-eks)
-   - you can update/specify to the next higher version and terraform will update EKS and the ASG/LC.
-  b. Or via AWS CLI
-   - aws eks --region REGION update-cluster-version --name CLUSTER_NAME --kubernetes-version VERSION
-   - aws eks --region region describe-update --name prod --update-id UPDATE_ID
-2. move pods
-  a. with AWS AutoScaling (included with terraform-aws-modules/terraform-aws-eks)
-   - Increase the ASG desired count and move the containers to the new host(s), drain the old host(s), stop ASG processes, terminate instances, reduce ASG desired count, enable ASG processes
-3. check/patch the kube-proxy daemonset to match k8s version (1.12=>1.12.6, 1.13=>1.13.7, 1.14=> 1.14.6)
-   - kubectl describe ds kube-proxy -n kube-system | grep Image
-   - kubectl set image daemonset.apps/kube-proxy -n kube-system kube-proxy=602401143452.dkr.ecr.us-west-2.amazonaws.com/eks/kube-proxy:v1.12.6
-4. check if your cluster is running CoreDNS
-   - kubectl get pod -n kube-system -l k8s-app=kube-dns
-5. check/set version of coredns deployment (1.12=>1.2.2, 1.13=>1.2.6, 1.14=> 1.3.1)
-   - kubectl describe deployment coredns -n kube-system | grep Image
-   - kubectl set image deployment.apps/coredns -n kube-system coredns=602401143452.dkr.ecr.us-west-2.amazonaws.com/eks/coredns:v1.2.2
-6. check/set version of cluster's Amazon VPC CNI Plugin for Kubernetes (> 1.5.3)
-   - kubectl describe daemonset aws-node --namespace kube-system | grep Image
-   - kubectl apply -f https://raw.githubusercontent.com/aws/amazon-vpc-cni-k8s/release-1.5/config/v1.5/aws-k8s-cni.yaml
+## Upgrading Amazon EKS
+
+Because Amazon EKS runs a highly available control plane, it can only be updated by one minor version at a time. See [Updating an Amazon EKS Cluster Kubernetes Version](https://docs.aws.amazon.com/en_pv/eks/latest/userguide/update-cluster.html) for additional information.
+
+1. get/compare versions of server/client/nodes
+  - server (control plane) and client: `kubectl version --short`
+  - worker nodes: `kubectl get nodes`
+  - if the worker nodes are more than one minor version older than the control plane, upgrade the worker nodes first to the same current version of the control plane (they cannot be on a newer version)
+2. upgrade worker nodes (if applicable)
+  if using Terraform AWS EKS module, when you specify a newer version and `terraform apply` and don't specify which AMI to use, a new AWS Launch Comfiguration/Template will get generated using the newer AMI and attach it to the ASG.
+  it's recommended to use the 'ami_id' attribute/setting for the worker_groups variable to specify which AMI to use so that no unexpected updates occur.
+  - get latest AWS AMI's (e.g. for version 1.12)
+    - `aws ec2 describe-images --region=us-west-2  --filters Name=name,Values=*eks*node*1.12* --query "Images[].[Name,CreationDate,State]" --output`
+  - use the new AMI to create new worker nodes and deploy either via terraform or manually and add to the cluster and/or AWS ASG
+  - drain the old worker nodes and taint them to prevent any pods from being deployed onto them and then terminate them when all the pods have been moved onto new nodes
+  - If using AWS ASG, terminate the old/drained instances (worker nodes)
+3. move pods (if applicable)
+  * a) with AWS AutoScaling (included with terraform-aws-modules/terraform-aws-eks)
+    - increase the ASG desired count and wait for the new nodes to be ready
+    - drain the old nodes (instances) to move the pods to the new nodes and taint them to prevent any new deployments onto themand wait for all the pods to be moved off of the old nodes
+    - protect the new instances from scale-in in AWS ASG and unprotect the old
+    - decrease the ASG desired count back to normal and let AWS ASG terminate the old instances
+  * b) **Or** with `cluster-autoscaler`, it may be good to increase the AWS ASG desired count to launch new instances (with the newer version) and `cluster-autoscaler` may handle the draining/moving/terminatiion.
+    - **TODO**: this needs to be tested
+4. upgrade EKS cluster version
+  * a) Terraform v0.11.x and AWS EKS module (terraform-aws-modules/terraform-aws-eks)
+    - you can update/specify to the next higher version and terraform will update AWS EKS and the AWS ASG and Launch Configuration/Template (if an ami_id is not specified or the ami_id is specified and has been updated).
+  * b) **Or** via AWS CLI
+    - update: `aws eks --region $REGION update-cluster-version --name $CLUSTER_NAME --kubernetes-version $VERSION`
+    - status: `aws eks --region $REGION describe-update --name $CLUSTER_NAME --update-id $UPDATE_ID`  # (update ID obtained from previous `update-cluster-version` command)
+5. check/set the kube-proxy daemonset image to match kubernetes version _(see table below_)
+   - check: `kubectl describe ds kube-proxy -n kube-system | grep Image`
+   - patch: `kubectl set image daemonset.apps/kube-proxy -n kube-system kube-proxy=602401143452.dkr.ecr.us-west-2.amazonaws.com/eks/kube-proxy:v1.12.6`
+6. check if your cluster is running CoreDNS
+   - check: `kubectl get pod -n kube-system -l k8s-app=kube-dns`
+7. check/set version of coredns deployment (_see table below_)
+   - check: `kubectl describe deployment coredns -n kube-system | grep Image`
+   - patch: `kubectl set image deployment.apps/coredns -n kube-system coredns=602401143452.dkr.ecr.us-west-2.amazonaws.com/eks/coredns:v1.2.2`
+8. check/set version of cluster's Amazon VPC CNI Plugin for Kubernetes (should be > 1.5.3)
+   - check: `kubectl describe daemonset aws-node --namespace kube-system | grep Image`
+   - patch: `kubectl apply -f https://raw.githubusercontent.com/aws/amazon-vpc-cni-k8s/release-1.5/config/v1.5/aws-k8s-cni.yaml`
+
+### Versions Table
+
+|Kubernetes|KubeProxy|CoreDNS|
+|-|-|-|
+|1.12|1.12.6|1.2.2|
+|1.13|1.13.10|1.2.6|
+|1.14|1.14.6|1.3.1|
