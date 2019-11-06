@@ -1,0 +1,23 @@
+Helm Notes
+----------
+The package manager for Kubernetes. Helm helps you manage Kubernetes applications — Helm Charts help you define, install, and upgrade even the most complex Kubernetes application.
+
+Learning Docs
+-------------
+[Helm](https://helm.sh)
+[Helm Documentation](https://helm.sh/docs)
+[Helm (GitHub)](https://github.com/helm/helm)
+
+Installation
+------------
+[Quickstart Guide](https://helm.sh/docs/using_helm/#quickstart-guide)
+[Installing Helm](https://helm.sh/docs/using_helm/#installing-helm<Paste>)
+
+- `$ brew install kubernetes-helm`
+
+Initialize Helm and Install Tiller
+----------------------------------
+- `$ helm init --history-max 200`  # with NO security configs (local dev ONLY!)
+
+In Kubernetes, granting a role to an application-specific service account is a best practice to ensure that your application is operating in the scope that you have specified.
+- `$ helm init --service-account <NAME> --history-max 200`  # with NO security configs (local dev ONLY!)

@@ -1,21 +1,63 @@
 Redshift Notes
 --------------
 
+## Install
+$ brew install pgcli
 
-- brew install pgcli
-- pgcli --version
+## Test
+$ pgcli --version
 
-- pgcli usage
+## Usage
 usage: "pgcli postgresql://[user[:password]@][netloc][:port][/dbname]"
 
-- pgcli example
+### Connect Directly
+
 pgcli postgresql://USER:PASSWORD@CLUSTER_NAME.UID.REGION.redshift.amazonaws.com:PORT/DB"
 
-pgcli postgresql://admin:r3^ua%Z43j@dev.ryfig7s7v829.us-west-2.redshift.amazonaws.com:5439/dev
+#### For example
 
-$ ssh -A -L LOCAL_PORT:REMOTE_HOST:REMOTE_PORT USER@HOST  # SSH tunnel
-$ pgcli -h HOST -p PORT -u USER -d DB
+pgcli postgresql://admin:r3uaZ43j@dev.ryfig7s7v829.us-west-2.redshift.amazonaws.com:5439/dev
+pgcli postgresql://master@prod.ctig37f8d36f.us-east-1.redshift.amazonaws.com:5439/prod
 
-$ ssh -A -L 5439:dev.ryfig7s7v829.us-west-2.redshift.amazonaws.com:5439 raco@bastion  # SSH tunnel
-$ pgcli -h localhost -p 5439 -u admin -d dev
+### Connect via SSH Tunnel
 
+  - $ ssh [-A] -L LOCAL_PORT:REMOTE_HOST:REMOTE_PORT USER@BASTIAN_HOST  # SSH tunnel
+  - $ pgcli -h HOST -p PORT -u USER -d DB
+
+#### For example
+
+  - $ ssh -L 5439:prd.56fjg39aigh8.us-east-1.redshift.amazonaws.com:5439 raco@bastion  # SSH tunnel
+  - $ pgcli -h localhost -p 5439 -u admin -d dev
+  
+## User Administration
+
+[Users (AWS Redshift Docs)](https://docs.aws.amazon.com/redshift/latest/dg/r_Users.html)
+
+## Commands
+
+pgcli> SELECT * FROM pg_database
+pgcli> \c <database>                                          -- connect to DB
+pgcli> \i /path/to/script.sql                                 -- execute a script
+pgcli> SELECT * FROM pg_user
+pgcli> SELECT * FROM pg_user_info
+pgcli> ALTER USER <user> CREATEUSER;
+pgcli> CREATE USER <user> WITH PASSWORD '<password>'
+pgcli> GRANT USAGE ON SCHEMA <schema> TO <user>
+pgcli> GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA <schema> TO <user>
+pgcli> GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA <schema> TO <user>;
+pgcli> SELECT * FROM pg_namespace;                                                  -- list schemas
+pgcli> SELECT distinct(tablename) FROM pg_table_def WHERE schemaname = '<schema>';  -- list tables
+pgcli> SELECT version();  -- get the version number for the Amazon Redshift cluster
+pgcli> SELECT * FROM SVV_EXTERNAL_SCHEMAS;
+pgcli> SELECT schemaname,tablename,location FROM SVV_EXTERNAL_TABLES;
+pgcli> SELECT databasename,location,esoptions FROM SVV_EXTERNAL_DATABASES;
+pgcli> CREATE EXTERNAL SCHEMA <schema_name> FROM DATA CATALOG DATABASE '<db_name>' IAM_ROLE '<iam_role>' CREATE EXTERNAL DATABASE IF NOT EXISTS;
+pgcli> DROP SCHEMA IF EXISTS <schema_name> DROP EXTERNAL DATABASE;
+pgcli> DROP TABLE IF EXISTS <schema_name.table_name>;
+pgcli> CREATE EXTERNAL TABLE <schema_name>.<table_name>
+         (id integer, date smallint, price decimal(8,2), time timestamp)
+         ROW FORMAT DELIMITED
+         FIELDS TERMINATED BY '\t'
+         STORED AS TEXTFILE
+         LOCATION 's3://bucket/key/'
+         TABLE PROPERTIES ('numRows'='NNNN');

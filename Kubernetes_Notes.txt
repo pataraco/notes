@@ -30,11 +30,6 @@ Master Components
 control plane. global decisions. events.
 
  - kube-apiserver: exposes API, scales
- - etcd: key/val store of cluster data, always backup
- - kube-scheduler: schedules newly created pods to run on specific nodes
- - controller: control loop that watches the shared state of the cluster
-     through the apiserver and makes changes attempting to move the current
-     state towards the desired state.
  - kube-controller-manager: runs controllers
    - node controller: notices/responds to nodes going down
    - replication controller: maintains correct number of pods for replication
@@ -42,6 +37,11 @@ control plane. global decisions. events.
    - endpoints controller: populates the Endpoints object (joins Services & Pods)
    - service account & token controllers: create default accounts and API access
      tokens for new namespaces
+ - kube-scheduler: schedules newly created pods to run on specific nodes
+ - etcd: key/val store of cluster data, always backup
+ - controller: control loop that watches the shared state of the cluster
+     through the apiserver and makes changes attempting to move the current
+     state towards the desired state.
  - cloud-controller-manager: runs controllers that interact with the underlying
      cloud providers
    - node controller: checks cloud provider it a node has been deleted in the
@@ -56,10 +56,11 @@ Node Components
 run on every node, maintain running pods, provide k8s runtime environment
 
  - kubelet: agent, makes sure that containers are running in a pod with PodSpecs
- - kube-proxy: enables the k8s service abstraction my maintaining network rules
+ - kube-proxy: enables the k8s service abstraction by maintaining network rules
    on the host and performing connection forwarding
  - container runtime: software responsible for running containers (docker,
    containerd, cri-o, rktlet, and any k8s CRI (container Runtime interface))
+
 
 Addons
 ------
@@ -184,11 +185,13 @@ Building Blocks (Primary)
 if you can explain what each one of these do and how they build on each other,
 then you'll have a good grasp of k8s:
 
- - Container
  - Pod
+ - Service
+ - Volume
+ - Namespace
+ - Container
  - ReplicaSet or Controller
  - Deployment
- - Service
  - Ingress Rule
 
 Building Blocks (Secondary)
@@ -204,6 +207,7 @@ Building Blocks (Secondary)
  - Stateful Set
  - Persistent Volume
  - Persistent Volume Claim
+
 
 Installation
 ------------
@@ -223,8 +227,9 @@ minikube start \
     --bootstrapper=kubeadm
 kubectl run hello-minikube --image=gcr.io/google_containers/echoserver:1.4 --port=8080
 kubectl run hello-minikube --image=k8s.gcr.io/echoserver:1.10 --port=8080
-kubectl run --generator=run-pod/v1
-s
+kubectl run --generator=run-pod/v1 echoserver --image=k8s.gcr.io/echoserver --port=8080  # only creates a pod
+     docker run -p 8085:8080 k8s.gcr.io/echoserver:1.10
+     docker run -p 8086:8080 gcr.io/google_containers/echoserver:1.4
 kubectl expose deployment hello-minikube --type=NodePort
 kubectl get pods
 minikube service hello-minikube --url
@@ -258,6 +263,27 @@ EKS
    --- aws-auth-cm.yaml (end) ---
    kubectl apply -f aws-auth-cm.yaml
 
+
+Role-Base Access Control (RBAC)
+-------------------------------
+[Using RBAC Authorizaton](https://kubernetes.io/docs/reference/access-authn-authz/rbac)
+[Configure RBAC In Your Kubernetes Cluster](https://docs.bitnami.com/kubernetes/how-to/configure-rbac-in-your-kubernetes-cluster)
+- Resource Types: Role, ClusterRole, RoleBinding, ClusterRoleBinding
+
+
+Service Accounts
+----------------
+[Service Accounts](https://kubernetes-on-aws.readthedocs.io/en/latest/user-guide/service-accounts.html)
+- pods/apps use service accounts to authenticate when interacting with the API server
+- by default, apps use the default service account in their namespace
+- apps are authed to perform certain actions based on the service account selected
+- currently allowed:
+  - kube-system:system   # used only for amin access in kube-system namespace
+  - kube-system:default  # used only for read only access in kube-system namespace
+  - default:default      # gives read only access to the API
+  - *:operator           # gives full access to the used namespace and read-write access to TPR, storage classes, and persistent volumes in all namespaces
+
+
 Commands
 --------
 Kubectl book: https://kubectl.docs.kubernetes.io/
@@ -279,6 +305,8 @@ kubectl apply    - execute a command on a container in a pod
 
  - kubectl $CMD [--help] [-o wide|json|yaml] [-l $KEY=$VAL]
  - kubectl api-resources [--namespaced=true|false]  #  list supported API resources
+ - kubectl auth can-i|reconcile
+ - kubectl auth reconcile -f $MANIFEST [--dry-run]
  - kubectl cluster-info
  - kubectl config current-context
  - kubectl config get-clusters
@@ -304,8 +332,12 @@ kubectl apply    - execute a command on a container in a pod
  - kubectl expose deployment/$DEPOLYMENT --type NodePort --port 8080
  - kubectl expose deployment/$DEPOLYMENT --type=NodePort --port=8080
  - kubectl expose deployment $DEPOLYMENT --port=8080 --target-port=80 --name nginx
+ - kubectl get --raw <URL>
+ - kubectl get --raw /api/v1/namespaces | jq .items[].metadata.name
+ - kubectl get all -n NAMESPACE  # get all resources in a specific namespace
  - kubectl get configmap
- - kubectl get deployments
+ - kubectl get deployments [-A|--all-namespaces]
+ - kubectl get deploy DEPLOY [-A|--all-namespaces]
  - kubectl get namespace
  - kubectl get nodes
  - kubectl get pods -n kube-system -l k8s-app=kube-dns
@@ -338,6 +370,9 @@ Access:
   https://kubernetes.io/docs/reference/access-authn-authz/controlling-access/
 Python Client:
   https://github.com/kubernetes-client/python
+Groups (apiVersion):
+  core/legacy: REST: /api/v1                     apiVersion: v1
+  named:       REST: /apis/$GROUP_NAME/$VERSION  apiVersion: $GROUP_NAME/$VERSION
 
 "selector": {
     "component" : "redis"

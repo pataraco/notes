@@ -1,0 +1,13 @@
+Prometheus Notes
+----------------
+Prometheus is a monitoring and time series database that scrapes exposed endpoints and aggregates data, allowing you to filter, graph, and query the results.
+
+Learning Docs
+-------------
+[Prometheus](https://prometheus.io)
+[Comparison to Alternatives](https://prometheus.io/docs/introduction/comparison)
+[Exposition Formats](https://github.com/prometheus/docs/blob/master/content/docs/instrumenting/exposition_formats.md)
+
+K8S API Metrics
+---------------
+kubectl get --raw /metrics

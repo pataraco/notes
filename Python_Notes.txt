@@ -156,6 +156,9 @@ hello-world-fred
 ['first.second.third', 'forth']
 >>> key.rsplit('.',2)
 ['first.second', 'third', 'forth']
+---------------- f string stuff --------------
+print(f'{"Resource":^40} | {"Certificate":^35} | {"Expiration":^30}')
+print(f'{user:<40} | {cert:35} | {expires:>10}')
 ---------------- sorted() example --------------
 sorted(list)
 sorted(list, reverse=True)

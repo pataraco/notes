@@ -45,6 +45,7 @@ git config [<file-option>]		# man git-config
    git config --global color.ui auto	# turn on color globally
    git config --global alias.co checkout
    git config --global alias.ec 'config --global -e'
+   git config --list --show-origin      # view all settings and where they are set
 git diff				# show changes made
    git diff [--name-only] HEAD^		# last files|changes commited
       git diff HEAD^ $FILE
@@ -196,3 +197,10 @@ repos:
       - id: check-merge-conflict
 ---
 |________Git Pre Commit Hooks______________|
+
+ ___________________________________________
+|        Git Secrets Finders/Blockers      |
+https://geekflare.com/github-credentials-scanner/
+https://github.com/awslabs/git-secrets
+https://github.com/dxa4481/truffleHog
+|________Git Secrets Finders/Blockers______|

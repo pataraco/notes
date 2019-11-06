@@ -19,3 +19,20 @@ for you.
 Composer Installation
 ---------------------
 $ brew install composer
+
+Package Installation
+--------------------
+# find packages
+$ composer search PACKAGE
+
+# package information
+$ composer info PACKAGE
+#   OR
+$ composer show PACKAGE
+
+# update composer.json
+$ composer require VENDOR/PACKAGE[:VERSION]
+
+# install packages and update composer.lock
+# if composer.lock does not exist, use composer.json and then create
+$ composer install
