@@ -63,7 +63,7 @@ git merge <BRANCH>			# after switching to the receiving branch
 git merge origin/master
 git push [-u] [origin <BRANCH>]
    git push -u origin new_branch	# add upstream (tracking) ref for branches too
-   git push [-f] origin --delete ref	# (force) delete ref's from remote repo
+   git push [-f] origin --delete ref	# (force) delete ref from remote repo
    git push origin :ref			# (deprecated) delete ref from remote repo
    git push --repo=REPO :ref		# delete ref from specified remote repo
    git push -u origin master

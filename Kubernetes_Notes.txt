@@ -211,9 +211,10 @@ Building Blocks (Secondary)
 
 Installation
 ------------
-brew install kubernetes-cli
+brew install kubernetes-cli  (github.com/kubernetes/kubectl.git)
    (or install with [Docker Desktop](www.docker.com/products/docker-desktop))
 kubectl version [--short]  # get client and server versions
+brew install kops (github.com/kubernetes/kops.git)
 brew cask install virtualbox
 brew cask install minikube
 minikube version
@@ -234,6 +235,7 @@ kubectl expose deployment hello-minikube --type=NodePort
 kubectl get pods
 minikube service hello-minikube --url
 kubectl delete deployment hello-minikube
+kubectl delete service hello-minikube
 minikube addons list
 minikube addons enable ADDON
 minikube stop
@@ -305,6 +307,7 @@ kubectl apply    - execute a command on a container in a pod
 
  - kubectl $CMD [--help] [-o wide|json|yaml] [-l $KEY=$VAL]
  - kubectl api-resources [--namespaced=true|false]  #  list supported API resources
+ - kubectl attach $POD/$TYPE/NAME [-c $CONTAINER]
  - kubectl auth can-i|reconcile
  - kubectl auth reconcile -f $MANIFEST [--dry-run]
  - kubectl cluster-info
@@ -327,8 +330,8 @@ kubectl apply    - execute a command on a container in a pod
  - kubectl describe secrets [$SECRET]
  - kubectl describe services [$SERVICE] [-n $NAMESPACE]
  - kubectl describe services/$SERVICE
- - kubectl exec -ti $POD_NAME curl localhost:8080
- - kubectl exec [-ti] $POD_NAME $CMD
+ - kubectl exec -it $POD_NAME curl localhost:8080
+ - kubectl exec [-it] $POD_NAME $CMD
  - kubectl expose deployment/$DEPOLYMENT --type NodePort --port 8080
  - kubectl expose deployment/$DEPOLYMENT --type=NodePort --port=8080
  - kubectl expose deployment $DEPOLYMENT --port=8080 --target-port=80 --name nginx
