@@ -1,0 +1,13 @@
+Serverless
+----------
+
+# create an account
+   - https://dashboard.serverless.com
+# Open CLI and install
+   $ npm install serverless --global
+# Login to your account:
+   $ serverless login
+# Start your new project:
+   $ serverless
+# More info
+   - https://serverless.com/framework/docs/
