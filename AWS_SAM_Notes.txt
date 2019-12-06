@@ -9,3 +9,12 @@ AWS Serverless Application Model (SAM)
    $ brew install aws-sam-cli
    $ sam --version
 
+# Next Steps
+
+ * Tutorial: Deploying a Hello World Application
+   – Step-by-step instructions to download, build, and deploy a simple serverless application.
+   - https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-getting-started-hello-world.html
+
+ * AWS SAM example applications in GitHub
+   – Sample applications in the AWS SAM GitHub repository that you can further experiment with
+   - https://github.com/awslabs/serverless-application-model/tree/master/examples/apps

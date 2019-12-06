@@ -1,0 +1,25 @@
+Visual Studio Code (VSCode) Notes
+---------------------------------
+
+Install
+-------
+
+- https://code.visualstudio.com/docs/setup/mac
+
+To run via CLI ("code")
+-----------------------
+- create symlink
+   (/usr/local/bin)$ ln -s /Applications/Visual\ Studio\ Code.app/Contents/Resources/app/bin/code code
+
+Add Useful Extensions
+---------------------
+- extensions
+   - All Autocomplete (Atishay Jain)
+   - Vim (vscodevim)
+
+Set Up Useful Keyboard Shortcuts
+--------------------------------
+- keyboard shortcuts
+   - File: Focus on files Explorer   | Ctrl-H  |   When: editorTextFocus
+   - Terminal: Focus Terminal        | Ctrl-J  |   When: editorTextFocus
+   - View: Focus Active Editor Group | Ctrl-K  |   When: terminalFocus
