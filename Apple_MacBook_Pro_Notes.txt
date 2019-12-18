@@ -90,3 +90,11 @@ Applications Installed
 
 - Onica SSO
   $ pip install --user https://s3.amazonaws.com/sturdy-sso-client/onica_sso-4.0.2-py2.py3-none-any.whl
+
+- SSH private keys
+   Make sure private keys used for Jumpbox Hosts are a "RSA" private keys.
+   The beginning line should have "---BEGIN RSA PRIVATE KEY---".
+   With later versions of MacOS, `ssh-keygen` creates an OPENSSH private keys.
+   If you do have an OPENSSH private key, you can convert it with the following
+   command: `ssh-keygen -p -m PEM -f <OPENSSH_PRIVATE_KEY_FILE>`.
+   This will overwrite your existing private key file and retain your public key file.

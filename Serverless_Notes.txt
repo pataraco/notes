@@ -4,10 +4,59 @@ Serverless
 # create an account
    - https://dashboard.serverless.com
 # Open CLI and install
-   $ npm install serverless --global
+   $ npm install --global|-g serverless
 # Login to your account:
    $ serverless login
 # Start your new project:
    $ serverless
+# Update
+   $ npm i serverless
 # More info
    - https://serverless.com/framework/docs/
+
+
+# Working with projects/services
+
+# Create a project
+   $ sls create -t aws-nodejs -p hello-world
+# Test with:
+#   Lambda Functions
+   $ sls invoke local -f hello
+   $ sls invoke local -f hello -d '{"Key": "Val"}'
+#   APIs
+   $ npm install serverless-offline --save-dev
+   $ sls offline
+# Deploy with:
+   $ sls deploy [-s stage] [-r region] [-f function]
+# Remove with:
+   $ sls remove
+# View Logs with:
+   $ sls logs -f FUNCTION [--startTime 5m] [-t | --tail]
+# Get info (including API endpoints) [and CloudFormation Stack Outputs]
+   $ sls info [-v]
+# Get deploy info
+   $ sls deploy list
+# Get deployed lambda functions info
+   $ sls deploy list functions
+
+Question and TODO
+--------------------
+- how to create/use lambda functions aliases?
+- how to create/use API models and docs
+
+General Observations
+--------------------
+- a `sls deploy` deploys all functions, hence creating a new version of the lambda (unless you specify the `-f` option to only deploy one functon)
+  (`cloudformation package` would only upload/update functions that change)
+- `sls deploy` results displays API endpoint(s)/method(s) created
+- default lambda memory/timeout settings: 1024MB/6 seconds (override in provider/functions)
+- Lambda's tagged with key ’STAGE’ automatically set to the stage
+- api endpoint not changing
+- vpc settings are hard-coded (but shouldn’t/wouldn’t change much) ( maybe create a plugin)
+- local lambda and api testing
+- can see CW logs from cli
+- can’t remove single/specific function
+- API IDs/endpoints don't change with subsequent deploys
+- Lambda ARNs don't change with subsequent deploys
+- don't think you can set lambda aliases natively without a plugin
+- don't think you can defune/use models or docs without a plugin
