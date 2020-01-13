@@ -19,44 +19,84 @@ Serverless
 
 # Create a project
    $ sls create -t aws-nodejs -p hello-world
+
 # Test with:
-#   Lambda Functions
-   $ sls invoke local -f hello
-   $ sls invoke local -f hello -d '{"Key": "Val"}'
-#   APIs
-   $ npm install serverless-offline --save-dev
+   # Lambda Functions:
+   $ sls invoke [local] -f FUNCTION_NAME [-d '{"Key": "Val"}']
+
+   # APIs  (requires: `serverless-offline` plugin):
+   $ npm install serverless-offline --save-dev  (one-time)
    $ sls offline
+
 # Deploy with:
-   $ sls deploy [-s stage] [-r region] [-f function]
+   $ sls deploy [-s stage] [-r region] [-f function] [-v]
+
 # Remove with:
-   $ sls remove
+   $ sls remove [-s stage]
+
 # View Logs with:
    $ sls logs -f FUNCTION [--startTime 5m] [-t | --tail]
+
 # Get info (including API endpoints) [and CloudFormation Stack Outputs]
    $ sls info [-v]
+
 # Get deploy info
    $ sls deploy list
+
 # Get deployed lambda functions info
    $ sls deploy list functions
+
+Plugins
+-------
+- serverless-offline
+  - test API gateways locally
+- serverless-pseudo-parameters
+  - use CloudFormation pseudo parameters
+- serverless-aws-documentation
+  - create/use API documenatation/models
+- serverless-python-requirements
+  - grabs all Pipfile requirements and packages up for deployment
+  - use instead of Lambda layers
+  - cannot edit/view lambda functions in-line (AWS console)
+- Check out the `AwsRollbackFunction` plugin [built-in?] for deployment rollback functionality
+- Check out the `serverless-layers` (or similar) plugin(s) for managing lambda layers
+
+```
+# Install plugins:
+
+# (option A): two steps
+# 1. install the plugin
+$ npm install --save-dev PLUGIN
+# 2. add to "plugins section" in the `serverless.yaml` file, e.g.
+plugins:
+  - PLUGIN
+
+# (option B): one step (installs and lists in the `serverless.yaml` "plugins section")
+# (this method removes any comments within the plugins section)
+$ sls plugin install -n PLUGIN
+```
 
 Question and TODO
 --------------------
 - how to create/use lambda functions aliases?
-- how to create/use API models and docs
 
 General Observations
 --------------------
+- Serverless deploys new versions of lambda functions, layers and re-deploys the API stage for every deployment (`sls deploy`)
 - a `sls deploy` deploys all functions, hence creating a new version of the lambda (unless you specify the `-f` option to only deploy one functon)
   (`cloudformation package` would only upload/update functions that change)
 - `sls deploy` results displays API endpoint(s)/method(s) created
 - default lambda memory/timeout settings: 1024MB/6 seconds (override in provider/functions)
 - Lambda's tagged with key ’STAGE’ automatically set to the stage
 - api endpoint not changing
-- vpc settings are hard-coded (but shouldn’t/wouldn’t change much) ( maybe create a plugin)
+- vpc settings are hard-coded (but shouldn’t/wouldn’t change much) (maybe create a plugin)
 - local lambda and api testing
 - can see CW logs from cli
 - can’t remove single/specific function
 - API IDs/endpoints don't change with subsequent deploys
-- Lambda ARNs don't change with subsequent deploys
+- Lambda ARNs and API IDs do not change for each serverless deployment
 - don't think you can set lambda aliases natively without a plugin
-- don't think you can defune/use models or docs without a plugin
+- you can not define/use models or docs without a plugin
+- Doesn't appear to be a way to use encrypted lambda environment variables with CloudFormation or Serverless
+- Serverless documentation/models plugin - can't use the pre-existing "Empty" API model, had to create a new
+- Serverless documentation/models plugin - models are created as one-liners as viewed in the AWS console

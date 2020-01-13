@@ -231,6 +231,8 @@ WHERE hotelnum=NNNN AND parameter='util_mail_folio_pdf_logo'
 ------ user stuff (begin) ------------
 SELECT user, password, host FROM mysql.user;  -- show all users
 CREATE USER 'newuser'@'host' IDENTIFIED BY 'password';
+ALTER USER 'username'@'host' IDENTIFIED BY 'NewPassword';      -- >= v5.7.6
+SET PASSWORD FOR 'username'@'host' = PASSWORD('NewPassword');  -- < v5.7.6
 /* ! host: '%' = all hosts
 GRANT ALL PRIVILEGES ON database.table TO 'newuser'@'%' IDENTIFIED BY 'password';
 GRANT ALL PRIVILEGES ON *.* TO 'username'@'host';

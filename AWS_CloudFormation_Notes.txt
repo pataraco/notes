@@ -32,3 +32,19 @@ Deployment Tools/Methods
 # Deploy a stack viw HTTPS
 https://console.aws.amazon.com/cloudformation/home?region=us-east-2#/stacks/new?stackName=mysfits-fargate&templateURL=https://s3.amazonaws.com/mythical-mysfits-website/fargate/core.yml
 
+
+CloudFormation:
+  Package:
+    Description:
+      - Packages references to local artifacts (file/directories) in template
+        - folders: packaged into a zip file
+	- file:    uploaded directly
+      - Uploads zip file to S3
+      - Changes local references to artifacts to S3 URIs of package(s)
+    Resources/Artifacts:
+      - AWS::ApiGateway::RestApi:  BodyS3Location
+      - AWS::Lambda::Function:     Code
+      - AWS::Serverless::Function: CodeUri
+      - AWS::Serverless::Api:      DefinitionUri
+      - AWS::Include:              Location
+      - AWS::CloudFormaton::Stack: TemplateURL
