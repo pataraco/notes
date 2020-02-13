@@ -204,3 +204,21 @@ https://geekflare.com/github-credentials-scanner/
 https://github.com/awslabs/git-secrets
 https://github.com/dxa4481/truffleHog
 |________Git Secrets Finders/Blockers______|
+
+ ______________________________
+|        Git Config Tips       |
+# $REPO/.git/config
+[remote "origin"]
+	url = git@par.github.com:pataraco/REPO
+	fetch = +refs/heads/*:refs/remotes/origin/*
+[user]
+	username = pataraco
+	email = pataraco@gmail.com
+
+# ~/.ssh/config
+# Personal GitHub
+Host par.github.com
+  HostName github.com
+  User pataraco
+  IdentityFile ~/.ssh/pataraco_github_rsa
+|________Git Config Tips ______|
