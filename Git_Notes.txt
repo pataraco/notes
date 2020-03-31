@@ -51,6 +51,11 @@ git diff				# show changes made
       git diff HEAD^ $FILE
    git diff [--name-only] BRANCH	# files/changes between current/another branch
    git show [--name-only] <SHA1> <SHA2>	# diffs between 2 commits
+   git log --format="%H" -n 1           # last git commit
+   git show --pretty="" --name-only $GIT_COMMIT       # changed files in commit
+   git diff-tree --no-commit-id --name-only -r $GIT_COMMIT  # same
+   git diff --name-only HEAD@{0} HEAD@{1}       # changed files since last push (local)
+   git diff --name-only HEAD HEAD^              # changed files between last 2 HEADs
 git fetch				# bring changes into 'remote' branch
 git init				# initialize a repo
 git log					# show Git commits
@@ -73,6 +78,7 @@ git rebase -i HEAD~n			# change commit messages
       git commit --continue
    b) (editor opens with list of commits, change "pick" to "reword")
       git push --force
+git reset --soft HEAD~1                 # revert last commit
 git reset [HEAD] <FILE>			# revert changes | unstage a file
 git reset <SHA>				# revert back to a SHA (can use first 7 chars)
 git remote -v				# see a list of Git project's remotes
@@ -81,7 +87,7 @@ git remote -v				# see a list of Git project's remotes
    git remote set-url --add --push origin git@stor2:cloud_automation
    git remote set-url --add --push origin ssh://git-codecommit.us-east-1.amazonaws.com/v1/repos/cloud_automation
 git rm [--cached] \*.zip		# remove [cached] files (that were tracked and now in gitignore)
-git show HEAD|<BRANCH>			# show info on 
+git show HEAD|<BRANCH>			# show info on
 git stash				# stash the changes in a dirty working dir away
    git stash list
    git stash apply [stash@{2}]
@@ -129,7 +135,7 @@ curl https://raw.githubusercontent.com/git/git/master/contrib/completion/git-com
 # git prompt
 #OLD#curl https://raw.github.com/git/git/master/contrib/completion/git-prompt.sh > ~/.git-prompt.sh
 curl https://raw.githubusercontent.com/git/git/master/contrib/completion/git-prompt.sh > ~/.git-prompt.sh
- 
+
 # Rename GitHub Repo
 # (careful running the following - save copy of config first. or just change $repo/.git/config manually)
 $ git remote rm origin
@@ -173,7 +179,7 @@ $ git remote add origin $URL
 [master]$ git fetch -p origin
 [master]$ git merge origin/master
 [master]$ git checkout FEATURE
-[FEATURE]$ git rebase -i master            # using local master now because 
+[FEATURE]$ git rebase -i master            # using local master now because
                                            # it is in sync with origin/master
 [FEATURE]$ vi $CONFLICTING_FILE
 [FEATURE]$ git add $CONFLICTING_FILE
