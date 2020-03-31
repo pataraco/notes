@@ -4,17 +4,30 @@ Virtual Environments
 
 PipEnv, PyEnv and VirtualEnv
 
-PipEnv, Pyenv and virtualenv are very different tools that work in different ways to do different things:
+PipEnv, Pyenv and virtualenv are very different tools that work in different
+ways to do different things:
 
 -----
 PyEnv
 -----
-PyEnv is a bash extension - will not work on Windows - that intercepts your calls to python, pip, etc., to direct them to one of several of the system python tool-chains. So you always have all the libraries that you have installed in the selected python version available - as such it is good for users who have to switch between different versions of python.
+PyEnv is a bash extension - will not work on Windows - that intercepts your
+calls to python, pip, etc., to direct them to one of several of the system
+python tool-chains. So you always have all the libraries that you have
+installed in the selected python version available - as such it is good for
+users who have to switch between different versions of python.
 
 ------ ------ ------ ------ ------ ------
 pyenv (https://github.com/yyuu/pyenv)
 ------ ------ ------ ------ ------ ------
-is used to isolate Python versions. For example, you may want to test your code against Python 2.6, 2.7, 3.3, 3.4 and 3.5, so you'll need a way to switch between them. Once activated, it prefixes the PATH environment variable with ~/.pyenv/shims, where there are special files matching the Python commands (python, pip). These are not copies of the Python-shipped commands; they are special scripts that decide on the fly which version of Python to run based on the PYENV_VERSION environment variable, or the .python-version file, or the ~/.pyenv/version file. pyenv also makes the process of downloading and installing multiple Python versions easier, using the command pyenv install.
+is used to isolate Python versions. For example, you may want to test your
+code against Python 2.6, 2.7, 3.3, 3.4 and 3.5, so you'll need a way to switch
+between them. Once activated, it prefixes the PATH environment variable with
+~/.pyenv/shims, where there are special files matching the Python commands
+(python, pip). These are not copies of the Python-shipped commands; they are
+special scripts that decide on the fly which version of Python to run based on
+the PYENV_VERSION environment variable, or the .python-version file, or the
+~/.pyenv/version file. pyenv also makes the process of downloading and
+installing multiple Python versions easier, using the command pyenv install.
 
 
 Installation
@@ -30,7 +43,8 @@ Installation
    if [ -d $pyenv_repo ]; then
       export PYENV_ROOT=$pyenv_repo
       pyenv_bin=$PYENV_ROOT/bin
-      [[ -d $pyenv_bin && ! $PATH =~ ^$pyenv_bin:|:$pyenv_bin:|:$pyenv_bin$ ]] && export PATH="$pyenv_bin:$PATH"
+      [[ -d $pyenv_bin && ! $PATH =~ ^$pyenv_bin:|:$pyenv_bin:|:$pyenv_bin$ ]] \
+         && export PATH="$pyenv_bin:$PATH"
    fi
   #-----
 # add `pyenv init` to shell to enable shims and autcompletion
@@ -52,16 +66,34 @@ VirtualEnv
 ----------
 http://docs.python-guide.org/en/latest/dev/virtualenvs/
 
-virtualenv (https://pypi.python.org/pypi/virtualenv) is a tool to create isolated Python environments. virtualenv creates a folder which contains all the necessary executables to use the packages that a Python project would need.
+virtualenv (https://pypi.python.org/pypi/virtualenv) is a tool to create
+isolated Python environments. virtualenv creates a folder which contains all
+the necessary executables to use the packages that a Python project would need.
 
-VirtualEnv is pure python so works everywhere, it makes a copy of, optionally as specific version of, python and pip local to the activate environment which may or may not include links to the current system tool-chain, if it does not you can install just a known subset of libraries into that environment. As such it is almost certainly much better for testing and deployment as you know exactly which libraries, at which versions, are used and a global change will not impact your module.
+VirtualEnv is pure python so works everywhere, it makes a copy of, optionally
+as specific version of, python and pip local to the activate environment which
+may or may not include links to the current system tool-chain, if it does not
+you can install just a known subset of libraries into that environment. As such
+it is almost certainly much better for testing and deployment as you know
+exactly which libraries, at which versions, are used and a global change will
+not impact your module.
 
 ------ ------ ------ ------ ------ ------
 virtualenv (https://pypi.python.org/pypi/virtualenv)
 ------ ------ ------ ------ ------ ------
-is a very popular tool that creates isolated Python environments for Python libraries. If you're not familiar with this tool, I highly recommend learning it, as it is a very useful tool, and I'll be making comparisons to it for the rest of this answer.
+is a very popular tool that creates isolated Python environments for Python
+libraries. If you're not familiar with this tool, I highly recommend learning
+it, as it is a very useful tool, and I'll be making comparisons to it for the
+rest of this answer.
 
-It works by installing a bunch of files in a directory (eg: env/), and then modifying the PATH environment variable to prefix it with a custom bin directory (eg: env/bin/). An exact copy of the python or python3 binary is placed in this directory, but Python is programmed to look for libraries relative to its path first, in the environment directory. It's not part of Python's standard library, but is officially blessed by the PyPA (Python Packaging Authority). Once activated, you can install packages in the virtual environment using pip.
+It works by installing a bunch of files in a directory (eg: env/), and then
+modifying the PATH environment variable to prefix it with a custom bin
+directory (eg: env/bin/). An exact copy of the python or python3 binary is
+placed in this directory, but Python is programmed to look for libraries
+relative to its path first, in the environment directory. It's not part of
+Python's standard library, but is officially blessed by the PyPA (Python
+Packaging Authority). Once activated, you can install packages in the virtual
+environment using pip.
 
 
 Installation
@@ -96,30 +128,67 @@ VIRTUAL_ENV_DISABLE_PROMPT=YES
 
 
 ------ ------ ------ ------ ------ ------
-pipenv  (https://pypi.python.org/pypi/pipenv)
+pipenv  (pypi.python.org/pypi/pipenv) [realpython.com/pipenv-guide]
 ------ ------ ------ ------ ------ ------
-by Kenneth Reitz (the author of requests), is the newest project in this list. It aims to combine Pipfile, pip and virtualenv into one command on the command-line. The virtualenv directory typically gets placed in ~/.local/share/virtualenvs/XXX, with XXX being a hash of the path of the project directory. This is different from virtualenv, where the directory is typically in the current working directory.
+by Kenneth Reitz (the author of requests), is the newest project in this list.
+It aims to combine Pipfile, pip and virtualenv into one command on the
+command-line. The virtualenv directory typically gets placed in
+~/.local/share/virtualenvs/XXX, with XXX being a hash of the path of the
+project directory. This is different from virtualenv, where the directory is
+typically in the current working directory.
 
-The Python Packaging Guide recommends pipenv when developing Python applications (as opposed to libraries). There does not seem to be any plans to support venv instead of virtualenv (#15). Confusingly, its command-line option --venv refers to the virtualenv directory, not venv, and similarly, the environment variable PIPENV_VENV_IN_PROJECT affects the location of the virtualenv directory, not venv directory (#1919).
+The Python Packaging Guide recommends pipenv when developing Python
+applications (as opposed to libraries). There does not seem to be any plans to
+support venv instead of virtualenv (#15). Confusingly, its command-line
+option --venv refers to the virtualenv directory, not venv, and similarly, the
+environment variable PIPENV_VENV_IN_PROJECT affects the location of the
+virtualenv directory, not venv directory (#1919).
+
+$ pip install [--user] pipenv       # install pipenv
+$ pipenv shell                      # creates a virtual environment
+$ pipenv install PACKAGE[==VERSION] # creates/updates Pipfile and Pipfile.lock
+$ pipenv install DEV_PACKAGE --dev  # install dev package
+$ pipenv lock                       # creates/updates Pipfile.lock
+$ pipenv lock -r > requirements.txt # creates requirements.txt output/file
+$ pipenv install --ignore-pipfile   # use Pipfile.lock to install
+$ pipenv install --dev              # install depedencies needed for development
+$ pipenv open PACKAGE               # open the PACKAGE in the default editor
+$ pipenv run COMMAND                # run a command in the virtual environment
+$ pipenv check                      # check for security vulnerabilities
+$ pipenv uninstall PACKAGE          # uninstall a package, updating Pipfile(s)
+$ pipenv --venv                     # where is the virtual environment
+$ pipenv --where                    # where is the project home
 
 
 ----------------
 Additional Tools
 ----------------
 
-There are a number of tools that it is worth mentioning, and considering, as they can help with the use of one or more of the above:
+There are a number of tools that it is worth mentioning, and considering, as
+they can help with the use of one or more of the above:
 
 VirtualEnvWrapper (https://pypi.python.org/pypi/virtualenvwrapper)
 -----------------
-VirtualEnvWrapper Manage and simplify the use and management of VirtualEnv - Cross Platform.
+VirtualEnvWrapper Manage and simplify the use and management of
+VirtualEnv - Cross Platform.
 
 pyenv-virtualenv (https://github.com/yyuu/pyenv-virtualenv)
 ----------------
-pyenv-virtualenv, installed by pyenv-installer (https://github.com/yyuu/pyenv-installer), which gives PyEnv tools for managing and interfacing to VirtualEnv - with this you can have a base installation that includes more than one version of python and create isolated environments within each of them - Linux Only. Suggested by Johann Visagie
+pyenv-virtualenv, installed by pyenv-installer
+(https://github.com/yyuu/pyenv-installer), which gives PyEnv tools for managing
+and interfacing to VirtualEnv - with this you can have a base installation that
+includes more than one version of python and create isolated environments
+within each of them - Linux Only. Suggested by Johann Visagie
 
 PyInstaller (http://www.pyinstaller.org/)
 -----------
-PyInstaller can take your python code, possibly developed & tested under VirtualEnv, and bundle it up so that it can run one platforms that do not have your version of python installed - Note that it is not a cross compiler you will need a Windows (virtual-)machine to build Windows installs, etc., but it can be handy even where you can be sure that python will be installed but cannot be sure that the version of python and all the libraries will be compatible with your code.
+PyInstaller can take your python code, possibly developed & tested under
+VirtualEnv, and bundle it up so that it can run one platforms that do not have
+your version of python installed - Note that it is not a cross compiler you
+will need a Windows (virtual-)machine to build Windows installs, etc., but it
+can be handy even where you can be sure that python will be installed but
+cannot be sure that the version of python and all the libraries will be
+compatible with your code.
 
 Environments:
 ------------
@@ -127,10 +196,15 @@ Environments:
 Ansible_1.x
 -----------
 VIRTUAL_ENV=/usr/local/home/praco/envs/Ansible_1.x
-PATH=/usr/local/home/praco/envs/Ansible_1.x/bin:/home/praco/repos/pyenv/shims:/home/praco/repos/pyenv/shims:/home/praco/repos/pyenv/shims:/home/praco/repos/pyenv/shims:/home/praco/repos/pyenv/bin:/usr/lib64/qt-3.3/bin:/usr/kerberos/sbin:/usr/kerberos/bin:/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin:/home/praco/repos/phacility/arcanist/bin
+PATH=/usr/local/home/praco/envs/Ansible_1.x/bin:/home/praco/repos/pyenv/shims:
+   /home/praco/repos/pyenv/bin:/usr/lib64/qt-3.3/bin:/usr/kerberos/sbin:
+   /usr/kerberos/bin:/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:
+   /sbin:/home/praco/repos/phacility/arcanist/bin
 
 $ sudo yum install libffi-devel		# NOT NEEDED (?)
-$ sudo pip install -U ansible==1.9.1 credstash==1.3.1 httplib2==0.9.2 awscli==1.9.12 boto==2.38.0 botocore==1.3.12
+$ sudo pip install -U \
+     ansible==1.9.1 credstash==1.3.1 httplib2==0.9.2 awscli==1.9.12 \
+     boto==2.38.0 botocore==1.3.12
 $ sudo pip install --ignore-installed PyCrypto==2.6.1
 
 ansible (1.9.1)
@@ -144,7 +218,11 @@ pycrypto (2.6.1)
 Ansible_2.x
 -----------
 VIRTUAL_ENV=/usr/local/home/praco/envs/Ansible_2.x
-PATH=/usr/local/home/praco/envs/Ansible_2.x/bin:/home/praco/repos/pyenv/shims:/home/praco/repos/pyenv/shims:/home/praco/repos/pyenv/shims:/home/praco/repos/pyenv/shims:/home/praco/repos/pyenv/bin:/usr/lib64/qt-3.3/bin:/usr/kerberos/sbin:/usr/kerberos/bin:/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin:/home/praco/repos/phacility/arcanist/bin
+PATH=/usr/local/home/praco/envs/Ansible_2.x/bin:/home/praco/repos/pyenv/shims:
+   /home/praco/repos/pyenv/shims:/home/praco/repos/pyenv/bin:
+   /usr/lib64/qt-3.3/bin:/usr/kerberos/sbin:/usr/kerberos/bin:/usr/local/bin:
+   /bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin:
+   /home/praco/repos/phacility/arcanist/bin
 
 ansible (2.1.1.0)
 ansible-playbook-debugger (0.2.4)
