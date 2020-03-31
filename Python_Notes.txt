@@ -213,3 +213,19 @@ Adding FAQ to consent forms for weppa ...    Duration: 0:00:00.021765
 un-import
 
 del sys.modules['MODULE']
+
+---------------- set up env for flake/black --------------
+# virtual [development] environment
+$ git pull
+$ pipenv sync --dev
+
+# Editor/IDE (VS Code)
+* Enable format on save
+      (VS Code: Preferences > Text Editor > Formatting > Format On Save)
+* Set your formatter to black
+      (VS Code: Preferences > Extensions > Python > Formatting: Provider > black)
+* Enable linting (VS Code Python > Linting: Lint On Save)
+      (VS Code: Preferences > Extensions > Python > Linting: Enabled)
+      (VS Code: Preferences > Extensions > Python > Linting: Lint On Save)
+* Set linter to Flake8
+      (VS Code: Preferences > Extensions > Python > Linting: Flake8 Enabled)
