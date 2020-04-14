@@ -16,7 +16,8 @@ v12+
 
 Installation
 ------------
-- standalone binary: find it and install it - easy!
+Stand Alone Binary
+  - find it and install it - easy!
 
 MacOS
   - brew install terraform
