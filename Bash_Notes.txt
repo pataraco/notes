@@ -1,6 +1,6 @@
-	###############################
-		bash tips and tricks
-	###############################
+--------------------
+Bash Tips and Tricks
+--------------------
 	
 # remember this
 no : result=$(echo $variable | grep $pattern)
