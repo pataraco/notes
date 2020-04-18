@@ -17,8 +17,23 @@ set -x
 trap read debug
 < your code here >
 
+# random stuff
+unhappy_emoji=(
+   :persevere: :open_mouth: :unamused: :white_frowning_face: :confounded:
+   :disappointed: :triumph: :cry: :sob: :rage: :angry:
+   :face_with_symbols_on_mouth:)
+happy_emoji=(
+   :grinning: :grin: :joy: :smiley: :smile: :laughing: :yum: :sunglasses:
+   :slightly_smiling_face: :stuck_out_tongue:)
+echo ${happy_emoji[$(($RANDOM % ${#happy_emoji[*]}))]}
+echo ${unhappy_emoji[$(($RANDOM % ${#unhappy_emoji[*]}))]}
+
 # update change the title bar of the terminal
 echo -ne "\033]0;`whoami`@`hostname`\007"
+
+# second to last line
+tac $file | sed -n 2p  # of file
+sort -r | sed -n 2p    # of sort output
 
 # each of these adds 1 to i
 i=`expr $i + 1` 	# All Bourne shells
@@ -29,6 +44,22 @@ $(( i += 1 ))
 $(( i++ ))
 $(( BASE#NUMBER_IN_BASE )) (ex: echo $((36#1x587kv2)) => 150514102622)
 
+# exec examples
+$ echo "foo bar" | \
+     exec bash -c '
+        echo "0=($0) | *=($*) | @=($@)"
+	for a; do
+	   echo "a=($a)"
+	done
+     ' _ arg2 $(xargs)
+0=(_) | *=(arg2 foo bar) | @=(arg2 foo bar)
+a=(arg2)
+a=(foo)
+a=(bar)
+
+# find examples
+TODO: put find examples here
+
 declare -a array=()		# declare an array and init to ''
 array+=("val1")			# pop on a value into the array
 array+=("val2")			# pop on another value into the array
@@ -38,6 +69,9 @@ echo "STDOUT and STDERR to /dev/null" &>/dev/null
 # sort on tab seperated 2nd field
 sort -rhk2 -t $'\t'
 
+# some RegEx stuff
+# optional words
+[[ "$b" =~ ^(master|develop|(release|hotfix)/.*)$ ]] && echo "Y" || echo "N"
 is_number_regex="^[0-9]+$"
 [ "${input}" =~ $is_number_regex ] && echo "yep"
 
