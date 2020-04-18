@@ -88,6 +88,8 @@ git remote -v				# see a list of Git project's remotes
    git remote set-url --add --push origin ssh://git-codecommit.us-east-1.amazonaws.com/v1/repos/cloud_automation
 git rm [--cached] \*.zip		# remove [cached] files (that were tracked and now in gitignore)
 git show HEAD|<BRANCH>			# show info on
+git show-ref --[heads|tags]
+git symbolic-ref HEAD
 git stash				# stash the changes in a dirty working dir away
    git stash list
    git stash apply [stash@{2}]
@@ -118,6 +120,45 @@ git push -u origin master
 # push an existing repository from the command line
 git remote add origin https://github.com/pataraco/NAME_OF_REPO.git
 git push -u origin master
+
+# use API and curl to get and do some stuff
+GITHUB_OWNER="pataraco"
+GITHUB_REPO="notes"
+GITHUB_TOKEN=$(
+   aws ssm get-parameter \
+      --name /github/users/pataraco/oauthtoken \
+      --with-decryption \
+      --query Parameter.Value \
+      --output text
+)
+REF=master
+URI=https://api.github.com
+API_VERSION=v3
+API_HEADER="Accept: application/vnd.github.${API_VERSION}+json"
+AUTH_HEADER="Authorization: token ${GITHUB_TOKEN}"
+# get default branch
+curl -X GET -fsSL -H "${AUTH_HEADER}" -H "${API_HEADER}" \
+   "${URI}/repos/${GITHUB_OWNER}/${GITHUB_REPO}" | jq .default_branch
+# list branches
+curl -X GET -fsSL -H "${AUTH_HEADER}" -H "${API_HEADER}" \
+   "${URI}/repos/${GITHUB_OWNER}/${GITHUB_REPO}/branches" | jq .[].name
+# list head refs
+curl -X GET -fsSL -H "${AUTH_HEADER}" -H "${API_HEADER}" \
+   "${URI}/repos/${GITHUB_OWNER}/${GITHUB_REPO}/git/refs/heads" | jq .[].ref
+# is branch protected
+curl -X GET -fsSL -H "${AUTH_HEADER}" -H "${API_HEADER}" \
+   "${URI}/repos/${GITHUB_OWNER}/${GITHUB_REPO}/branches/${REF}" | jq .protected
+# list number & ref of closed PRs
+curl -X GET -fsSL -H "${AUTH_HEADER}" -H "${API_HEADER}" \
+   "$URI/repos/${GITHUB_OWNER}/${GITHUB_REPO}/pulls?state=closed" | jq '.[]|(.number|tostring)+" "+.head.ref'
+# list PR with ref as the base
+curl -X GET -fsSL -H "${AUTH_HEADER}" -H "${API_HEADER}" \
+   "$URI/repos/${GITHUB_OWNER}/${GITHUB_REPO}/pulls?state=open&base=${REF}"
+# delete a branch
+curl -X DELETE -sSL -H "${AUTH_HEADER}" -H "${API_HEADER}" \
+   --output /dev/null --write-out "%{http_code}" \
+   "${URI}/repos/${GITHUB_OWNER}/${GITHUB_REPO}/git/refs/heads/${REF}"
+   # http codes: 204 = success, 422 = does not exist
 
 |_____________GitHub_Tips_____________|
 
@@ -164,6 +205,47 @@ $ git remote add origin $URL
 [PROD] git merge --no-ff DEV
 [PROD] git push origin PROD
 |________GitHub_Rebase_Workflow_______|
+
+ ____________________________________________
+|        GitHub ENV Branching Workflow       |
+(dev: development, stg: staging, master: prd)
+www.wearefine.com/news/insights/env-branching-with-git
+[master]  $ git pull --rebase origin master  # grab latest origin/master
+[master]  $ git checkout -b feature          # create/checkout feature branch
+[feature] $ hack... hack... hack...          # hack
+[feature] $ git add -A                       # stage changes
+[feature] $ git commit -m "message"          # commit changes
+
+          # release to dev
+[feature] $ git pull --rebase origin master  # rebase from origin/master
+[feature] $ git checkout dev                 # switch to dev
+[dev]     $ git pull --rebase origin dev     # rebase from origin/dev
+          # push feature, create PR (feature -> dev) and merge
+[feature] $ git push origin feature          # push changes
+          # or merge manually
+[dev]     $ git merge feature                # merge in feature branch
+[dev]     $ git push origin dev              # push changes (triggers dev build)
+
+          # release to stg
+[dev]     $ git checkout feature             # checkout feature branch
+[feature] $ git pull --rebase origin master  # rebase from origin/master
+[feature] $ git checkout stg                 # switch to stg
+[stg]     $ git pull --rebase origin stg     # rebase from origin/stg
+          # push feature, create PR (feature -> stg) and merge
+[feature] $ git push origin feature          # push changes
+          # or merge manually
+[stg]     $ git merge feature                # merge in feature branch
+[stg]     $ git push origin stg              # push changes (triggers stg build)
+
+          # release to prd
+[stg]     $ git checkout feature             # checkout feature branch
+[feature] $ git pull --rebase origin master  # rebase from origin/master
+          # push feature, create PR (feature -> prd) and merge
+[feature] $ git push origin feature          # push changes
+          # or merge manually
+[master]  $ git merge feature                # merge in feature branch
+[master]  $ git push origin master           # push changes (triggers prd build)
+|________GitHub_ENV_Branching_Workflow_______|
 
  ___________________________________________
 |        Git Merge Conflicts Workflow       |
@@ -213,7 +295,8 @@ https://github.com/dxa4481/truffleHog
 
  ______________________________
 |        Git Config Tips       |
-# $REPO/.git/config
+
+# file: $REPO/.git/config
 [remote "origin"]
 	url = git@par.github.com:pataraco/REPO
 	fetch = +refs/heads/*:refs/remotes/origin/*
@@ -221,10 +304,28 @@ https://github.com/dxa4481/truffleHog
 	username = pataraco
 	email = pataraco@gmail.com
 
-# ~/.ssh/config
+# file: ~/.ssh/config
 # Personal GitHub
 Host par.github.com
   HostName github.com
   User pataraco
   IdentityFile ~/.ssh/pataraco_github_rsa
+
+# file: $REPO/.git/config
+# purpose: use hooks to prevent secrets from being pushed to repo
+[secrets]
+	providers = git secrets --aws-provider
+	patterns = (A3T[A-Z0-9]|AKIA|AGPA|AIDA|AROA|AIPA|ANPA|ANVA|ASIA)[A-Z0-9]{16}
+	patterns = (\"|')?(AWS|aws|Aws)?_?(SECRET|secret|Secret)?_?(ACCESS|access|Access)?_?(KEY|key|Key)(\"|')?\\s*(:|=>|=)\\s*(\"|')?[A-Za-z0-9/\\+=]{40}(\"|')?
+	patterns = (\"|')?(AWS|aws|Aws)?_?(ACCOUNT|account|Account)_?(ID|id|Id)?(\"|')?\\s*(:|=>|=)\\s*(\"|')?[0-9]{4}\\-?[0-9]{4}\\-?[0-9]{4}(\"|')?
+	allowed = AKIAIOSFODNN7EXAMPLE
+	allowed = wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
+
+# file: $REPO/.git/config
+# purpose: add an additional remote  (use: git push awscc)
+[remote "awscc"]
+	# url = https://git-codecommit.us-west-2.amazonaws.com/v1/repos/infrastructure-automation
+	url = ssh://git-codecommit.us-west-2.amazonaws.com/v1/repos/infrastructure-automation
+	fetch = +refs/heads/*:refs/remotes/awscc/*
+
 |________Git Config Tips ______|
