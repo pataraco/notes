@@ -2,10 +2,30 @@
 Virtual Environments
 --------------------
 
+------
+Python
+------
 PipEnv, PyEnv and VirtualEnv
 
-PipEnv, Pyenv and virtualenv are very different tools that work in different
-ways to do different things:
+PipEnv, PyEnv and VirtualEnv are very different tools that work in different
+ways to do different things.
+
+-------
+Summary
+-------
+PyEnv      (pyenv)      - Use to install different versions of Python
+PipEnv     (pipenv)     - Use in place of pip to install/lock packages
+VirtualEnv (virtualenv) - Used by PipEnv
+
+-------------
+Documentation
+-------------
+[PyEnv: Simple Python Version Management](https://github.com/pyenv/pyenv)
+[Pipenv: Python Development Workflow for Humans](https://pypi.org/project/pipenv/)
+[Pipenv: A Guide to the New Python Packaging Tool](https://realpython.com/pipenv-guide/)
+[VirtualEnv: Virtual Python Environment builder](https://pypi.org/project/virtualenv/)
+[Pipenv & Virtual Environments](https://docs.python-guide.org/dev/virtualenvs/)
+
 
 -----
 PyEnv
@@ -17,7 +37,7 @@ installed in the selected python version available - as such it is good for
 users who have to switch between different versions of python.
 
 ------ ------ ------ ------ ------ ------
-pyenv (https://github.com/yyuu/pyenv)
+[pyenv](https://github.com/pyenv/pyenv)
 ------ ------ ------ ------ ------ ------
 is used to isolate Python versions. For example, you may want to test your
 code against Python 2.6, 2.7, 3.3, 3.4 and 3.5, so you'll need a way to switch
@@ -29,9 +49,8 @@ the PYENV_VERSION environment variable, or the .python-version file, or the
 ~/.pyenv/version file. pyenv also makes the process of downloading and
 installing multiple Python versions easier, using the command pyenv install.
 
-
-Installation
-------------
+pyenv: Installation
+-------------------
 # get it
   $ git clone https://github.com/pyenv/pyenv ~/repos/pyenv
 # link it
@@ -59,6 +78,44 @@ Installation
   $ pyenv install 2.7.11
 # use `pyenv` to set/use the version of Python desired
   $ pyenv help   # OR pyenv commands
+
+
+------
+PipEnv
+------
+by Kenneth Reitz (the author of requests), is the newest project in this list.
+It aims to combine Pipfile, pip and virtualenv into one command on the
+command-line. The virtualenv directory typically gets placed in
+~/.local/share/virtualenvs/XXX, with XXX being a hash of the path of the
+project directory. This is different from virtualenv, where the directory is
+typically in the current working directory.
+
+------ ------ ------ ------ ------ ------
+pipenv  (pypi.python.org/pypi/pipenv) [realpython.com/pipenv-guide]
+------ ------ ------ ------ ------ ------
+The Python Packaging Guide recommends pipenv when developing Python
+applications (as opposed to libraries). There does not seem to be any plans to
+support venv instead of virtualenv (#15). Confusingly, its command-line
+option --venv refers to the virtualenv directory, not venv, and similarly, the
+environment variable PIPENV_VENV_IN_PROJECT affects the location of the
+virtualenv directory, not venv directory (#1919).
+
+pipenv: Installation/Use
+------------------------
+$ pip install [--user] pipenv       # install pipenv
+$ pipenv shell                      # creates a virtual environment
+$ pipenv install PACKAGE[==VERSION] # creates/updates Pipfile and Pipfile.lock
+$ pipenv install DEV_PACKAGE --dev  # install dev package
+$ pipenv lock                       # creates/updates Pipfile.lock
+$ pipenv lock -r > requirements.txt # creates requirements.txt output/file
+$ pipenv install --ignore-pipfile   # use Pipfile.lock to install
+$ pipenv install --dev              # install depedencies needed for development
+$ pipenv open PACKAGE               # open the PACKAGE in the default editor
+$ pipenv run COMMAND                # run a command in the virtual environment
+$ pipenv check                      # check for security vulnerabilities
+$ pipenv uninstall PACKAGE          # uninstall a package, updating Pipfile(s)
+$ pipenv --venv                     # where is the virtual environment
+$ pipenv --where                    # where is the project home
 
 
 ----------
@@ -95,9 +152,8 @@ Python's standard library, but is officially blessed by the PyPA (Python
 Packaging Authority). Once activated, you can install packages in the virtual
 environment using pip.
 
-
-Installation
-------------
+virtualenv: Installation
+------------------------
 Install virtualenv via pip:
 
 $ pip install virtualenv
@@ -127,37 +183,6 @@ $ deactivate
 VIRTUAL_ENV_DISABLE_PROMPT=YES
 
 
------- ------ ------ ------ ------ ------
-pipenv  (pypi.python.org/pypi/pipenv) [realpython.com/pipenv-guide]
------- ------ ------ ------ ------ ------
-by Kenneth Reitz (the author of requests), is the newest project in this list.
-It aims to combine Pipfile, pip and virtualenv into one command on the
-command-line. The virtualenv directory typically gets placed in
-~/.local/share/virtualenvs/XXX, with XXX being a hash of the path of the
-project directory. This is different from virtualenv, where the directory is
-typically in the current working directory.
-
-The Python Packaging Guide recommends pipenv when developing Python
-applications (as opposed to libraries). There does not seem to be any plans to
-support venv instead of virtualenv (#15). Confusingly, its command-line
-option --venv refers to the virtualenv directory, not venv, and similarly, the
-environment variable PIPENV_VENV_IN_PROJECT affects the location of the
-virtualenv directory, not venv directory (#1919).
-
-$ pip install [--user] pipenv       # install pipenv
-$ pipenv shell                      # creates a virtual environment
-$ pipenv install PACKAGE[==VERSION] # creates/updates Pipfile and Pipfile.lock
-$ pipenv install DEV_PACKAGE --dev  # install dev package
-$ pipenv lock                       # creates/updates Pipfile.lock
-$ pipenv lock -r > requirements.txt # creates requirements.txt output/file
-$ pipenv install --ignore-pipfile   # use Pipfile.lock to install
-$ pipenv install --dev              # install depedencies needed for development
-$ pipenv open PACKAGE               # open the PACKAGE in the default editor
-$ pipenv run COMMAND                # run a command in the virtual environment
-$ pipenv check                      # check for security vulnerabilities
-$ pipenv uninstall PACKAGE          # uninstall a package, updating Pipfile(s)
-$ pipenv --venv                     # where is the virtual environment
-$ pipenv --where                    # where is the project home
 
 
 ----------------
