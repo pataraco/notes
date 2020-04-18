@@ -472,8 +472,12 @@ isosize		- outputs the length of an iso9660 file system
 journalctl	- Query the systemd journal
 	# journalctl -fu docker.service
 jq		- Command-line JSON processor
-	$ <JSON_OUTPUT> | jq -r '.HostedZones[] | select(.Name=="VALUE").Id'
-        $ <JSON_OUTPUT> | jq -r '.HostedZones[] | .Name + " " + .Id'
+	$ jq '.HostedZones[] | select(.Name=="VALUE").Id'
+        $ jq '.HostedZones[] | .Name + " " + .Id'
+        $ jq '.[] | (.number|tostring) + " " + .head.ref'
+	$ jq '.webhooks[] | select(.description=="triggerStaging") | .webhookId'
+	$ jq '.branches[] | select((.branchName | contains("release") or contains("hotfix")) and .branchName!="'"${AWS_BRANCH}"'") | .branchName'
+	$ jq '.HostedZones[] | .Name + .Id + ") " + .Config.Comment'
 kill		- terminate a process
 killall		- kill processes by name
 	# killall -TERM /usr/sbin/named
