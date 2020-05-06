@@ -119,6 +119,17 @@ $ echo $$ | while read line; do echo $line $$ $BASHPID; done
 if $bool -a [ $x -ne $y ]; then echo y; else echo n; fi
 	(bool=[true|false] - if statement uses value of $?)
 -------------------
+$ IFS=':'
+$ array=(one two three)
+$ echo "${array[*]}"     # <-- with the "s - separates by IFS
+one:two:three
+$ echo "${array[@]}"
+one two three
+$ echo ${array[*]}
+one two three
+$ echo ${array[@]}
+one two three
+-------------------
 $ declare -a x='([0]="hi" [1]="bye")'
 $ echo ${x[0]}; echo ${x[1]}
 hi
