@@ -52,10 +52,14 @@ installing multiple Python versions easier, using the command pyenv install.
 pyenv: Installation
 -------------------
 # get it
-  $ git clone https://github.com/pyenv/pyenv ~/repos/pyenv
-# link it
+  # (MAC OS)
+    $ brew install pyenv
+  # (non MAC OS)
+    $ git clone https://github.com/pyenv/pyenv ~/repos/pyenv
+# link it (non MAC OS)
+  # (non MAC OS)
   $ ln -s ~/repos/pyenv ~/.pyenv
-# add pyenv bin to PATH
+# add pyenv bin to PATH (non MAC OS)
   $ vi ~/.bash_profile
   #-----
    pyenv_repo=$HOME/repos/pyenv
@@ -102,6 +106,10 @@ virtualenv directory, not venv directory (#1919).
 
 pipenv: Installation/Use
 ------------------------
+$ brew install pipenv
+
+  OR
+
 $ pip install [--user] pipenv       # install pipenv
 $ pipenv shell                      # creates a virtual environment
 $ pipenv install PACKAGE[==VERSION] # creates/updates Pipfile and Pipfile.lock
