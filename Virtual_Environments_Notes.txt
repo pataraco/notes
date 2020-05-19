@@ -79,7 +79,9 @@ pyenv: Installation
 # restart the shell
   $ source ~/.bash_profile   # OR $ exec "$SHELL"
 # install desired Python versions
-  $ pyenv install 2.7.11
+  $ pyenv install 3.8.2
+# enable the version(s)
+  $ pyenv global|local|shell VERSION [VERSION2 VERSION3...]
 # use `pyenv` to set/use the version of Python desired
   $ pyenv help   # OR pyenv commands
 

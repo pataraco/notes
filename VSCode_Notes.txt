@@ -23,3 +23,10 @@ Set Up Useful Keyboard Shortcuts
    - File: Focus on files Explorer   | Ctrl-H  |   When: editorTextFocus
    - Terminal: Focus Terminal        | Ctrl-J  |   When: editorTextFocus
    - View: Focus Active Editor Group | Ctrl-K  |   When: terminalFocus
+
+Vim Extension
+-------------
+# enable key-repeating
+defaults write com.microsoft.VSCode ApplePressAndHoldEnabled -bool false
+# reset key-repeating
+defaults delete -g ApplePressAndHoldEnabled

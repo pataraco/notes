@@ -45,7 +45,7 @@ control plane. global decisions. events.
  - cloud-controller-manager: runs controllers that interact with the underlying
      cloud providers
    - node controller: checks cloud provider it a node has been deleted in the
-     cloud after it sops responding
+     cloud after it stops responding
    - route controller: set up routes in the underlying cloud infra
    - service controller: create, update, deleted cloud provider load balancers
    - volume controller: create, attach, mount volumes and interacting with the
