@@ -11,3 +11,5 @@ Learning Docs
 K8S API Metrics
 ---------------
 kubectl get --raw /metrics
+
+tags: prometheus

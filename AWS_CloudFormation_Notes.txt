@@ -48,3 +48,5 @@ CloudFormation:
       - AWS::Serverless::Api:      DefinitionUri
       - AWS::Include:              Location
       - AWS::CloudFormaton::Stack: TemplateURL
+
+tags: cloudformation, cf

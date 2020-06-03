@@ -206,4 +206,4 @@ NEXT:
 3.0 Deploying an app to a Swarm
 https://training.docker.com/user/consume/course_pathway/a243879c-f73b-36a5-86d0-a5d1f610e8c3/93/ace984a9-392e-31bb-914e-1cdacb0263be?complete=0&tab=overview
 
-
+tags: docker

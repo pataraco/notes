@@ -20,3 +20,5 @@ Installation
   $ npm install -g @aws-amplify/cli
   $ amplify -v | -h
   $ amplify configure
+
+tags: Amplify, amplify, amp

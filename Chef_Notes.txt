@@ -96,3 +96,5 @@ Nodes
 - validation
    - /etc/chef/validation.pem   # used by chef-validator for initial chef-client run/validation
    - /etc/chef/client.pem       # private key obtained from initial chef-client run by chef-validator
+
+tags: chef, knife

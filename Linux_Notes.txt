@@ -1192,3 +1192,5 @@ VirtualBox
 ############################## -|   Hardware  |- #############################
 
 AMD SeaMicro SM15000
+
+tags: linux

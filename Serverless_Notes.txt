@@ -100,3 +100,5 @@ General Observations
 - Doesn't appear to be a way to use encrypted lambda environment variables with CloudFormation or Serverless
 - Serverless documentation/models plugin - can't use the pre-existing "Empty" API model, had to create a new
 - Serverless documentation/models plugin - models are created as one-liners as viewed in the AWS console
+
+tags: serverless, sls

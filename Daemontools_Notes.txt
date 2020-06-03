@@ -58,3 +58,5 @@ emailAddress=devnull
 [ -f /usr/local/nb/scripts/nbscripts.conf.local ] && \
 . /usr/local/nb/scripts/nbscripts.conf.local
 ---
+
+tags: daemon, daemontools

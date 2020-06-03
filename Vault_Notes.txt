@@ -15,3 +15,5 @@ set/export VAULT_ADDR or use '-address=<string>'
 - vault auth help github
 - vault status
 - vault list secret
+
+tags: vault

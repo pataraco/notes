@@ -229,3 +229,5 @@ $ pipenv sync --dev
       (VS Code: Preferences > Extensions > Python > Linting: Lint On Save)
 * Set linter to Flake8
       (VS Code: Preferences > Extensions > Python > Linting: Flake8 Enabled)
+
+tags: python, py

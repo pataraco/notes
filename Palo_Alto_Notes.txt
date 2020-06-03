@@ -6,3 +6,5 @@
 
 # reset FQDN resolution
 > request system fqdn refresh
+
+tags: palo, paloalto

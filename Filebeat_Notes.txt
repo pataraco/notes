@@ -72,3 +72,5 @@ filebeat.prospectors:
   document_type: filebeat   # <--- optional (default: log)
 output.logstash:
   hosts: ["vmedix-logstash.shared2.mirkwood.nim:25829"]
+
+tags: filebeat

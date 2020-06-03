@@ -189,3 +189,5 @@ pipeline {
         }
     }
 }
+
+tags: jenkins

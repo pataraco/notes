@@ -342,3 +342,5 @@ heLLo
 ---
 ${CFG_FILE##*/}		# gets rid of the "/" in the variable
 ${filename##*[.,~\#]}	# gets rid of the ".,~#" in the variable
+
+tags: bash

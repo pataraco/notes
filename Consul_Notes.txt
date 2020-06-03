@@ -79,4 +79,4 @@ Commands
   $ curl localhost:8500/v1/catalog/nodes # strong consistent view fo the cluster (world)
   $ dig @127.0.0.1 -p 8600 praco.dev.local.node.consul # DNS interface
 
-
+tags: consul

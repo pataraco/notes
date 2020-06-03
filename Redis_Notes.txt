@@ -353,3 +353,4 @@ sentinel slaves redis1
 
 $ redis-cli -p 7002 debug segfault
 
+tags: redis

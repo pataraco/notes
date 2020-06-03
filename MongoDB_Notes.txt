@@ -53,4 +53,4 @@ mongo test --eval "printjson(db.getCollectionNames())" # example
 mongo --quiet --ssl --sslAllowInvalidCertificates --host mongo2 --eval "printjson(db.runCommand('ismaster'))"
 
 
-
+tags: mongodb, mongo

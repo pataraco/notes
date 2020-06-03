@@ -62,4 +62,15 @@ pgcli> CREATE EXTERNAL TABLE <schema_name>.<table_name>
          LOCATION 's3://bucket/key/'
          TABLE PROPERTIES ('numRows'='NNNN');
 
-tags: redshift
+------ connection stuff (begin) ------------
+# set up a SSH Tunnel
+$ ssh [-A] -L LOCAL_PORT:REMOTE_HOST:REMOTE_PORT USER@BASTIAN_HOST
+
+# PostgreSQL - connect via URL
+$ pgcli postgresql://USER:PASSWORD@HOST:PORT/DB
+
+# PostgreSQL - connect via CL Options
+$ pgcli -h HOST -p PORT -U USER -d DB
+------ connection stuff (end) ------------
+
+tags: postgresql, pgcli, postgres

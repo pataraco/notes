@@ -127,6 +127,17 @@ $ pipenv uninstall PACKAGE          # uninstall a package, updating Pipfile(s)
 $ pipenv --venv                     # where is the virtual environment
 $ pipenv --where                    # where is the project home
 
+pipenv: Automatic Loading of `.env`
+------------------------
+https://pipenv.pypa.io/en/latest/advanced/#automatic-loading-of-env
+
+If a `.env` file is present in your project, `pipenv shell` and `pipenv run`
+will automatically load it, for you:
+
+pipenv: Adanced Usage of Pipenv
+-------------------------------
+https://pipenv.pypa.io/en/latest/advanced/
+
 
 ----------
 VirtualEnv
@@ -283,3 +294,19 @@ vmedix
    boto (2.40.0)
    boto3 (1.4.4)
    credstash (1.11.0)
+
+Node tools
+----------
+nvm - version manager
+   - brew install nvm
+   - following instructions from brew
+   - nvm --version | --help
+npm - package manager
+   - nvm install VERSION
+   - nvm alias default VERSION
+   - nvm use VERSION | system | default
+   - nvm ls
+   - node version
+npx - npm package runner
+
+tags: virtual, pipenv, pyenv

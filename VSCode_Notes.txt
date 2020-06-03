@@ -30,3 +30,5 @@ Vim Extension
 defaults write com.microsoft.VSCode ApplePressAndHoldEnabled -bool false
 # reset key-repeating
 defaults delete -g ApplePressAndHoldEnabled
+
+tags: code, vscode

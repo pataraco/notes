@@ -270,6 +270,7 @@ Role-Base Access Control (RBAC)
 -------------------------------
 [Using RBAC Authorizaton](https://kubernetes.io/docs/reference/access-authn-authz/rbac)
 [Configure RBAC In Your Kubernetes Cluster](https://docs.bitnami.com/kubernetes/how-to/configure-rbac-in-your-kubernetes-cluster)
+
 - Resource Types: Role, ClusterRole, RoleBinding, ClusterRoleBinding
 
 
@@ -463,3 +464,5 @@ Because Amazon EKS runs a highly available control plane, it can only be updated
 |1.12|1.12.6|1.2.2|
 |1.13|1.13.10|1.2.6|
 |1.14|1.14.6|1.3.1|
+
+tags: kubernetes, k8s

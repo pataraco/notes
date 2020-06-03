@@ -36,3 +36,5 @@ $ composer require VENDOR/PACKAGE[:VERSION]
 # install packages and update composer.lock
 # if composer.lock does not exist, use composer.json and then create
 $ composer install
+
+tags: php

@@ -255,3 +255,4 @@ diff -u elasticsearch.yml.orig elasticsearch.yml
 +discovery.zen.ping.unicast.hosts: ["search1","search3"]
  discovery.zen.ping.multicast.enabled: false
 
+tags: es, elasticsearch

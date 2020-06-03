@@ -98,3 +98,5 @@ Applications Installed
    If you do have an OPENSSH private key, you can convert it with the following
    command: `ssh-keygen -p -m PEM -f <OPENSSH_PRIVATE_KEY_FILE>`.
    This will overwrite your existing private key file and retain your public key file.
+
+tags: macbook, mbp, mac

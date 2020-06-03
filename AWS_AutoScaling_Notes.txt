@@ -215,3 +215,5 @@ forums
 		>cpus=$(grep "^${server}.*/aggregation-cpuaggr-average/cpu-idle" /var/log/collectd_values.txt)
 /usr/lib/nagios/plugins/autoscale/conntest.sh
 	- fix the comments
+
+tags: autoscaling, AutoScaling, as

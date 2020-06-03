@@ -12,6 +12,3 @@ You're just going to find a bunch of worthless notes that i keep while learning.
 
 ## Usage
 seriously, this is just for personal use... why are you still reading this?
-
-## License
-Not licensed - but go ahead and send me some money if you want ;)

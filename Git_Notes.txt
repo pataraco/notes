@@ -329,3 +329,21 @@ Host par.github.com
 	fetch = +refs/heads/*:refs/remotes/awscc/*
 
 |________Git Config Tips ______|
+
+
+ ______________________________
+|   Git Remove All History     |
+
+resets the repo to removoe sensitive data
+
+$ git checkout --orphan temp
+$ # remove any sensitive data
+$ git add -A
+$ git commit -am "Initial Commit"
+$ git branch -D master
+$ git branch -m master
+$ git push -f origin master
+
+|___Git Remove All History_____|
+
+tags: git

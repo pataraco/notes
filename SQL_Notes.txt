@@ -228,6 +228,7 @@ BEGIN WORK;
 UPDATE ls_hotelconfig 
 SET param_value='/opt/jboss/lightspeed/configuration/logos/sanjoseairporthotel.jpg' 
 WHERE hotelnum=NNNN AND parameter='util_mail_folio_pdf_logo'
+
 ------ user stuff (begin) ------------
 SELECT user, password, host FROM mysql.user;  -- show all users
 CREATE USER 'newuser'@'host' IDENTIFIED BY 'password';
@@ -242,15 +243,22 @@ GRANT ALL PRIVILEGES ON database.* TO 'newuser'@'host' IDENTIFIED BY 'password';
 SHOW GRANTS FOR 'username'@'host';
 DROP USER username[@host]
 ------ user stuff (end) ------------
+
 SHOW VARIABLES LIKE "%version%";
+
 ------ connection stuff (begin) ------------
 # set up a SSH Tunnel
 $ ssh [-A] -L LOCAL_PORT:REMOTE_HOST:REMOTE_PORT USER@BASTIAN_HOST
 $ mysql -h 127.0.0.1 (not localhost)
+
 # MySQL
 $ mysql -h ENDPOINT -u USER -p [PASSWORD] [-D DATABASE]
+
 # PostgreSQL - connect via URL
 $ pgcli postgresql://USER:PASSWORD@HOST:PORT/DB
-# PostgreSQL - connect via CLO
-$ pgcli -h HOST -p PORT -u USER -d DB
+
+# PostgreSQL - connect via CL Options
+$ pgcli -h HOST -p PORT -U USER -d DB
 ------ connection stuff (end) ------------
+
+tags: sql

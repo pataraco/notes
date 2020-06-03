@@ -21,3 +21,5 @@ Initialize Helm and Install Tiller
 
 In Kubernetes, granting a role to an application-specific service account is a best practice to ensure that your application is operating in the scope that you have specified.
 - `$ helm init --service-account <NAME> --history-max 200`  # with NO security configs (local dev ONLY!)
+
+tags: helm

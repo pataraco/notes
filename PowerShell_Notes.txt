@@ -152,3 +152,4 @@ if ($env:computername -eq $env:userdomain) {
 (Get-WmiObject -Class Win32_ComputerSystem).Domain
 -----
 
+tags: powershell, ps

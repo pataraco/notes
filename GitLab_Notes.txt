@@ -89,3 +89,4 @@ Runners
   https://docs.gitlab.com/ee/ci/runners/README.html#registering-a-specific-runner
 # Shared Runner
 
+tags: gitlab

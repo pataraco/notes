@@ -195,3 +195,5 @@ backend configuration file contents:
  II. Launch "green" in QA
 III. Launch "blue" in PROD
  IV. Launch "green" in PROD
+
+tags: terraform, tf

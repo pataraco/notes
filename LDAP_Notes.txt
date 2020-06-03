@@ -96,3 +96,4 @@ ldapsearch 	Allows you to search LDAP directory entries.
 ldapurl 	Allows you to compose or decompose LDAP URLs.
 ldapwhoami 	Allows you to perform a whoami operation on an LDAP server.
 
+tags: ldap
