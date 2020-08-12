@@ -138,6 +138,9 @@ pipenv: Adanced Usage of Pipenv
 -------------------------------
 https://pipenv.pypa.io/en/latest/advanced/
 
+$ pipenv install "PACKAGE~=major[.minor[.micro]]"
+$ pipenv update [PACKAGE]
+
 
 ----------
 VirtualEnv

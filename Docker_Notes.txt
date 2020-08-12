@@ -57,7 +57,8 @@ build     - build an image
    docker build -t docker-whalesay . # build from ./Dockerfile
    docker run docker-whalesay
    docker build -t pataraco/myfirstapp .
-   docker build -f DOCKERFILE .
+   docker build -f DOCKERFILE
+   docker build --build-arg ARG_NAME=VALUE -t TAG .
 commit    - craete a new image from a container's changes
 create    - create a new container
 exec      - run a command in a running container

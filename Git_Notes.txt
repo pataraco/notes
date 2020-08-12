@@ -88,6 +88,7 @@ git remote -v				# see a list of Git project's remotes
    git remote set-url --add --push origin ssh://git-codecommit.us-east-1.amazonaws.com/v1/repos/cloud_automation
 git rm [--cached] \*.zip		# remove [cached] files (that were tracked and now in gitignore)
 git show HEAD|<BRANCH>			# show info on
+git show <BRANCH>:path/to/file		# show contents of file
 git show-ref --[heads|tags]
 git symbolic-ref HEAD
 git stash				# stash the changes in a dirty working dir away

@@ -1,0 +1,24 @@
+Azure DevOps Notes
+------------------
+
+Install
+-------
+brew info azure-cli
+brew install azure-cli
+
+Login/Configure
+---------
+az login
+az devops configure --defaults organization=https://dev.azure.com/innovyze
+az devops configure --defaults project=global
+
+Use
+---
+az --help
+az extension list-available --output table
+az extension list-available --output table|grep devops
+az extension add --name azure-devops
+az pipelines variable-group list
+az pipelines variable-group list | jq .[].name
+
+tags: azure

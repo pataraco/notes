@@ -64,7 +64,7 @@ declare -a array=()		# declare an array and init to ''
 array+=("val1")			# pop on a value into the array
 array+=("val2")			# pop on another value into the array
 
-echo "STDOUT and STDERR to /dev/null" &>/dev/null
+echo "STDOUT and STDERR to /dev/null" &> /dev/null
 
 # sort on tab seperated 2nd field
 sort -rhk2 -t $'\t'

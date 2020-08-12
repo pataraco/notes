@@ -261,4 +261,39 @@ $ pgcli postgresql://USER:PASSWORD@HOST:PORT/DB
 $ pgcli -h HOST -p PORT -U USER -d DB
 ------ connection stuff (end) ------------
 
+------ MS SQL stuff (begin) ------------
+$ systemctl status|stop|enable|disable|start mssql-server
+
+MSSQL_PID="${sql_server_edition}" MSSQL_SA_PASSWORD=$MSSQL_SA_PASSWORD /opt/mssql/bin/mssql-conf -n setup accept-eula
+
+SELECT @@VERSION
+
+RESTORE FILELISTONLY FROM DISK = '/var/opt/mssql/backup/FILE.bak'
+
+RESTORE DATABASE new_db
+    FROM DISK = '/var/opt/mssql/backup/FILE.bak'
+    WITH
+       MOVE 'OLD_FILE' TO '/var/opt/mssql/data/new_db.mdf',
+       MOVE 'OLD_FILE_log' TO '/var/opt/mssql/data/new_db_log.ldf',
+       REPLACE,
+       RECOVERY,
+       STATS = 5
+
+USE master;
+GO
+SELECT name, database_id, create_date
+FROM sys.databases;
+GO
+
+SELECT schema_name(t.schema_id) AS schema_name,
+       t.name AS table_name,
+       t.create_date,
+       t.modify_date
+FROM sys.tables t
+ORDER BY schema_name,
+         table_name;
+
+
+------ MS SQL stuff (end) ------------
+
 tags: sql

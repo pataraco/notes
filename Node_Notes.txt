@@ -1,0 +1,23 @@
+Node Notes
+------------
+
+# only create package-lock.json file (don't install packages "node_modules")
+npm install --package-lock-only
+
+# 'node ci' vs 'node install'
+#
+#  *  must have: package-lock.json or npm-shrinkwrap.json
+#  *  if dependencies don't match (package.json & package-lock.json), `ci` will
+#     exit with an error and not update package-lock.json
+#  *  `ci` only installs entire projects
+#  *  `ci` removes any pre-existing `node_modules` directory before it begins
+#  *  `ci` never writes to `package.json` or any of the "lock" files
+
+# install specific versions
+# syntax of semantic versioning: docs.npmjs.com
+# --save to add the installed module to the package.json’s dependencies, and
+# --save-dev to add it to devDependencies
+npm install lodash@4.17.4  # install specific version
+npm install lodash@^4.0.0  # install the latest 4.x.x version
+
+tags: node npm

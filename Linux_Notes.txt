@@ -797,7 +797,10 @@ system-config-firewall-tui
 system-config-lvm
 system-config-services
 systemctl - Control the systemd system and service manager
-	systemctl restart/start/stop/status/condrestart/reload SERVICE
+	systemctl start|stop|restart SERVICE
+	systemctl status|condrestart|reload SERVICE
+	systemctl enable|disable SERVICE
+	# systemctl status mssql-server
 	# systemctl status docker.service
 	# systemctl stop td-agent.service
 	# systemctl disable td-agent.service
@@ -1036,6 +1039,24 @@ umount.nfs, umount.nfs4		/var/lib/nfs/rmtab	# table of clients accessing server'
 
 ############################## -| File Systems  |- #############################
 
+# simple: partition drive & create a new Filesystem
+  order: parted -> mkfs -> fstab -> mount
+
+  $ lsblk
+  $ blkid
+  $ lshw
+  $ fdisk -l
+  $ parted -l
+  $ tune2fs -L LABEL DEVICE
+  $ parted DEVICE            # e.g. /dev/nvme1n1  (disk label type: gpt)
+  $ mkfs.ext4 PARTITION      # e.g. /dev/nvme1n1p1
+  $ mkdir -p MOUNT_POINT
+  $ tune2fs -L LABEL DEVICE  # e.g. tune2fs -L data /dev/nvme1n1p1
+  $ vi /etc/fstab
+     LABEL=data	/MOUNT_POINT	 ext4	defaults,discard	0 2
+  $ mount /MOUNT_POINT
+     
+# logical
 fdisk, sfdisk, cfdisk, parted, partprobe, kpartx	/etc/fstab		
 mkfs, mkfs.ext[2|3|4], mke2fs, mkswap, mkdosfs
 fsck, fsck.ext[2|3|4], e2fsck
@@ -1046,7 +1067,8 @@ mkswap, swapon, raw				/dev/raw/raw<N>
 pvcreate, vgcreate, vgextend, lvcreate			devpts
 lvmconf, lvmdiskscan, lvmdump, lvremove		
 vgdisplay, vgextend, resize2fs
-fdisk -> pvcreate -> vgcreate|vgextend -> lvcreate|lvextend -> mkfs
+order: fdisk -> pvcreate -> vgcreate|vgextend -> lvcreate|lvextend -> mkfs
+
 # create a new LV/Filesystem
   $ lvcreate -L 10G -n /dev/vg01/data vg01
   $ mkdir /data
