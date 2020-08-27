@@ -9,8 +9,9 @@ brew install azure-cli
 Login/Configure
 ---------
 az login
-az devops configure --defaults organization=https://dev.azure.com/innovyze
+az devops configure --defaults organization=https://dev.azure.com/$COMPANY
 az devops configure --defaults project=global
+az acr login --name $COMPANY
 
 Use
 ---
