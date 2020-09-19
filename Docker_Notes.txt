@@ -136,6 +136,10 @@ CMD ["executable","param1","param2"]    # exec form, the preferred form
 CMD ["param1","param2"]                 # as default parameters to ENTRYPOINT
 CMD command param1 param2               # shell form
 
+# conditionals
+RUN if [ "$ENV" = "production" ] ; then yarn client:build:prod ; else yarn client:build ; fi
+
+
 Docker Compose Commands
 -----------------------
 docker-compose
