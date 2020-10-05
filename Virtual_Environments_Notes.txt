@@ -113,6 +113,7 @@ $ brew install pipenv
   OR
 
 $ pip install [--user] pipenv       # install pipenv
+$ pipenv --python VERSION           # specify which verson of Python to use (creates env)
 $ pipenv shell                      # creates a virtual environment
 $ pipenv install PACKAGE[==VERSION] # creates/updates Pipfile and Pipfile.lock
 $ pipenv install DEV_PACKAGE --dev  # install dev package

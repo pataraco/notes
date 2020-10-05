@@ -290,6 +290,15 @@ echo ${str%/*} == $(dirname $str)
 
 set -- one two		# set values to $1 and $2
 
+PROCESS SUBSTITUTION
+---------------------
+https://www.gnu.org/software/bash/manual/html_node/Process-Substitution.html#Process-Substitution
+Runs process list and refer to input/output as a filename similar to using pipes
+
+<(list)  
+  or
+>(list)
+
 VARIABLE SUBSTITUTION
 ---------------------
 	No spaces should be used in the following expressions.

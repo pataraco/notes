@@ -196,4 +196,28 @@ backend configuration file contents:
 III. Launch "blue" in PROD
  IV. Launch "green" in PROD
 
+------------
+for_each
+------------
+
+Outputs
+
+splat operators don't work with maps, are for lists only and just a shorthand
+for a 'for' expression
+
+When using for_each we must use a full 'for' expression:
+
+output key/value pairs (creates a map/object):
+
+   value = { for k, v in aws_eip.this : k => v.id }
+
+output list of values (in lexical order by the keys):
+
+   value = [ for v in aws_eip.this : v.id ]
+
+output a set of strings, values are not ordered
+(more convenient to use with for_each elsewhere):
+
+   value = toset([ for v in aws_eip.this : v.id ])
+
 tags: terraform, tf
