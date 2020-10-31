@@ -56,8 +56,7 @@ build     - build an image
    docker build -t $USER/$PROJECT:$TAG .
    docker build -t docker-whalesay . # build from ./Dockerfile
    docker run docker-whalesay
-   docker build -t pataraco/myfirstapp .
-   docker build -f DOCKERFILE
+   docker build [-t pataraco/myfirstapp] [-f DOCKERFILE] .
    docker build --build-arg ARG_NAME=VALUE -t TAG .
 commit    - craete a new image from a container's changes
 create    - create a new container
@@ -101,6 +100,15 @@ system    - manage docker
    docker system prune - remove unused data
 tag       - tag an image
    docker tag 2cde513e9c25 pataraco/docker-whale:latest
+volumes   - use persistent data
+   # create volume first
+   docker volume create data_vol  # /var/lib/docker/volumes/data_vol
+   docker run -v data_vol:/var/lib/mysql mysql
+   # create/mount volume in one step
+   docker run -v data_vol2:/var/lib/mysql mysql    # volume mount
+   docker run -v /data/mysql:/var/lib/mysql mysql  # bind mount
+   # new way
+   docker run --mount type=bind,source=/data/mysql,target=/var/lib/mysql mysql
 
 Dockerfile
 ----------

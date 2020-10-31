@@ -22,4 +22,6 @@ az extension add --name azure-devops
 az pipelines variable-group list
 az pipelines variable-group list | jq .[].name
 
-tags: azure
+ADO_ARTIFACTS_TOKEN=$(pipenv run keyring get -b artifacts_keyring.ArtifactsKeyringBackend https://pkgs.dev.azure.com/COMPANY/PROJECT/_packaging/FEED/pypi/simple/ VssSessionToken 2> /dev/null)
+
+tags: ado azure

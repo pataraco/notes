@@ -54,6 +54,7 @@ pyenv: Installation
 # get it
   # (MAC OS)
     $ brew install pyenv
+    $ brew install pyenv-virtualenv
   # (non MAC OS)
     $ git clone https://github.com/pyenv/pyenv ~/repos/pyenv
 # link it (non MAC OS)
@@ -85,6 +86,16 @@ pyenv: Installation
 # use `pyenv` to set/use the version of Python desired
   $ pyenv help   # OR pyenv commands
 
+pyenv: Usage
+-------------------
+$ pyenv versions                 # show python versions & virtual environments
+$ pyenv install VERSION          # install version of python
+$ pyenv virtualenv VERSION NAME  # create virtual env NAME with python VERSION
+$ pyenv activate NAME            # use virtual env NAME
+$ pyenv deactivate               # stop using virtual env NAME
+$ pyenv uninstall NAME|VERSION   # uninstall specific virtual env/python version
+$ pyenv virtualenvs              # list virtual environments
+$ pyenv virtualenv-delete NAME   # uninstall specific virtual environment
 
 ------
 PipEnv
@@ -139,9 +150,16 @@ pipenv: Adanced Usage of Pipenv
 -------------------------------
 https://pipenv.pypa.io/en/latest/advanced/
 
+The use of ~= is preferred over the == identifier as
+the latter prevents pipenv from updating the packages:
+
 $ pipenv install "PACKAGE~=major[.minor[.micro]]"
 $ pipenv update [PACKAGE]
 
+For example
+# locks the major version of the package
+(this is equivalent to using ==2.*)
+$ pipenv install "requests~=2.2"
 
 ----------
 VirtualEnv
@@ -185,6 +203,17 @@ $ pip install virtualenv
 
 Basic Usage
 -----------
+# In summary
+
+$ cd PROJECT_FOLDER
+$ virtualenv VIRTUAL_ENV_NAME                        # create virtual environment
+$ virtualenv -p /usr/bin/python2.7 VIRTUAL_ENV_NAME  # set the python version
+$ source ./VIRTUAL_ENV_NAME/bin/activate             # use virtual env
+$ pip install -r requirements.txt                    # install packages
+$ deactivate                                         # return to system environment
+
+# In more detail
+
 # Create a virtual env
 $ cd PROJECT_FOLDER
 $ virtualenv VIRTUAL_ENV_NAME	# creates a folder in the current dir
@@ -313,4 +342,4 @@ npm - package manager
    - node version
 npx - npm package runner
 
-tags: virtual, pipenv, pyenv
+tags: pipenv, pyenv, venv, virtualenv

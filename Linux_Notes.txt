@@ -237,6 +237,7 @@ apt-get		- APT package handling utility -- command-line interface
 	# apt-get upgrade		# install newest versions of installed pkgs
 	# apt-get [install|remove] PKG
 apt-cache	- query the APT cache
+	# apt-cache madison PATTERN  # table of versions
 	# apt-cache search PATTERN
 	# apt-cache show PACKAGE
 apt             - command-line interface
@@ -1013,15 +1014,24 @@ ping, ping6, arp		/etc/rpc
 dhclient			/etc/services
 ifup, ifdown			/etc/init.d/network
 hostname			/etc/hosts, /etc/nsswitch.conf
+
 ubuntu
-	/etc/init.d/networking start|stop
-	/etc/init.d/networking restart	# deprecated
-	service network-manager restart
-	ifconfig ethN up|down
-	ifup|ifdown ethN
-	/etc/init.d/networking restart
-	ip link set ethN up|down
-	service networking restart
+  $ /etc/init.d/networking start|stop
+  $ /etc/init.d/networking restart	# deprecated
+  $ service network-manager restart
+  $ ifconfig ethN up|down
+  $ ifup|ifdown ethN
+  $ /etc/init.d/networking restart
+  $ ip link
+  $ ip link show DEV
+  $ ip link set ethN up|down
+  $ ip addr add CIDR dev ethN
+  $ [ip] route add CIDR via IP
+  $ [ip] route show [route]
+  $ service networking restart
+  $ /proc/sys/net/ipv4/ip_forward	# turn on/off ip forwarding
+  $ sysctl -w net.ipv4.ip_forward = 1	# write/change value
+  $ sysctl net.ipv4.ip_forward		# read value
 	
 ############################## -|  Performance  |- #############################
 

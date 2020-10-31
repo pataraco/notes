@@ -102,7 +102,7 @@ git tag					# create, list, del, verify tag object
    git tag -l vm-1517*			# list remote tags
    git fetch --all --tags --prune       # fetch all remotes/tags
    git tag -d TAG                       # delete local tag
-   git push --delete origin TAG         # delete remote tag
+   git push origin --delete TAG         # delete remote tag
 # check if need to pull
 $ git remote update
 $ git status -uno
