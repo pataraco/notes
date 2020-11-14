@@ -798,9 +798,10 @@ system-config-firewall-tui
 system-config-lvm
 system-config-services
 systemctl - Control the systemd system and service manager
-	systemctl start|stop|restart SERVICE
+	systemctl start|stop|restart SERVICE [-l]
 	systemctl status|condrestart|reload SERVICE
 	systemctl enable|disable SERVICE
+	systemctl list-unit-files
 	# systemctl status mssql-server
 	# systemctl status docker.service
 	# systemctl stop td-agent.service

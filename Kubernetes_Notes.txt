@@ -240,6 +240,10 @@ minikube addons list
 minikube addons enable ADDON
 minikube stop
 
+Kubeadm
+-------
+kubeadm init
+kubeadm token create --print-join-command
 
 Configuration
 -------------
@@ -306,25 +310,25 @@ kubectl apply    - execute a command on a container in a pod
  # API of the pod
  - curl http://localhost:8001/api/v1/namespaces/default/pods/$POD_NAME/proxy/
 
- - kubectl $CMD [--help] [-o wide|json|yaml] [-l $KEY                       =$VAL]
- - kubectl api-resources [--namespaced                                      =true|false]  #  list supported API resources
+ - kubectl $CMD [--help] [-o wide|json|yaml] [-l $KEY=$VAL]
+ - kubectl api-resources [--namespaced=true|false]  #  list supported API resources
  - kubectl attach $POD/$TYPE/NAME [-c $CONTAINER]
  - kubectl auth can-i|reconcile
  - kubectl auth reconcile -f $MANIFEST [--dry-run]
- - kubectl cluster-info
+ - kubectl cluster-info  # get CIDR:port of master and KubeDNS info
  - kubectl config current-context
  - kubectl config get-clusters
  - kubectl config get-contexts
- - kubectl config set-context $(kubectl config current-context) --namespace =$NAMESPACE
- - kubectl config set-context --current --namespace                         =$NAMESPACE
+ - kubectl config set-context $(kubectl config current-context) --namespace=$NAMESPACE
+ - kubectl config set-context --current --namespace=$NAMESPACE
  - kubectl config use-context $CONTEXT
  - kubectl config use-context minikube
  - kubectl config view
  - kubectl config view --minify | grep namespace:
- - kubectl create secret generic $SECRET_NAME --from-literal                =$KEY=$VAL [-n $NAMESPACE]
+ - kubectl create secret generic $SECRET_NAME --from-literal=$KEY=$VAL [-n $NAMESPACE]
  - kubectl delete secret $SECRET_NAME [-n $NAMESPACE]
  - kubectl delete service $SERVICE
- - kubectl delete service -l $KEY                                           =$VAL
+ - kubectl delete service -l $KEY=$VAL
  - kubectl describe daemonset aws-node -n kube-system [| grep Image]
  - kubectl describe deployment coredns -n kube-system [| grep Image]
  - kubectl describe configmap aws-auth -n kube-system
@@ -349,30 +353,47 @@ kubectl apply    - execute a command on a container in a pod
  - kubectl get events
  - kubectl get namespace
  - kubectl get nodes
- - kubectl get pods -n kube-system -l k8s-app                               =kube-dns
- - kubectl get pods --context                                               =minikube
- - kubectl get pods --field-selector status.phase                           =Running
- - kubectl get pods --field-selector status.phase                           =Running,spec.restartPolicy=Always
+ - kubectl get pods -n kube-system -l k8s-app=kube-dns
+ - kubectl get pods --context=minikube
+ - kubectl get pods --field-selector status.phase=Running
+ - kubectl get pods --field-selector status.phase=Running,spec.restartPolicy=Always
  - kubectl get pods -l 'env in (prod),tier in (web)'
  - kubectl get pods -l 'env in (prod, qa),tier in (web)'
  - kubectl get pods -l 'env,env notin (qa)'
  - kubectl get pods -l env==prod,tier==web
  - kubectl get pods -o go-template --template '{{range .items}}{{.metadata.name}}{{"\n"}}{{end}}'
- - kubectl get pods [-n $NAMESPACE | --namespace                            =$NAMESPACE]
+ - kubectl get pods [-n $NAMESPACE | --namespace=$NAMESPACE]
  - kubectl get secrets
  - kubectl get services
- - kubectl get services/$SERVICE -o go-template                             ='{{(index .spec.ports 0).nodePort}}'
- - kubectl get statefulsets,services --field-selector metadata.namespace!   =default
+ - kubectl get services/$SERVICE -o go-template='{{(index .spec.ports 0).nodePort}}'
+ - kubectl get statefulsets,services --field-selector metadata.namespace!=default
  - kubectl port-forward TYPE/NAME [options] [LOCAL_PORT:]REMOTE_PORT [...[LOCAL_PORT_N:]REMOTE_PORT_N]
- - kubectl label <OBJECT> $OBJECT_NAME $KEY                                 =$VAL
+ - kubectl label <OBJECT> $OBJECT_NAME $KEY=$VAL
  - kubectl logs $POD_NAME
  - kubectl proxy
  - kubectl rollout history deploy/DEPLOY
  - kubectl rollout status deploy/DEPLOY
- - kubectl scale deployments $DEPLOYMENT --replicas                         =$X
- - kubectl taint nodes NODE_NAME KEY                                        =VALUE:EFFECT
+ - kubectl scale deployments $DEPLOYMENT --replicas=$X
+ - kubectl taint nodes NODE_NAME KEY=VALUE:EFFECT
  - kubectl top node  # needs metrics-server
  - kubectl top pod   # needs metrics-server
+
+JSON Path
+-----------------
+- https://kubernetes.io/docs/reference/kubectl/jsonpath/
+
+$ kubectl get nodes -o jsonpath='{range .items[*]}{.metadata.name}{"\t"}{.status.capacity.cpu}{"\n"}{end}'
+$ kubectl get nodes -o custom-columns=NAME:.metadata.name,CPU:.status.capacity.cpu
+$ kubectl get nodes -o custom-columns=NAME:.metadata.name,CPU:.status.capacity.cpu --sort-by .metadata.name
+$ kubectl get pods POD_NAME -o jsonpath='{.status.containerStatuses[?(@.name=='redis-container')].restartCount}'
+$ kubectl get nodes -o jsonpath='{.items[*].metadata.name}'  # node_names
+$ kubectl get nodes -o jsonpath='{.items[*]status.nodeInfo.osImage}'  # nodes_os
+$ kubectl get nodes -o jsonpath='{.items[*].status.nodeInfo.osImage}'  # nodes_os
+$ kubectl config view --kubeconfig=./my-kube-config -o jsonpath='{.users[*].name}'  # users
+$ kubectl get pv -o json --sort-by .spec.capacity.storage  # storage-capacity-sorted
+$ kubectl get pv --sort-by .spec.capacity.storage -o custom-columns=NAME:.metadata.name,CAPACITY:.spec.capacity.storage  # pv-and-capacity-sorted
+$ kubectl config view --kubeconfig=./my-kube-config -o jsonpath='{.contexts[?(@.context.user=="aws-user")].name}'  # aws-context-name
+$ kubectl -n admin2406 get deploy --sort-by .metadata.name -o custom-columns=DEPLOYMENT:.metadata.name,CONTAINER_IMAGE:spec.template.spec.containers[0].image,READY_REPLICAS:status.readyReplicas,NAMESPACE:metadata.namespace
 
 Manifest Creations
 --------
