@@ -1,0 +1,245 @@
+	###############################
+		perl tips and tricks
+	###############################
+
++---------------+
+| documentation |
++---------------+
+perldoc.perl.org 
+http://perldoc.perl.org/perlop.html		# operators and precedence
+http://perldoc.perl.org/perlfunc.html	# functions
+perldoc			- Look up Perl documentation in Pod format
+	# perldoc -f print
+cpan -a				# create autobundle - list all modules installed
+>>> Learning Perl: Bookmark: Chap 10. Exercises - pg. 188(188) <<<
+
+# Get a list of all the encodings that perl understands
+perl -MEncode -le "print for Encode->encodings(':all')"
+perl -M"module"		# execute/use module first
+perldoc File::Spec   File::Basename
++--------+
+| pragma |
++--------+
+use strict;
+use feature "switch";
+---
+Installing/Building
+- download the dist - unpack it - make it
+ MakeMaker
+  $ perl Makefile.PL [INSTALL_BASE=$HOME/lib]
+  $ make install
+ Module::Build
+  $ perl Build.PL [--install_base=$HOME/lib]
+  $ ./Build install
+cpan "module to install" 
+---
+use File::Basename qw/ /;	# import no function (short) names
+my $name = "/usr/local/bin/perl";
+my $dirname = File::Basename::dirname $name;
+-
+use File::Spec;
+my $new_name = File::Spec->catfile($dirname, $basename);
++-----------+
+| operators |
++-----------+
+chomp()				# remove newline character
+split()				# break up a string according to a pattern
+binmode()			# use binary mode 
+select()			# change STDOUT default
+qw//				# quick word(s)
+m//					# match
+s///				# substitute
+=~					# binding
+	my $likes_perl = (<STDIN> =~ /\byes\b/i);
+	$file_name =~ s#^.*/##s;
+	$copy =~ s/\d+ ribs?/10 ribs/;
+	(my $copy = $original) =~ s/\d+ ribs?/10 ribs/;
+	my $copy = $original =~ s/\d+ ribs?/10 ribs/r;		# use 5.014;
++-----------+
+| functions |
++-----------+
+seek()				# seek FILEHANDLE,POSITION,WHENCE (0|1|2)
+	# seek(TEST,0,1);	
+if {} elsif {} else {} - unless {}
+expression ? if_true_expr : if_false_expr
+	my $average = $n ? ($total/$n) : "-----";
+	my $location = &is_weekend($day) ? "home" : "work";
+	my $size =
+		($width < 10) ? "small" :
+		($width < 20) ? "medium" :
+		($width < 50) ? "large" :
+						"extra-large"; # default
+[LABEL:]while {} - until {}; last [LABEL], next, redo;
+for () {} - foreach () {}; last, next, redo;
+	-----
+	| foreach (1..10) {
+	|    print "Iteration number $_.\n\n";
+	|    print "Please choose: last, next, redo, or none of the above? ";
+	|    chomp(my $choice = <STDIN>);
+	|    print "\n";
+	|    last if $choice =~ /last/i;
+	|    next if $choice =~ /next/i;
+	|    redo if $choice =~ /redo/i;
+	|    print "That wasn't any of the choices... onward!\n\n";
+	| }
+	| print "That's all, folks!\n";
+	-----
+print "$n is a negative number.\n" if $n < 0;
+&error("Invalid input") unless &valid($input);
+$i *= 2 until $i > $j;
+print " ", ($n += 2) while $n < 10;
+&greet($_) foreach @person;
+$x++;	++$x
+$y--;	--$y
+for ($i = 1; $i <= 10; $i++) { # count from 1 to 10
+   print "I can count to $i!\n";
+}
+for (1..10) { # really a foreach loop from 1 to 10
+	print "I can count to $_!\n";
+}
+for ($_ = "bedrock"; s/(.)//; ) { # loops while the s/// is successful
+	print "One character is: $1\n";
+}
++-----------+
+| variables |
++-----------+	
+$_
+$!					# system error message
+$|	($|=1)			# force or always write to selected STUDOUT - do not buffer
+$^I					# create backup file with this extension
++-----------+
+| RegEx     |
++-----------+	
+/\p{Space}/		/\p{Digit}/		/\p{Hex}\p{Hex}/	# Unicode Properties
+/\s/	/\d/	/\v/	/\t/	/\n/	/\f/	
+\w/a = [a-zA-Z0-9_]
+[^\d] = [\D], [^\n] = [\N],		/[\d\D]/
+/HAL-[\d]+/a	/HAL-[0-9]+/	/fred (and|or) barney/	
+/fred( +|\t+)barney/	/fred( |\t)+barney/
+m{fred( +|\t+)barney}	m%fred( |\t)+barney%
+/y(....) d\1/    /y((.)(.)\3\2) d\1/    /(.)\g{1}11/    /(.)\g{–1}11/    /(.)(.)\g{–1}11/
+---
+. ? + .+? {n,m}? {n,}? ??
+---
+ --- modifiers (can be combined) ---
+/a (use ASCII)			/u (use Unicode)		/l (use locale)
+	/\d/a
+/i (ignore case)
+	/yes/i
+/m (turn no multi-line matching)
+/s (have (.) match \n too, i.e. match any char)
+	/Barney.*Fred/s
+/x (ignore literal space or tab within pattern) use \s or \t to match whitespace
+	/ -? [0-9]+ \.? [0-9]* /x		# makes easier to read
+	if (m{
+		barney	# the little guy
+		.*		# anything in between
+		fred	# the loud guy
+	}six) {		# all three of /s and /i and /x
+		print "That string mentions Fred after Barney!\n";
+	}
+ --- anchors ---
+\A (beginning of line)		\z (end of line no \n)	\Z (end of line w/\n)
+	m{\Ahttps?://}i				m{\.png\z}i				print if /\.png\Z/
+	/\A\s*\Z/		# match blank lines (with/without whitespace)
+----------------------------------
+if (s/\s+/ /g) { print "Successfully collapsed whitespace }
+if (s/^\s+|\s+$//g) { print "Successfully removed leading|trailing whitespace }
+--------------
+m{\Ahttps?://}i
+m{\.png\z}i
+m{\.png\Z}i		# optional \n at end
+/\A\s*\Z/
+/^barney/m
+/fred$/m
+/\bfred\b/		# word boundary - find only fred - not alfred or frederick
+/\bhunt/		# find hunt, hunting, hunter - not shunt
+/stone\b/		# find sandstone, flintstone - not capstones
+/\bsearch\B/	# find searches, searching, searched - not search or researching
+my $answered_yes = (<STDIN> =~ /\byes\b/i);
+my $answered_yes = <STDIN> =~ /\byes\b/i;
+if ($answered_yes) { };
+(/(bronto)?saurus (steak|burger)/
+(/(?:bronto)?saurus (steak|burger)/)
+$names =~ m/(?<name1>\w+) (?:and|or) (?<name2>\w+)
+I saw $+{name1} and $+{name2}
+if ( $names =~ m/(?<last_name>\w+) and \w+ \g{last_name}/ )
+if ("Hi there, bud" =~ /\s(\w+),/) {print "That was ($`)($&)($').\n"'}
+if ("Hi there, bud" =~ /\s(\w+),/p) {print "That was(${^PREMATCH})(${^MATCH})(${^POSTMATCH}).\n";}
+--------------
+$_ = "I saw Barney with Fred.";
+s/(fred|barney)/\U$1/gi; # $_ is now "I saw BARNEY with FRED."
+s/(fred|barney)/\L$1/gi; # $_ is now "I saw barney with fred."
+s/(\w+) with (\w+)/\U$2\E with $1/i; # $_ is now "I saw FRED with barney."
+s/(fred|barney)/\u$1/ig;	# $_ is now "I saw FRED with Barney."
+s/(fred|barney)/\u\L$1/ig;	# $_ is now "I saw Fred with Barney."
+s#<BOLD>(.*?)</BOLD>#$1#g;	# Fred and <BOLD>Velma</BOLD>, not <BOLD>Wilma</BOLD>		
+---
+print "Hello, \L\u$name\E, would you like to play a game?\n";
+----------------
+@results = split /:/, "::ab:cd:efg::::", [-1];
+@results = split /\s+/, $input_string;
+split ' ', $string;			# works on $string the same as just "split" on $_;
+my($first, $second, $third) = /(\S+) (\S+), (\S+)/;
+---
+my $text = "Fred dropped a 5 ton granite block on Mr. Slate";
+my @words = ($text =~ /([a-z]+)/ig);
+---
+my $data = "Barney Rubble Fred Flintstone Wilma Flintstone";
+my %last_name = ($data =~ /(\w+)\s+(\w+)/g);
+---
+result = join $separator, @strings;
+---
+if ( (9 <= $hour) && ($hour < 17) ) {}
+---
+if ($dessert{'cake'} && $dessert{'ice cream'}) {
+} elsif ($dessert{'cake'} || $dessert{'ice cream'}) {}
+---
+if ($dessert{'cake'} and $dessert{'ice cream'}) {
+} elsif ($dessert{'cake'} or $dessert{'ice cream'}) {}
+---
+my $last_name = $last_name{$someone} || '(No last name)';
+my $last_name = $last_name{$someone} // '(No last name)';
+my $Verbose = $ENV{VERBOSE} // 1;
+printf "%s", $name // '';
+----------------------------------
+perl -p -i.bak -w -e 's/Randall/Randal/g' fred*.dat
+perl -e '
+  @fs = (
+        # filesystem & minimum free space needed (k)
+        ["/eci/dev/sqr",32768],
+        ["/eci/dev/sct",32768],
+        );
+
+  for $i (0..$#fs) {
+    $fs=$fs[$i][0];
+    $free=$fs[$i][1];
+
+    open(PIPE,"df -P \"$fs\" |") || die("pipe failed: $fs");
+    while(<PIPE>) {
+        chomp;                                                          
+        next unless (/\s$fs\s*$/);                                      
+        @l = split(/\s+/);                                              
+        $lv=$l[0];                                                      
+        $s=$l[1];                                                       
+        $f=$l[3];                                                       
+        $add=$free-$f;                                                  
+        if ($add > 0) {                                                 
+                $new=$s+$add;                                           
+                print "# expand $fs\n";                                 
+                print "lvextend -L ${new}k $lv && resize2fs $lv\n";     
+        }                                                               
+    }                                                                   
+    close(PIPE);                                                        
+  }                                                                     
+' >> $outputfile
+-------------------------------------                                                
+    hplog -v | perl -n -e 'if (/^\d\d\d\d\s/) { chomp; print "$_ "; $n=1; next; } if ($n) 
+{ print; $n=0; }' | grep -E 'Critical'
+-------------------------------------
+perl -p -i.bak -e 's/^\s*export\s*LD_ASSUME_KERNEL/#export LD_ASSUME_KERNEL/' /etc/galaxyprofile
+	( -p write/create a program, -i, set $^I to ".bak", -e execute)
+-------------------------------------
+$ perl -e 'printf("%d\n",0x5630c);'
+353036
+-------------------------------------

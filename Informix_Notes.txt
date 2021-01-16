@@ -1,0 +1,305 @@
+			+------------------------+
+			|informix tips and tricks|
+			+------------------------+
+
++-----------+
+|DB commands|
++-----------+
+Informix 5
+~~~~~~~~~~
+tbinit			# start 	-	/opt/informix/bin/tbinit
+tbmode -l		# force to next logical log
+tbmode -m		# go to multi-user on-line
+tbmode -k[y]	# shutdown completely - kill (y = do not require confirmation)
+tbmode -s[y]	# shutdown to single user (y = do not require confirmation)
+tbstat --help	# help
+tbstat -		# status
+tbstat -c		# print configuration file
+tbstat -d		# print dbspaces and chunks
+tbstat -l		# check logical log activities and if logical logs are full
+tbstat -u		# user activity and locks
+tbstat -z		# version
+
+Informix 11
+~~~~~~~~~~
+oninit			# start		-	/opt/informix/bin/oninit
+onmode --help	# help
+onmode -k[y]	# shutdown completely - kill (y = do not require confirmation)
+onmode -l		# force to next logical log
+onmode -m		# go to multi-user on-line
+onmode -s[y]	# shutdown to single user quiescent(y = do not require confirmation)
+onmode -u[y]	# Change to quiescent mode and kill all attached sessions
+onmode -wf		# update parameter and write to config file
+	# onmode -wf TAPEDEV=/backup/
+onmode -wm		# update value in memory only
+	# onmode -wm TAPEDEV=/dev/st0
+onstat --help	# help
+onstat -		# status
+onstat -c		# print configuration file
+	# onstat -c TAPEDEV
+	# onstat -c | grep TAPE
+onstat -d		# print dbspaces and chunks
+onstat -l		# check logical log activities and if logical logs are full
+onstat -u		# user activity and locks
+onstat -z		# version
+
++----------------+
+|processes/daemon|
++----------------+
+sqlexecd		# listen on TCP/IP port, fork off sqlexec to process connection
+sqlexec			# processes connections to DB (Never KILL!)
+				# if zombie sqlexec processes found - restart sqlexecd
+				# with Informix 5... need to trace the TCP connection to find the actual "source" of the connection
+				# unless sqlturbo was invoked directly.... some programs connect to database directly and some over 
+				# TCP/IP (in that case parent of sqlturbo is just sqlexecd...and not the actual process connected 
+				# to database)
+
++----+
+|keys|
++----+
+Primary key		# only one unique identifier
+Candidate key	# set of column(s) that uniquely identifies a row
+Alternate key
+Surrogate key	# artificial primary key
+Composite key	# contains two or more attributes (columns)
+Foreign key		# relationship/reference to another table
+
++-------------+
+|ISQL commands|
++-------------+
+CREATE TABLE		# Create a new table
+	# CREATE TABLE Enrolled (SID CHAR(20), CID CHAR(2), grade CHAR(2), PRIMARY KEY (SID, CID), FOREIGN KEY (SID) references Students)
+DELETE				# DELETE FROM cftrates WHERE cftnum = (SELECT cftnum FROM cfth WHERE marketseg = 'WHOL')
+INSERT				# INSERT INTO nastat VALUES (123, '01-01-98','','01-01-98')
+SELECT-FROM-WHERE	# SELECT guestnum FROM ghvisit WHERE
+UPDATE				# UPDATE customer SET fname = 'Steph', lname = 'Heller' WHERE customer_num = 34232
+---
+BEGIN WORK
+SET ISOLATION		# SET isolation TO dirty read
+UPDATE STATISTICS
+
++---------------+
+|ISQL STATEMENTS|
++---------------+
+SELECT	- Determines which columns to include in the query's result set
+ FROM		- Identifies tables from which to draw data and how tables should be joined
+ WHERE		- Filters out unwanted data
+ GROUP BY	- Used to group rows together by common column values
+ HAVING		- Filters out unwanted groups
+ ORDER BY	- Sorts the row for the final result set y one or more columns 
+SELECT
+ [STRAIGHT_JOIN] [SQL_SMALL_RESULT] [SQL_BIG_RESULT]
+ [SQL_BUFFER_RESULT] [SQL_CACHE | SQL_NO_CACHE]
+ [SQL_CALC_FOUND_ROWS] [HIGH_PRIORITY] [DISTINCT | DISTINCTROW | ALL]
+ column [[AS] alias][, ...]
+ [INTO {OUTFILE 'filename' delimiters | DUMPFILE 'filename' | @variable}]
+ [FROM table [[AS] alias]
+ [WHERE condition [, ...]]
+ [GROUP BY {column | expression | position} [ASC | DESC] [, ...]
+ [WITH ROLLUP]]
+ [HAVING condition]
+ [ORDER BY {column | expression | position} [ASC | DESC] [, ...] ]
+ [LIMIT {offset | row_limit | row_limit OFFSET offset}]
+ [PROCEDURE name (arg [, ...])]
+ [FOR UPDATE | LOCK IN SHARE MODE]
+ [UNION [ALL] select substatement]
+
++---------------------------------+
+|ISQL Keywords/Operators/Functions|
++---------------------------------+
+*				# SELECT * FROM ghvisit
+, (comma)		# SELECT * FROM ghvisit, ghvisitrooms
+. (period)		# SELECT * FROM ghvist, ghvisitrooms WHERE ghvisit.hotelnum = ghvisitrooms.hotelnum
+; (semicolon)	# BEGIN WORK; DELETE FROM gh WHERE state = 'CA'
+"" or ''		# SELECT * FROM gh WHERE state = 'CA'
+[]				# SELECT postalcode [1,3], name FROM gh
+()				# DELETE FROM cftrates WHERE cftnum = (SELECT cftnum FROM cfth WHERE marketseg = 'WHOL')
+				# SELECT * FROM gh WHERE state IN ('CA','CO')
+=|!=|<>|>|<=	# SELECT * FROM gh WHERE postalcode [=|!=|<>|>|<|>=|<=] '92688'
+AND				# SELECT * FROM gh WHERE postalcode IS NULL AND state IS NOT NULL
+AS				# SELECT guestnum AS Guest_Num FROM ghvisit
+AVG				#
+BETWEEN			# SELECT * FROM gh WHERE postalcode BETWEEN ‘90210’ AND ‘91019’
+COLLATE			# COLLATE SQL_Latin1_General_CP1_CI_AS or SQL_Latin1_General_CP1_CI_AS_KI_WI
+COUNT(*)		# SELECT COUNT(*) FROM gh WHERE state='CA'
+CREATE			#
+CREATE TABLE	#
+CREATE VIEW		# CREATE VIEW view_name AS SELECT cols FROM table WHERE values
+DESC			# SELECT * FROM ghvisit ORDER BY guestnum DESC
+DISTINCT		# SELECT DISTINCT guestnum FROM ghvisit  # (removes duplicates)
+DROP			# DROP INDEX pk_roomassigned
+FROM			# SELECT guestnum FROM ghvisit
+GROUP BY		# SELECT ghid FROM ghvisit GROUP BY ghid
+IN				# SELECT * FROM gh WHERE state [NOT] IN (‘CA’, ‘HI’)
+INTO			# INSERT INTO nastat VALUES (123, '01-01-98','','01-01-98')
+INTO TEMP		# SELECT * FROM gh WHERE postalcode IS NULL INTO TEMP temp_table
+IS NULL			# SELECT * FROM gh WHERE postalcode IS [NOT] NULL
+LIKE			# SELECT * FROM gh WHERE name [NOT] LIKE ‘Sm_th%’
+LIMIT [max|s,#]	# (limits the number of records displayed)
+MAX				#
+MIN				#
+OR				# SELECT * FROM gh WHERE postalcode IS NULL OR state IS NULL
+ORDER BY		# SELECT * FROM ghvisit ORDER BY guestnum, ghid, arrivedate
+SET				# UPDATE customer SET fname = 'Steph', lname = 'Heller' WHERE customer_num = 34232
+				# SET lock mode TO WAIT
+UNIQUE			# SELECT UNIQUE ghid FROM ghvisit
+VALUES			# INSERT INTO nastat VALUES (123, '01-01-98','','01-01-98')
+WHERE			# SELECT guestnum FROM ghvisit WHERE hotelnum=123
+
++----------------+
+|DB dirs/files   |
++----------------+
+Informix 5
+~~~~~~~~~~
+/opt/informix/online.log
+/opt/informix/etc/tbconfig			# configuration file
+/ips/log
+
+Informix 11
+~~~~~~~~~~~
+/opt/informix/etc/onconfig.online	# configuration file
+/var/log/informix/online.log
+
++-----------+
+|DB scripts |
++-----------+
+SELECT * FROM sysmaster:sysconfig WHERE cf_name = 'TAPEDEV';
+	cf_id         7
+	cf_name       TAPEDEV
+	cf_flags      0
+	cf_original   /backup
+	cf_effective  /maint/backup
+	cf_default    /dev/null
+----
+echo "SET ISOLATION TO DIRTY READ; SELECT roleid FROM lsrole WHERE roleid='HOTMGT'" | dbaccess dev
+echo "SET ISOLATION TO DIRTY READ; SELECT countrycode FROM hotelname WHERE liveortrain='L'" | dbaccess dev
+echo "SET ISOLATION TO DIRTY READ; UNLOAD TO $emailtmp SELECT distinct emaillocal,emaildomain FROM lsagent WHERE agentid IN (SELECT agentid FROM lsagentrole WHERE "$roleclause") AND agentid IN (SELECT agentid FROM hmagent) AND emaillocal IS NOT NULL AND emaildomain IS NOT NULL AND email_opt_in='Y'" | dbaccess dev
+echo "SET ISOLATION TO DIRTY READ; SELECT active FROM syscontrol WHERE id='BANK' AND active='Y' AND type='SDC'" | dbaccess dev 2>/dev/null | grep -v active | sed '/^$/d' | sed 's/[[:space:]]//g'
+echo "SET ISOLATION TO DIRTY READ; UNLOAD TO $tempfile1 SELECT distinct emaillocal,emaildomain FROM lsagent WHERE emaillocal IS NOT NULL AND emaildomain IS NOT NULL AND (agentid IN (SELECT agentid FROM lsagentrole WHERE hotelnum IN (SELECT hotelnum FROM hotelname WHERE liveortrain='L')) OR agentid IN (SELECT agentid FROM hmagentcat WHERE hotelnum IN (SELECT hotelnum FROM hotelname WHERE liveortrain='L'))) AND agentid NOT IN ('1200','2000','FCS') AND email_opt_in='Y'" | dbaccess dev
+---
+sh /eci/dbatools/test_bank_interface.sh
+---
+echo "SELECT interfacename FROM interfacestatus WHERE interfacestatus NOT IN ('R','S')" | dbaccess dev > $tempfile1 2>/dev/null
+interfacedown=$(cat $tempfile1 | grep -v interfacename | sed '/^$/d')
+---
+echo "SELECT hotelnum FROM bank_parms WHERE banklive='Y'" | dbaccess dev 2>/dev/null | grep -v hotelnum | sed '/^$/d' | sed 's/[[:space:]]//g' > $tempfile
+---
+echo "DELETE FROM hmcatdetail WHERE catcode = '$category' AND syncode = '$proccode';" >> $tempsql
+echo "insert into hmcatdetail (catcode,syncode,password)" >> $tempsql
+echo "values ('$category','$proccode','N');" >> $tempsql
+dbaccess dev $tempsql >/dev/null 2>&1
+---
+dbaccess dev <<EOF >/dev/null 2>&1
+UNLOAD TO $tempfile
+SELECT distinct agentid,hotelnum FROM hmagentcat
+WHERE catagory = '$category';
+EOF
+---
+tempsql=/tmp/temp.sql
+echo "DELETE FROM hmagentaccess WHERE hotelnum = $hotelnum AND system = 'FD'" >> $tempsql
+echo "AND agentid = '$agentid' and proccode = '$proccode';" >> $tempsql
+echo "INSERT INTO hmagentaccess (system,hotelnum,agentid,syncode,proccode)" >> $tempsql
+echo "values ('FD',$hotelnum,'$agentid','$proccode','$proccode');" >> $tempsql
+dbaccess dev $tempsql >/dev/null 2>&1
+---
+echo "INSERT INTO software_update (timestamp,changedby,application,build,description,sequence) values ('$now','Galaxy Customer Support','$application','$build','$text',$sequence);" | dbaccess dev
+---
+dbaccess dev <<! >/dev/null 2>&1
+unload to $tempfile1
+SELECT hotelnum,hotelname FROM hotelname WHERE liveortrain = 'L'
+order by hotelnum
+!
+---
+currentversion=$(echo "SELECT version FROM syscontrol WHERE id='SYSTEM'" | dbaccess dev 2>/dev/null | grep -v version | sed '/^$/d' | sed 's/[[:space:]]//g' | awk -F"." '{print $1}' | sed 's/^0//')
+echo "UNLOAD TO /maint/$tabname.$now SELECT * FROM $tabname" | dbaccess dev		# tabname=[codesfile|ghp]
+echo "SELECT ips FROM hotelname WHERE liveortrain='L' and ips='Y'" | dbaccess dev 2>/dev/null | grep -v ips | sed '/^$/d'
+echo "UNLOAD TO /maint/syscontrol.$(date +%m%d%H%M).out SELECT * FROM syscontrol" | dbaccess dev
+echo "DELETE FROM syscontrol" | dbaccess dev
+echo "UNLOAD TO /maint/syscontrol.save SELECT * FROM syscontrol" | dbaccess dev
+echo "CREATE TABLE \"eci\".$STATTAB (name char(18),timestamp datetime year to second,message char(300))" | dbaccess dev
+echo "CREATE UNIQUE INDEX \"eci\".$STATINDEX on \"eci\".$STATTAB (name)" | dbaccess dev
+---
+echo "CREATE TABLE \"eci\".$STATTAB (name char(18),timestamp datetime year to second,message char(300))" | dbaccess dev
+echo "CREATE UNIQUE INDEX \"eci\".$STATINDEX on \"eci\".$STATTAB (name)" | dbaccess dev
+---
+	active=$(print "SET isolation TO dirty read; SELECT active FROM syscontrol WHERE id='BANK' AND active='Y' AND type='SDC'" | dbaccess dev 2>/dev/null | grep -v active | sed '/^$/d' | sed 's/[[:space:]]//g')
+---
+    print "SELECT interfacename from interfacestatus where interfacestatus not in ('R','S')" | dbaccess dev > $tempfile1 2>/dev/null
+---
+    print "UPDATE gsi_detail SET swap_flag=2 WHERE swap_flag=1" | dbaccess dev
+---
+	banklive=$(print "SET isolation TO dirty read; SELECT DISTINCT banklive FROM bank_parms WHERE hotelnum in (SELECT hotelnum from hotelname where liveortrain='L') AND banklive='Y'" | dbaccess dev 2>/dev/null | grep -v banklive | sed '/^$/d' | sed 's/[[:space:]]//g' | sed -n '1p')
+---
+	uxversion=$(print "SELECT version from syscontrol where id = 'SYSTEM'" | dbaccess dev 2>/dev/null | grep -v version | sed '/^$/d' | sed 's/[[:space:]]//g')
+---
+    currentversion=$(print "SELECT version from syscontrol where id='SYSTEM'" | dbaccess dev 2>/dev/null | grep -v version | sed '/^$/d' | sed 's/[[:space:]]//g')
+    currentpatch=$(print "SELECT version from syscontrol where id='UXPATCH'" | dbaccess dev 2>/dev/null | grep -v version | sed '/^$/d' | sed 's/[[:space:]]//g')
+---
+    print "SET ISOLATION TO DIRTY READ; UNLOAD TO $emailtmp SELECT distinct emaillocal,emaildomain FROM listu,lsagent WHERE listu.agentid=lsagent.agentid AND emaillocal is not null AND emaildomain is not null" | dbaccess dev >/dev/null 2>&1
+
+    print "SET ISOLATION TO DIRTY READ; UNLOAD TO $emailtmp2 SELECT distinct emaillocal,emaildomain FROM lsagent WHERE agentid in (SELECT agentid from lsagentrole where roleid='systems') AND agentid in (SELECT agentid from hmagent) AND emaillocal is not null AND emaildomain is not null" | dbaccess dev >/dev/null 2>&1
+---
+echo "SELECT tabname,colname from systables,syscolumns where systables.tabid=syscolumns.tabid and colname like '%arrivaldate%'"|dbaccess dev
+echo "SELECT tabname,colname from systables,syscolumns where systables.tabid=syscolumns.tabid and colname='arrivals'"|dbaccess dev
+echo "SELECT tabname,colname from systables,syscolumns where systables.tabid=syscolumns.tabid and colname like '%arrivaldate%' order by tabname"|dbaccess dev
+echo "SELECT tabname from systables where tabname like '%stats%'"|dbaccess dev
+echo "SELECT tabname from systables where tabname='stats'"|dbaccess dev
+/eci/dbatools/eci_showlocks $TABLE
+	/eci/dbatools/eci_showlocks ips_triggers
+echo "SET ISOLATION TO DIRTY READ; SELECT * from ips_triggers where rowid='0x5630d'" | dbaccess dev
+echo "SET ISOLATION TO DIRTY READ; SELECT * from ips_triggers where rowid=353036" | dbaccess dev	
+print "SET isolation TO dirty read; SELECT active FROM syscontrol WHERE id='BANK' AND active='Y' AND type='SDC'" | dbaccess dev 2>/dev/null | grep -v active | sed '/^$/d' | sed 's/[[:space:]]//g'
+
+sh /eci/dbatools/test_bank_interface.sh
+
+print "SELECT interfacename from interfacestatus where interfacestatus not in ('R','S')" | dbaccess dev > $tempfile1 2>/dev/null
+interfacedown=$(cat $tempfile1 | grep -v interfacename | sed '/^$/d')
+
+print "SELECT hotelnum from bank_parms where banklive='Y'" | dbaccess dev 2>/dev/null | grep -v hotelnum | sed '/^$/d' | sed 's/[[:space:]]//g' > $tempfile
+
+print "delete from hmcatdetail where catcode = '$category' and syncode = '$proccode';" >> $tempsql
+print "insert into hmcatdetail (catcode,syncode,password)" >> $tempsql
+print "values ('$category','$proccode','N');" >> $tempsql
+dbaccess dev $tempsql >/dev/null 2>&1
+
+dbaccess dev <<EOF >/dev/null 2>&1
+unload to $tempfile
+SELECT distinct agentid,hotelnum from hmagentcat
+where catagory = '$category';
+EOF
+
+print "delete from hmagentaccess where hotelnum = $hotelnum and system = 'FD'" >> $tempsql
+print "and agentid = '$agentid' and proccode = '$proccode';" >> $tempsql
+print "insert into hmagentaccess (system,hotelnum,agentid,syncode,proccode)" >> $tempsql
+print "values ('FD',$hotelnum,'$agentid','$proccode','$proccode');" >> $tempsql
+dbaccess dev $tempsql >/dev/null 2>&1
+
+print "insert into software_update (timestamp,changedby,application,build,description,sequence) values ('$now','Galaxy Customer Support','$application','$build','$text',$sequence);" | dbaccess dev
+
+dbaccess dev <<! >/dev/null 2>&1
+unload to $tempfile1
+SELECT hotelnum,hotelname from hotelname where liveortrain = 'L'
+order by hotelnum
+!
+
+currentversion=$(print "SELECT version from syscontrol where id='SYSTEM'" | dbaccess dev 2>/dev/null | grep -v version | sed '/^$/d' | sed 's/[[:space:]]//g' | awk -F"." '{print $1}' | sed 's/^0//')
+
+print "unload to /maint/$tabname.$now SELECT * from $tabname" | dbaccess dev		# tabname=[codesfile|ghp]
+
+print "SELECT ips from hotelname where liveortrain='L' and ips='Y'" | dbaccess dev 2>/dev/null | grep -v ips | sed '/^$/d'
+
+print "unload to /maint/syscontrol.$(date +%m%d%H%M).out SELECT * from syscontrol" | dbaccess dev
+print "delete from syscontrol" | dbaccess dev
+print "unload to /maint/syscontrol.save SELECT * from syscontrol" | dbaccess dev
+
+print "CREATE TABLE \"eci\".$STATTAB (name char(18),timestamp datetime year to second,message char(300))" | dbaccess dev
+print "CREATE unique INDEX \"eci\".$STATINDEX on \"eci\".$STATTAB (name)" | dbaccess dev
+
+echo "SELECT hotelname,hotelnum,phone1,liveortrain from hotelname"|dbaccess dev
++-----------+
+| Questions |
++-----------+
+1. How to get a list of all tables?
+	echo "info tables"|dbaccess dev
+2. How to get a list of all columns in a table?
+	echo "info columns for table"|dbaccess dev

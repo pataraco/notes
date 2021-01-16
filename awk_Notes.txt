@@ -1,0 +1,538 @@
+awk '$4 ~/Technology/'
+-
+awk '$1 >200' 
+-
+awk '{print $2,$NF;}'
+-
+awk '/Thomas/
+/Nisha/'
+-
+awk 'BEGIN { count=0;}
+$4 ~ /Technology/ { count++; }
+END { print "Number of employees in Technology Dept =",count;}'
+-
+awk -f script-filename inputfilename
+BEGIN {
+	total=0;
+}
+{
+	itemno=$1;
+	book=$2;
+	bookamount=$3*$4;
+	total=total+bookamount;
+	print itemno," ", book,"\t","$"bookamount;
+}
+END {
+	print "Total Amount = $"total;
+}
+-
+$cat student.awk
+
+BEGIN {
+	test1=0;
+	test2=0;
+	test3=0;
+	print "Name\tRollNo\t Average Score";
+}
+{
+	total=$3+$4+$5;
+	test1=test1+$3;
+	test2=test2+$4;
+	test3=test3+$5;
+	print $1"\t"$2"\t",total/3;
+}
+END {
+	print "Average of Test1="test1/NR;
+	print "Average of Test2="test2/NR;
+	print "Average of Test3="test3/NR;
+}
+-
+$ cat string.awk
+BEGIN{
+title="AWK";
+print "<html>\n<title>"title"</title><body bgcolor=\"#ffffff\">\n<table border=1><th  colspan=2 align=centre>Student Details</th>";
+
+}
+{
+name=$1;
+rollno=$2;
+print "<tr><td>"name"</td><td>"rollno"</td></tr>";
+
+}
+END {
+    print "</table></body>\n</html>";
+}
+<html>
+<title>AWK</title><body bgcolor="#ffffff">
+<table border=1><th  colspan=2 align=centre>Student Details</th>
+<tr><td>Jones</td><td>2143</td></tr>
+<tr><td>Gondrol</td><td>2321</td></tr>
+<tr><td>RinRao</td><td>2122</td></tr>
+<tr><td>Edwin</td><td>2537</td></tr>
+<tr><td>Dayan</td><td>2415</td></tr>
+</table></body>
+</html>
+-
+8 Powerful Awk Built-in Variables – FS, OFS, RS, ORS, NR, NF, FILENAME, FNR
+-
+awk -F 'FS' 'commands' inputfilename
+ (or)
+awk 'BEGIN{FS="FS";}'
+-
+BEGIN{
+FS=":";
+print "Name\tUserID\tGroupID\tHomeDirectory";
+}
+{
+	print $1"\t"$3"\t"$4"\t"$6;
+}
+END {
+	print NR,"Records Processed";
+}
+-
+awk -F':' '{print $3,$4;}' /etc/passwd
+-
+awk -F':' 'BEGIN{OFS="=";} {print $3,$4;}' /etc/passwd
+-
+BEGIN {
+	RS="\n\n";
+	FS="\n";
+}
+{
+	print $1,$2;
+}
+-
+awk 'BEGIN{ORS="=";} {print;}'
+-
+awk '{print "Processing Record - ",NR;}END {print NR, "Students Records are processed";}
+-
+awk '{print NR,"->",NF}'
+-
+awk '{print FILENAME}' 
+-
+awk '{print FILENAME, FNR;}'
+-
+awk -F ':' '$5 == "" '
+-
+awk -F ':' '$3>=100 && $NF ~ /\/bin\/sh/'
+-
+awk -F ':' '$3==$4'
+- 
+awk 'NR % 2 == 0' # print even-numbered lines
+-
+awk -F ':'  '$3 > maxuid { maxuid=$3; maxline=$0 }; END { print maxuid, maxline }'
+-
+awk -F ':' '$NF ~ /\/bin\/sh/ { n++ }; END { print n }' /etc/passwd
+-
+awk -F ':' '{ total += NF }; END { print total }'
+-
+Operator Description 
+~ Match operator 
+!~ No Match operator 
+> Is greater than 
+>= Is greater than or equal to 
+< Is less than 
+<= Is less than or equal to 
+<= Is less than or equal to 
+== Is equal to 
+!= Is not equal to 
+&& Both the conditional expression should be true 
+|| Any one of the conditional expression should be true 
+= Assignment 
++= Shortcut addition assignment 
+-= Shortcut subtraction assignment 
+*= Shortcut multiplication assignment 
+/= Shortcut division assignment 
+%= Shortcut modulo division assignment 
++ Addition 
+- Subtraction 
+* Multiplication 
+/ Division 
+% Modulo Division 
++ Positivate the number 
+- Negate the number 
+++ AutoIncrement 
+– AutoDecrement
+-----------------------------
+awk '{
+if ($3 =="" || $4 == "" || $5 == "")
+	print "Some score for the student",$1,"is missing";'
+}' student-marks
+----------------
+awk '{
+if ($3 >=35 && $4 >= 35 && $5 >= 35)
+	print $0,"=>","Pass";
+else
+	print $0,"=>","Fail";
+}' student-marks
+---------------
+if(conditional-expression1)
+	action1;
+else if(conditional-expression2)
+	action2;
+else if(conditional-expression3)
+	action3;
+	.
+	.
+else
+	action n;
+-----------
+cat grade.awk
+{
+total=$3+$4+$5;
+avg=total/3;
+if ( avg >= 90 ) grade="A";
+else if ( avg >= 80) grade ="B";
+else if (avg >= 70) grade ="C";
+else grade="D";
+
+print $0,"=>",grade;
+}
+---------------
+conditional-expression ? action1 : action2 ;
+awk 'ORS=NR%3?",":"\n"' student-marks
+-------------
+$awk 'BEGIN { while (count++<50) string=string "x"; print string }'
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+--------------
+$ awk 'BEGIN{
+count=1;
+do
+print "This gets printed at least once";
+while(count!=1)
+}'
+This gets printed at least once
+-------------
+$ awk '{ for (i = 1; i <= NF; i++) total = total+$i }; END { print total }'
+12 23 34 45 56
+34 56 23 45 23
+351
+--------
+$ awk 'BEGIN{
+x=1;
+while(1)
+{
+print "Iteration";
+if ( x==3 )
+break;
+x++;
+}}'
+Iteration
+Iteration
+Iteration
+--------------------
+$ awk 'BEGIN{
+x=1;
+while(x<=10)
+{
+if(x==5){
+x++;
+continue;
+}
+print "Value of x",x;x++;
+}
+}'
+Value of x 1
+Value of x 2
+Value of x 3
+Value of x 4
+Value of x 6
+Value of x 7
+Value of x 8
+Value of x 9
+Value of x 10
+-----------------
+$ awk 'BEGIN{
+x=1;
+while(x<=10)
+{
+if(x==5){
+exit 2;}
+print "Value of x",x;x++;
+}
+}'
+Value of x 1
+Value of x 2
+Value of x 3
+Value of x 4
+---
+echo $?  = 2	===========================
+	awk and sed tips and tricks
+	===========================
+
+awk				- (gawk) pattern scanning and processing language	
+
+	# www.gnu.org/software/gawk/manual/gawk.html
+--------------------
+	awk '$4 ~/Technology/'
+-
+awk '$1 >200' 
+-
+awk '{print $2,$NF;}'
+-
+awk '/Thomas/
+/Nisha/'
+-
+awk 'BEGIN { count=0;}
+$4 ~ /Technology/ { count++; }
+END { print "Number of employees in Technology Dept =",count;}'
+-
+awk -f script-filename inputfilename
+BEGIN {
+	total=0;
+}
+{
+	itemno=$1;
+	book=$2;
+	bookamount=$3*$4;
+	total=total+bookamount;
+	print itemno," ", book,"\t","$"bookamount;
+}
+END {
+	print "Total Amount = $"total;
+}
+-
+$cat student.awk
+
+BEGIN {
+	test1=0;
+	test2=0;
+	test3=0;
+	print "Name\tRollNo\t Average Score";
+}
+{
+	total=$3+$4+$5;
+	test1=test1+$3;
+	test2=test2+$4;
+	test3=test3+$5;
+	print $1"\t"$2"\t",total/3;
+}
+END {
+	print "Average of Test1="test1/NR;
+	print "Average of Test2="test2/NR;
+	print "Average of Test3="test3/NR;
+}
+-
+$ cat string.awk
+BEGIN{
+title="AWK";
+print "<html>\n<title>"title"</title><body bgcolor=\"#ffffff\">\n<table border=1><th  colspan=2 align=centre>Student Details</th>";
+
+}
+{
+name=$1;
+rollno=$2;
+print "<tr><td>"name"</td><td>"rollno"</td></tr>";
+
+}
+END {
+    print "</table></body>\n</html>";
+}
+<html>
+<title>AWK</title><body bgcolor="#ffffff">
+<table border=1><th  colspan=2 align=centre>Student Details</th>
+<tr><td>Jones</td><td>2143</td></tr>
+<tr><td>Gondrol</td><td>2321</td></tr>
+<tr><td>RinRao</td><td>2122</td></tr>
+<tr><td>Edwin</td><td>2537</td></tr>
+<tr><td>Dayan</td><td>2415</td></tr>
+</table></body>
+</html>
+-
+8 Powerful Awk Built-in Variables – FS, OFS, RS, ORS, NR, NF, FILENAME, FNR
+-
+awk -F 'FS' 'commands' inputfilename
+ (or)
+awk 'BEGIN{FS="FS";}'
+-
+BEGIN{
+FS=":";
+print "Name\tUserID\tGroupID\tHomeDirectory";
+}
+{
+	print $1"\t"$3"\t"$4"\t"$6;
+}
+END {
+	print NR,"Records Processed";
+}
+-
+awk -F':' '{print $3,$4;}' /etc/passwd
+-
+awk -F':' 'BEGIN{OFS="=";} {print $3,$4;}' /etc/passwd
+-
+BEGIN {
+	RS="\n\n";
+	FS="\n";
+}
+{
+	print $1,$2;
+}
+-
+awk 'BEGIN{ORS="=";} {print;}'
+-
+awk '{print "Processing Record - ",NR;}END {print NR, "Students Records are processed";}
+-
+awk '{print NR,"->",NF}'
+-
+awk '{print FILENAME}' 
+-
+awk '{print FILENAME, FNR;}'
+-
+awk -F ':' '$5 == "" '
+-
+awk -F ':' '$3>=100 && $NF ~ /\/bin\/sh/'
+-
+awk -F ':' '$3==$4'
+- 
+awk 'NR % 2 == 0' # print even-numbered lines
+-
+awk -F ':'  '$3 > maxuid { maxuid=$3; maxline=$0 }; END { print maxuid, maxline }'
+-
+awk -F ':' '$NF ~ /\/bin\/sh/ { n++ }; END { print n }' /etc/passwd
+-
+awk -F ':' '{ total += NF }; END { print total }'
+-
+Operator Description 
+~ Match operator 
+!~ No Match operator 
+> Is greater than 
+>= Is greater than or equal to 
+< Is less than 
+<= Is less than or equal to 
+<= Is less than or equal to 
+== Is equal to 
+!= Is not equal to 
+&& Both the conditional expression should be true 
+|| Any one of the conditional expression should be true 
+= Assignment 
++= Shortcut addition assignment 
+-= Shortcut subtraction assignment 
+*= Shortcut multiplication assignment 
+/= Shortcut division assignment 
+%= Shortcut modulo division assignment 
++ Addition 
+- Subtraction 
+* Multiplication 
+/ Division 
+% Modulo Division 
++ Positivate the number 
+- Negate the number 
+++ AutoIncrement 
+– AutoDecrement
+-----------------------------
+awk '{
+if ($3 =="" || $4 == "" || $5 == "")
+	print "Some score for the student",$1,"is missing";'
+}' student-marks
+----------------
+awk '{
+if ($3 >=35 && $4 >= 35 && $5 >= 35)
+	print $0,"=>","Pass";
+else
+	print $0,"=>","Fail";
+}' student-marks
+---------------
+if(conditional-expression1)
+	action1;
+else if(conditional-expression2)
+	action2;
+else if(conditional-expression3)
+	action3;
+	.
+	.
+else
+	action n;
+-----------
+cat grade.awk
+{
+total=$3+$4+$5;
+avg=total/3;
+if ( avg >= 90 ) grade="A";
+else if ( avg >= 80) grade ="B";
+else if (avg >= 70) grade ="C";
+else grade="D";
+
+print $0,"=>",grade;
+}
+---------------
+conditional-expression ? action1 : action2 ;
+awk 'ORS=NR%3?",":"\n"' student-marks
+-------------
+$awk 'BEGIN { while (count++<50) string=string "x"; print string }'
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+--------------
+$ awk 'BEGIN{
+count=1;
+do
+print "This gets printed at least once";
+while(count!=1)
+}'
+This gets printed at least once
+-------------
+$ awk '{ for (i = 1; i <= NF; i++) total = total+$i }; END { print total }'
+12 23 34 45 56
+34 56 23 45 23
+351
+--------
+$ awk 'BEGIN{
+x=1;
+while(1)
+{
+print "Iteration";
+if ( x==3 )
+break;
+x++;
+}}'
+Iteration
+Iteration
+Iteration
+--------------------
+$ awk 'BEGIN{
+x=1;
+while(x<=10)
+{
+if(x==5){
+x++;
+continue;
+}
+print "Value of x",x;x++;
+}
+}'
+Value of x 1
+Value of x 2
+Value of x 3
+Value of x 4
+Value of x 6
+Value of x 7
+Value of x 8
+Value of x 9
+Value of x 10
+-----------------
+$ awk 'BEGIN{
+x=1;
+while(x<=10)
+{
+if(x==5){
+exit 2;}
+print "Value of x",x;x++;
+}
+}'
+Value of x 1
+Value of x 2
+Value of x 3
+Value of x 4
+---
+echo $?  = 2
+----------------------------
+sed			- stream editor
+	# sed "/'\/'${user}'	'/d" /etc/exports ">" /tmp/exports.new
+	# sed -e ${lineno}s:$srcsrv:$DSTSRV: -e ${lineno}s:$uhomedir:$DSTDIR/$user: /etc/auto.eshome ">" /tmp/auto.eshome.new
+	# sed -e ${lineno}s:$srcsrv:${DSTSRV}-'\$'NET: -e ${lineno}s:$uhomedir:$DSTDIR/$user: /etc/auto.eshome ">" /tmp/auto.eshome.new
+	# sed -e ${lineno}s:${srcsrv}-'\$'NET:$DSTSRV: -e ${lineno}s:$uhomedir:$DSTDIR/$user: /etc/auto.eshome ">" /tmp/auto.eshome.new
+	# sed -e ${lineno}s:$srcsrv:$DSTSRV: -e ${lineno}s:$uhomedir:$DSTDIR/$user: /etc/auto.eshome ">" /tmp/auto.eshome.new
+	# sed "1,/$month.*$lastyear$/d" $LOGFILE | sed "1,/^========/d" > $LOGFILE.new
+	# sed -n 1,${lineno}p $NISDIR/$file2edit > $pwtop
+    # sed -n ${lineno},\$p $NISDIR/$file2edit > $pwbot
+---------------
+sed 's/:\$1\$.\{31\}:/:xxxxxxxxxx:/g' shadow > shadow.new
+awk -F: '{print $1,"xxxxxxxxxx",$3,$4,$5,$6,$7,$8,$9}' OFS=":" shadow > shadow.new
