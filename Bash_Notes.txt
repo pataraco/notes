@@ -28,6 +28,9 @@ happy_emoji=(
 echo ${happy_emoji[$(($RANDOM % ${#happy_emoji[*]}))]}
 echo ${unhappy_emoji[$(($RANDOM % ${#unhappy_emoji[*]}))]}
 
+# jq stuff
+jq -r 'if .scripts|has("'"$_NPM_SCRIPT"'") then "exists: " + .scripts."'"$_NPM_SCRIPT"'" else "needs to be added: " + "'"$_DISABLED_SCRIPT"'" end' package.json
+
 # update change the title bar of the terminal
 echo -ne "\033]0;`whoami`@`hostname`\007"
 

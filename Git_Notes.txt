@@ -298,7 +298,6 @@ https://github.com/dxa4481/truffleHog
 
  ______________________________
 |        Git Config Tips       |
-
 # file: $REPO/.git/config
 [remote "origin"]
 	url = git@par.github.com:pataraco/REPO
@@ -330,15 +329,17 @@ Host par.github.com
 	# url = https://git-codecommit.us-west-2.amazonaws.com/v1/repos/infrastructure-automation
 	url = ssh://git-codecommit.us-west-2.amazonaws.com/v1/repos/infrastructure-automation
 	fetch = +refs/heads/*:refs/remotes/awscc/*
-
 |________Git Config Tips ______|
 
+ __________________________________________
+|  Git Remove Changes and untracked files  |
+git reset --hard  # removes staged and working directory changes
+git clean -f -d [-n]  # remove untracked files/directories [dry-run]
+|__Git Remove Changes and untracked files__|
 
  ______________________________
 |   Git Remove All History     |
-
-resets the repo to removoe sensitive data
-
+# resets the repo to removoe sensitive data
 $ git checkout --orphan temp
 $ # remove any sensitive data
 $ git add -A
@@ -346,7 +347,6 @@ $ git commit -am "Initial Commit"
 $ git branch -D master
 $ git branch -m master
 $ git push -f origin master
-
 |___Git Remove All History_____|
 
 tags: git
