@@ -81,9 +81,9 @@ pyenv: Installation
   $ source ~/.bash_profile   # OR $ exec "$SHELL"
 # install desired Python versions
   $ pyenv install 3.8.2
-# enable the version(s)
-  $ pyenv global|local|shell VERSION [VERSION2 VERSION3...]
 # use `pyenv` to set/use the version of Python desired
+  $ pyenv global|local|shell VERSION [VERSION2 VERSION3...]
+# more help
   $ pyenv help   # OR pyenv commands
 
 pyenv: Usage
@@ -138,6 +138,64 @@ $ pipenv check                      # check for security vulnerabilities
 $ pipenv uninstall PACKAGE          # uninstall a package, updating Pipfile(s)
 $ pipenv --venv                     # where is the virtual environment
 $ pipenv --where                    # where is the project home
+
+pipenv: Workflow
+------------------------
+- Set up new environment (from scratch - create Pipfiles)
+   - use `pyenv` to install/select desired python version
+   - use `pipenv --python VERSION` to set the project's desired python version
+   - install packages (see below)
+- Set up new environment (from existing Pipfiles)
+   - use `pyenv` to install/select specified python version in Pipfile
+   - use `pipenv sync --dev` to install from Pipfile.lock
+      - if a package does not install, use
+        `pipenv install [--dev] PACKAGE` (using specs defined in Pipfile)
+      - if a package still does not install, use
+        `pipenv install [--dev] PACKAGE --verbose` (checking for conflicts/issues)
+- Installing packages
+   - Sometime installation seems to hang, try hitting [enter] a couple of times
+   - If installing from private repos, set `PIP_EXTRA_INDEX_URL` with credentials
+   - Running install verbosely and using `pipenv graph` is pretty useful for
+     resolving dependency hell
+   - Method 1
+      - install with `pipenv install [--dev] PACKAGE[(==|~=|>|<|>=|<=)VERSION[,(<|<=)VERSION]]`, e.g.
+        pipenv install PACKAGE                          # any version
+	pipenv install PACKAGE~=MAJ.MIN.PATCH           # any maj.min version (patch can vary)
+	pipenv install PACKAGE~=MAJ.MIN                 # any major version (minor.patch can vary)
+	pipenv install PACKAGE==MAJ.MIN.PATCH           # exact version
+	pipenv install PACKAGE<=MAJ.MIN.PATCH           # capped version
+	pipenv install PACKAGE>=MAJ.MIN.PATCH,<MAJ.MIN  # ranged version
+      - `pipenv install` automatically updates the Pipfle.lock file
+   - Method 2
+      - edit Pipfile
+      - update Pipfile.lock with `pipenv lock [--dev]`
+      - install with `pipenv sync [--dev]`
+      - if a package does not install, use Method 1 using specs defined in Pipfile
+      - if the package still does not install, use the `--verbose` option with
+        the install command and check for version/dependency conflicts or any
+	other issues
+
+
+Private Repo access
+-------------------
+- Example of Pipfile entry for private Azure DevOps Artifacts (repo)
+
+   # File: Pipfile
+   [[source]]
+   name = "pypi-private"
+   url = "https://pkgs.dev.azure.com/COMPANY/PROJECT/_packaging/FEED/pypi/simple"
+   verify_ssl = true
+
+   [packages]
+   cool_company_package = {version = "==1.2.3", index = "pypi-private"}
+
+- Get ADO token
+
+   $ ADO_ARTIFACTS_TOKEN=$(keyring -b artifacts_keyring.ArtifactsKeyringBackend get https://pkgs.dev.azure.com/$ADO_COMPANY/$ADO_PROJECT/_packaging/$ADO_FEED/pypi/simple/ VssSessionToken 2> /dev/null)
+
+- Set PIP_EXTRA_INDEX_URL
+
+   $ export PIP_EXTRA_INDEX_URL="https://any_user:$ADO_ARTIFACTS_TOKEN@pkgs.dev.azure.com/$ADO_COMPANY/$ADO_PROJECT/_packaging/$ADO_FEED/pypi/simple"
 
 pipenv: Automatic Loading of `.env`
 ------------------------
@@ -235,8 +293,6 @@ $ deactivate
 
 # to disable the evironment in the prompt
 VIRTUAL_ENV_DISABLE_PROMPT=YES
-
-
 
 
 ----------------

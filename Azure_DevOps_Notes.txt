@@ -22,6 +22,13 @@ az extension add --name azure-devops
 az pipelines variable-group list
 az pipelines variable-group list | jq .[].name
 
-ADO_ARTIFACTS_TOKEN=$(pipenv run keyring get -b artifacts_keyring.ArtifactsKeyringBackend https://pkgs.dev.azure.com/COMPANY/PROJECT/_packaging/FEED/pypi/simple/ VssSessionToken 2> /dev/null)
+ADO_ARTIFACTS_TOKEN=$(keyring -b artifacts_keyring.ArtifactsKeyringBackend get https://pkgs.dev.azure.com/COMPANY/PROJECT/_packaging/FEED/pypi/simple/ VssSessionToken 2> /dev/null)
+
+Pipeline Stuff
+--------------
+PipAuthenticate built-in task sets the following environment variable
+PIP_EXTRA_INDEX_URL 
+with the value containing credentials to the extra URL, e.g.
+https://admin:asfvrewf@pkgs.dev.azure.com/COMPANY/GROUP/_packaging/FEED/pypi/simple/PACKAGE/
 
 tags: ado azure
