@@ -37,6 +37,14 @@ terraform init -backend-config backend-foo-blue-us-east-1.tfvars -reconfigure
 
 terraform plan (< .11)
 
+# see some sensitive data
+   - v.0.15.x and above, use the 'nonsensitive' function around the value
+   - otherwise
+      $ terraform plan -out FILE
+      $ terraform show -json FILE
+
+terraform plan (< .11)
+
 terraform apply \
   -var 'var1=foo' \
   -var 'var2=bar'

@@ -230,4 +230,11 @@ $ pipenv sync --dev
 * Set linter to Flake8
       (VS Code: Preferences > Extensions > Python > Linting: Flake8 Enabled)
 
+---------------- paths, module importing --------------
+4 locations python will search for modules:
+  - current directory, sytem dirs, $PYTHONEPATH, python install directories
+- path searched:        sys.path         (import sys)
+- source of the module: MODULE.__file__  (import MODULE)
+
+
 tags: python, py
