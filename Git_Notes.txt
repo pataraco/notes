@@ -107,6 +107,10 @@ git tag					# create, list, del, verify tag object
 $ git remote update
 $ git status -uno
 
+# show changes made in a specific branch
+$ git log -p develop..mybranch
+$ git cherry -v develop mybranch
+
  _____________________________________
 |             GitHub Tips             |
 
