@@ -38,6 +38,10 @@ service docker start
 docker run hello-world
 docker run -it ubuntu bash
 
+Examples:
+docker build -t TAG .
+docker run --rm --name NAME -it TAG COMMAND
+
 Install Docker-Machine
 ----------------------
 # get it

@@ -91,6 +91,9 @@ Backends
 - terraform state pull
 - terraform state push [-force] (extremely dangerous)
 - terraform force-unlock [-force] LOCK_ID [DIR]
+- terraform state mv [options] SOURCE DESTINATION
+   simple resource renaming, moving items to and from a module
+- terraform state replace-provider registry.terraform.io/chanzuckerberg/snowflake registry.terraform.io/snowflake-labs/snowflake
 
 -------------
 Modules
