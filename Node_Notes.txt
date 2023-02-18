@@ -20,4 +20,8 @@ npm install --package-lock-only
 npm install lodash@4.17.4  # install specific version
 npm install lodash@^4.0.0  # install the latest 4.x.x version
 
+# ESBuild
+https://esbuild.github.io/getting-started/
+
+
 tags: node npm
