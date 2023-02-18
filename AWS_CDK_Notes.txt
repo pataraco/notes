@@ -1,0 +1,32 @@
+AWS CDK Commands and Stuff
+
+Install the AWS CLI Using pip
+
+   npm install -g aws-cdk
+
+TO-READ
+   TBD
+
+ENVIRONMENT
+   TypeScript/Python
+
+FIRST TIME SETUP
+ - git repo
+ - nvm use VERSION
+ - node --version > .nvmrc
+ - npm init -y
+ - npm install -D aws-cdk aws-cdk-lib constructs ts-node typescript # CDK v2.x
+ - tsc --init
+
+COMMANDS
+   $ cdk init --list
+   $ cdk init TEMPLATE --language typescript
+   $ cdk synth
+   $ cdk bootstrap [AWS_ACCT_ID/REGION]  (default: AWS_DEFAULT_REGION)
+   $ cdk deploy [--all | STACK_NAME] [--parameters KEY=VAL]
+   $ cdk list
+   $ cdk diff
+   $ cdk destroy
+   $ cdk doctor
+
+tags: aws-cdk cdk
