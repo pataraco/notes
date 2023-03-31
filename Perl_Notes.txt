@@ -1,6 +1,6 @@
-	###############################
-		perl tips and tricks
-	###############################
+----------
+perl Notes
+----------
 
 +---------------+
 | documentation |
@@ -243,3 +243,5 @@ perl -p -i.bak -e 's/^\s*export\s*LD_ASSUME_KERNEL/#export LD_ASSUME_KERNEL/' /e
 $ perl -e 'printf("%d\n",0x5630c);'
 353036
 -------------------------------------
+
+tags: perl

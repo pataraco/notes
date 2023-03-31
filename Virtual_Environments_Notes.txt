@@ -398,4 +398,4 @@ npm - package manager
    - node version
 npx - npm package runner
 
-tags: pipenv, pyenv, venv, virtualenv
+tags: pipenv, pyenv, venv, virtualenv, nvm

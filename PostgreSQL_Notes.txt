@@ -1,5 +1,6 @@
-Redshift Notes
---------------
+---------------------------
+Redshift and Postgres Notes
+---------------------------
 
 ## Install
 $ brew install pgcli
@@ -73,4 +74,4 @@ $ pgcli postgresql://USER:PASSWORD@HOST:PORT/DB
 $ pgcli -h HOST -p PORT -U USER -d DB
 ------ connection stuff (end) ------------
 
-tags: postgresql, pgcli, postgres
+tags: postgresql, pgcli, postgres, redshift

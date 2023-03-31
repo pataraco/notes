@@ -1,5 +1,7 @@
+----------------
 Prometheus Notes
 ----------------
+
 Prometheus is a monitoring and time series database that scrapes exposed endpoints and aggregates data, allowing you to filter, graph, and query the results.
 
 Learning Docs

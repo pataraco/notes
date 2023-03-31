@@ -1,5 +1,6 @@
+----------
 Node Notes
-------------
+----------
 
 # only create package-lock.json file (don't install packages "node_modules")
 npm install --package-lock-only
@@ -22,6 +23,6 @@ npm install lodash@^4.0.0  # install the latest 4.x.x version
 
 # ESBuild
 https://esbuild.github.io/getting-started/
+$ npm install --save-dev esbuild
 
-
-tags: node npm
+tags: node, npm, nvm

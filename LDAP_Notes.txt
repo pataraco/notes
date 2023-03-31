@@ -1,4 +1,7 @@
-OpenLDAP
+--------------
+OpenLDAP Notes
+--------------
+
 LDAP is sometimes referred to as “X.500 Lite”.
 OpenLDAP 2.4,
 uses the Mozilla implementation of Network Security Services (NSS)

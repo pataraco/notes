@@ -1,3 +1,4 @@
+--------------------------------------
 AWS Serverless Application Model (SAM)
 --------------------------------------
 
@@ -19,4 +20,4 @@ AWS Serverless Application Model (SAM)
    – Sample applications in the AWS SAM GitHub repository that you can further experiment with
    - https://github.com/awslabs/serverless-application-model/tree/master/examples/apps
 
-tags: sam
+tags: SAM

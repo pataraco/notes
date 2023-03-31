@@ -1,6 +1,6 @@
-_________________
+-----------------
 AWS Amplify Notes
-=================
+-----------------
 
 TODO
 ----
@@ -21,4 +21,4 @@ Installation
   $ amplify -v | -h
   $ amplify configure
 
-tags: Amplify, amplify, amp
+tags: Amplify

@@ -1,11 +1,38 @@
+--------------------------
 AWS CDK Commands and Stuff
+--------------------------
 
 Install the AWS CLI Using pip
 
    npm install -g aws-cdk
 
+QUESTIONS
+---------
+  - What are TS Interfaces?
+
 TO-READ
-   TBD
+  - CDK Developer Guide
+    - ✅ Working with the AWS CDK (pg. 36)
+    - ✅ Concepts
+      - ✅ The construct tree (pg. 110)
+      - ✅ Stacks (pg. 116)
+      - ✅ Assets (pg. 171)
+      - ✅ Permissions (pg. 185)
+      - ✅ Runtime context (pg. 193)
+      - ✅ Aspects (pg. 200)
+    - ✅ Abstractions and escape hatches
+    - ⏱️  Best practices for developing and deploying cloud infrastructure with the AWS CDK
+    - API reference
+    - Examples
+    - AWS CDK how-tos
+    - AWS CDK tools
+    - Testing constructs
+    - Security for the AWS Cloud Development Kit (AWS CDK)
+    - Troubleshooting common AWS CDK issues
+
+TO-DO
+  - Install VS Code Extension
+  - Learn how to bootstrap to deploy from one AWS account to any
 
 ENVIRONMENT
    TypeScript/Python
@@ -14,19 +41,135 @@ FIRST TIME SETUP
  - git repo
  - nvm use VERSION
  - node --version > .nvmrc
- - npm init -y
- - npm install -D aws-cdk aws-cdk-lib constructs ts-node typescript # CDK v2.x
+ - npm init -y  # ??? not sure this is needed
+ - npm install aws-cdk-lib constructs                   # CDK v2.x
+ - npm install -D|--save-dev aws-cdk ts-node typescript # CDK v2.x
+
+```
+  "devDependencies": {
+    "@types/jest": "^29.4.0",
+    "@types/node": "18.13.0",
+    "jest": "^29.4.2",
+    "ts-jest": "^29.0.5",
+    "aws-cdk": "2.66.1",
+    "ts-node": "^10.9.1",
+    "typescript": "~4.9.5"
+  },
+  "dependencies": {
+    "aws-cdk-lib": "2.66.1",
+    "constructs": "^10.0.0",
+    "source-map-support": "^0.5.21"
+```
+
  - tsc --init
 
 COMMANDS
    $ cdk init --list
    $ cdk init TEMPLATE --language typescript
+     ex. $ cdk init app --language typescript
    $ cdk synth
    $ cdk bootstrap [AWS_ACCT_ID/REGION]  (default: AWS_DEFAULT_REGION)
    $ cdk deploy [--all | STACK_NAME] [--parameters KEY=VAL]
-   $ cdk list
+   $ cdk list | ls  # list the stacks
    $ cdk diff
    $ cdk destroy
    $ cdk doctor
+   $ cdk --app 'executable' cdk-command ...  # override cdk.json
+   $ cdk --app ./my-cloud-assembly ls        # interact directly with synthed app
 
-tags: aws-cdk cdk
+TIPS & TRICKS
+-------------
+- Creating Constructors
+  - Our NotifyingBucket construct inherits not from Bucket but rather from Construct. We are using composition, not inheritance, to bundle an Amazon S3 bucket and an Amazon SNS topic together. In general, composition is preferred over inheritance when developing AWS CDK constructs.
+  - Typically, you would also want to expose some properties or methods on your constructs. It's not very useful to have a topic hidden behind your construct, because users of your construct aren't able to subscribe to it. Adding a topic property lets consumers access the inner topic, as shown in the following example:
+  - The construct tree; Constructs are always explicitly defined within the scope of another construct, so there is no doubt about the relationships between constructs. Almost always, you should pass this (in Python, self) as the scope, indicating that the new construct is a child of the current construct. The intended pattern is that you derive your construct from Construct, then instantiate the constructs it uses in its constructor.
+Passing the scope explicitly allows each construct to add itself to the tree, with this behavior entirely contained within the Construct base class. It works the same way in every language supported by the AWS CDK and does not require introspection or other "magic."
+  - Create methods that an AWS CDK app goes through the phases in its lifecycle: Construction, Preperation, Validation and Synthesis
+
+- Context
+  - cdk.json
+    - global: ~/.cdk.json
+    - cdk context
+    - cdk synth --context key1=value1 --context key2=value2 MyStack
+    - CONSTRUCT.node.setContext() method
+    - put custom context in "context" to protect against resets/clears
+  - cdk.context.json
+    - CDK cache from AWS account values
+    - CONSTRUCT.node.tryGetContext() method
+    - only these can be reset/cleared
+  - feature flags (store as "context" in cdk[.context].json)
+    - https://github.com/aws/aws-cdk/blob/main/packages/%40aws-cdk/cx-api/FEATURE_FLAGS.md
+    - disabled by default
+    - not removed by `cdk contxt --reset` or `cdk context --clear`
+  - Methods (examples)
+    - https://docs.aws.amazon.com/cdk/api/v2/docs/aws-cdk-lib.aws_route53.HostedZone.html#static-fromwbrlookupscope-id-query
+    - https://docs.aws.amazon.com/cdk/api/v2/docs/aws-cdk-lib.aws_ssm.StringParameter.html#static-valuewbrfromwbrlookupscope-parametername
+    - https://docs.aws.amazon.com/cdk/api/v2/docs/aws-cdk-lib.aws_ec2.Vpc.html#static-fromwbrlookupscope-id-options
+
+Deploying Lambdas
+--------- -------
+Amazon Lambda Node.js
+  - Node Lambda
+  - Construct: aws-lambda-nodejs
+Webpack
+  - Involve configuration
+  - Small/Fast bundles
+
+SNIPPETS
+--------
+ec2.Vpc.fromLookup(this, 'PublicVpc',
+      {tags: {'aws-cdk:subnet-type': "Public"}});
+Results of Vpc.fromLookup() are cached in the project's cdk.context.json file.
+Commit this file to version control so that your app will continue to refer to the same Amazon VPC
+---
+class BucketVersioningChecker implements IAspect {
+  public visit(node: IConstruct): void {
+    // See that we're dealing with a CfnBucket
+    if (node instanceof s3.CfnBucket) {
+      // Check for versioning property, exclude the case where the property
+      // can be a token (IResolvable).
+      if (!node.versioningConfiguration
+        || (!Tokenization.isResolvable(node.versioningConfiguration)
+            && node.versioningConfiguration.status !== 'Enabled') {
+        Annotations.of(node).addError('Bucket versioning is not enabled');
+      }
+} }
+}
+// Later, apply to the stack
+Aspects.of(stack).add(new BucketVersioningChecker());
+--- L1 construct (no L2 available)
+new s3.CfnBucket(this, 'MyBucket', {
+  analyticsConfigurations: [
+    {
+      id: 'Config',
+// ... }
+] });
+--- L1 construct (no L1 available)
+new cdk.CfnResource(this, 'MyBucket', {
+  type: 'AWS::S3::Bucket',
+  properties: {
+    // Note the PascalCase here! These are CloudFormation identifiers.
+    AnalyticsConfigurations: [
+      {
+        Id: 'Config',
+// ... }
+] }
+});
+--- Modify L1 construct if L2 missing feature
+// Get the CloudFormation resource
+const cfnBucket = bucket.node.defaultChild as s3.CfnBucket;
+// Change its properties
+cfnBucket.analyticsConfiguration = [
+  {
+    id: 'Config',
+// ... }
+];
+--- change AWS CloudFormation options
+cfnBucket.cfnOptions.metadata = {
+  MetadataKey: 'MetadataValue'
+};
+--- create L2 from L1
+b1 = new s3.CfnBucket(this, "buck09", { ... });
+b2 = s3.Bucket.fromCfnBucket(b1);
+
+tags: AWS-CDK CDK

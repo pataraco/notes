@@ -1,3 +1,4 @@
+--------------
 Redshift Notes
 --------------
 
@@ -62,4 +63,4 @@ pgcli> CREATE EXTERNAL TABLE <schema_name>.<table_name>
          LOCATION 's3://bucket/key/'
          TABLE PROPERTIES ('numRows'='NNNN');
 
-tags: redshift
+tags: RedShift

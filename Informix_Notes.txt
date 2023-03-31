@@ -1,6 +1,6 @@
-			+------------------------+
-			|informix tips and tricks|
-			+------------------------+
+------------------------
+informix tips and tricks
+------------------------
 
 +-----------+
 |DB commands|
@@ -303,3 +303,5 @@ echo "SELECT hotelname,hotelnum,phone1,liveortrain from hotelname"|dbaccess dev
 	echo "info tables"|dbaccess dev
 2. How to get a list of all columns in a table?
 	echo "info columns for table"|dbaccess dev
+
+tags: Informix

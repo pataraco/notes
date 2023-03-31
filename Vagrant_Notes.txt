@@ -1,5 +1,6 @@
-			Using Vagrant
-		------------------------
+-------------
+Vagrant Notes
+-------------
 
 use: Vagrant
 	* Install Vagrant

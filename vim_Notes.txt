@@ -1,6 +1,7 @@
-		==================
-		vim Tips and Tricks
-		==================
+---------
+vim Notes
+---------
+
  :ab[breviate] ["abbreviation"] ["phrase"]		# list [set] abbreviation - gets used in Insert Mode
  :una[bbreviate] "abbreviation"					# remove abbreviation
  :norea[bbrev] ["abbreviation"] ["phrase"]		# abbreviate without remapping "phrase"
@@ -1089,3 +1090,5 @@ Vimtips in Belarusian
 " use yy@" to execute following commands
 :w!|sav! vimtips.html|:/^__BEGIN__/,/^__END__/s#<#\<#g|:w!|:!vimtipsftp
 ----------------------------------------
+
+tags: vim, vi

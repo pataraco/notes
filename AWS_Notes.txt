@@ -1,4 +1,6 @@
+----------------------
 AWS Commands and Stuff
+----------------------
 
 Install the AWS CLI Using pip
 
@@ -228,4 +230,4 @@ ami_ebs	ami-d1f308a6 Ubuntu 12.04.4 LTS (Precise Pangolin)            eu-west-1 
 ami_hvm ami-60a10117 Ubuntu 12.04.5 LTS (Precise Pangolin) [20140927] eu-west-1 64-bit hvm Launch ami-60a10117 ec2-run-instances ami-60a10117 -t m3.medium --region eu-west-1 --key ${EC2_KEYPAIR_EU_WEST_1}
 ami_gss ami-903686e7 Ubuntu 14.04.1 LTS (Trusty Tahr)                 eu-west-1 64-bit ebs Launch ami-903686e7 ec2-run-instances ami-903686e7 -t t1.micro --region eu-west-1 --key ${EC2_KEYPAIR_EU_WEST_1}
 
-tags: aws
+tags: AWS

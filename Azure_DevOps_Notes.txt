@@ -1,3 +1,4 @@
+------------------
 Azure DevOps Notes
 ------------------
 
@@ -31,4 +32,4 @@ PIP_EXTRA_INDEX_URL
 with the value containing credentials to the extra URL, e.g.
 https://admin:asfvrewf@pkgs.dev.azure.com/COMPANY/GROUP/_packaging/FEED/pypi/simple/PACKAGE/
 
-tags: ado azure
+tags: ADO, Azure

@@ -1,6 +1,6 @@
-		-------------
-		- Git Notes -
-		-------------
+---------
+Git Notes
+---------
 
 git add <FILE1> <FILE2>...|-A		# add [FILES]|All changes to staging area
 git branch [-a|-d|-r] [<BRANCH_NAME>]	# list|create|delete branches & current

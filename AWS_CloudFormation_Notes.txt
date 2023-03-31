@@ -1,3 +1,4 @@
+--------------------
 CloudFormation Notes
 --------------------
 
@@ -49,4 +50,4 @@ CloudFormation:
       - AWS::Include:              Location
       - AWS::CloudFormaton::Stack: TemplateURL
 
-tags: cloudformation, cf
+tags: CloudFormation, CFN

@@ -1,6 +1,6 @@
-	===========================
-	awk and sed tips and tricks
-	===========================
+-----------------
+awk and sed Notes
+-----------------
 
 awk				- (gawk) pattern scanning and processing language	
 
@@ -278,3 +278,5 @@ sed			- stream editor
 ---------------
 sed 's/:\$1\$.\{31\}:/:xxxxxxxxxx:/g' shadow > shadow.new
 awk -F: '{print $1,"xxxxxxxxxx",$3,$4,$5,$6,$7,$8,$9}' OFS=":" shadow > shadow.new
+
+tags: awk, sed

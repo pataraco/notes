@@ -1,5 +1,6 @@
+----------------
 PowerShell Notes
-================
+----------------
 
 # get all but the system disk
 Get-Disk | where-object IsSystem -eq $False

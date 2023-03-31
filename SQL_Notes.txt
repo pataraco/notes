@@ -1,3 +1,7 @@
+---------
+SQL Notes
+---------
+
 ar_lock		arbanksvc	ardetail	ardoc		banktrans	
 ghp		gp_lock		gsi_header	hmagent		hotelname		
 listu		offmarket	outoforder	res		roomassigned			

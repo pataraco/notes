@@ -1,3 +1,7 @@
+---------------
+Palo Alto Notes
+---------------
+
 > set cli terminal type xterm
 > show session info
 > request system fqdn show

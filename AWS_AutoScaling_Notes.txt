@@ -1,5 +1,5 @@
-AUTOSCALER NOTES
 ----------------
+AUTOSCALER NOTES
 ----------------
 
 ----
@@ -216,4 +216,4 @@ forums
 /usr/lib/nagios/plugins/autoscale/conntest.sh
 	- fix the comments
 
-tags: autoscaling, AutoScaling, as
+tags: AutoScaling, AS

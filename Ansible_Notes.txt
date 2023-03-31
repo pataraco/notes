@@ -1,6 +1,6 @@
------------------
-- Ansible Notes -
------------------
+-------------
+Ansible Notes  
+-------------
 
 Community: galaxy.ansible.com - Ansible Galaxy; hub for finding, reusing, and sharing the best Ansible content.
 
@@ -340,4 +340,4 @@ BUILT-IN VARIABLES
 ------------------
 inventory_hostname_short
 
-tags: ansible
+tags: Ansible
