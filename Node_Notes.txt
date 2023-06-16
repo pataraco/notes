@@ -25,4 +25,15 @@ npm install lodash@^4.0.0  # install the latest 4.x.x version
 https://esbuild.github.io/getting-started/
 $ npm install --save-dev esbuild
 
+# Puppeteer/Chromium
+-----------
+issue:
+  npm ERR! The chromium binary is not available for arm64
+workaround:
+  $ brew install chromiium
+  $ export PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
+  $ export PUPPETEER_EXECUTABLE_PATH=$(which chromium)
+
+
+
 tags: node, npm, nvm
