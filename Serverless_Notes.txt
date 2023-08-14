@@ -47,6 +47,9 @@ Serverless
 # Get deployed lambda functions info
    $ sls deploy list functions
 
+# prune some lambdas
+   $ sls prune -i -n N --stage STAGE --region REGION
+
 Plugins
 -------
 - serverless-offline
@@ -61,6 +64,12 @@ Plugins
   - cannot edit/view lambda functions in-line (AWS console)
 - Check out the `AwsRollbackFunction` plugin [built-in?] for deployment rollback functionality
 - Check out the `serverless-layers` (or similar) plugin(s) for managing lambda layers
+- serverless-prune-plugin
+  custom:
+    prune:
+      automatic: true
+      includeLayers: true
+      number: 3
 
 ```
 # Install plugins:
