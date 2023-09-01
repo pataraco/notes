@@ -353,4 +353,12 @@ $ git branch -m master
 $ git push -f origin master
 |___Git Remove All History_____|
 
+ ______________________________
+|        Git Debug Tips       |
+export GIT_TRACE_PACKET=1
+export GIT_TRACE=1
+export GIT_CURL_VERBOSE=1
+export GIT_TRANSFER_TRACE=1
+|________Git Debug Tips ______|
+
 tags: git

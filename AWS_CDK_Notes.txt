@@ -172,4 +172,11 @@ cfnBucket.cfnOptions.metadata = {
 b1 = new s3.CfnBucket(this, "buck09", { ... });
 b2 = s3.Bucket.fromCfnBucket(b1);
 
+--- CloudWatch Filters
+{$.eventName="PutObject" && $.userIdentity.principalId="AROAT6HD5I5TUE6SQJ2ML:vault-ldap-racop-Owner-1692916125-NIfHNmMDIDVI826LmdP1"}
+{$.requestParameters.bucketName ="innovyze-saas-simulation-job-engine" && $.userIdentity.principalId="AROAT6HD5I5TUE6SQJ2ML:vault-ldap-racop-Owner-1692916125-NIfHNmMDIDVI826LmdP1"}
+"eventName": "CompleteMultipartUpload",
+"eventName": "PutObject",
+"eventName": "UploadPart",
+
 tags: AWS-CDK CDK
