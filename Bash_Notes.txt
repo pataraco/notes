@@ -32,6 +32,8 @@ echo ${unhappy_emoji[$(($RANDOM % ${#unhappy_emoji[*]}))]}
 jq -r 'if .scripts|has("'"$_NPM_SCRIPT"'") then "exists: " + .scripts."'"$_NPM_SCRIPT"'" else "needs to be added: " + "'"$_DISABLED_SCRIPT"'" end' package.json
 jq -s . FILE  # convert from ndjson -> json
 jq .[] FILE   # convert from json   -> ndjson
+jq '.RequestedQuota|.Id+"|"+.ServiceName+"|"+.QuotaName+"|"+.QuotaCode+"|"+(.DesiredValue|tostring)+"|"+.Status'
+jq '.RequestedQuota|[.Id,.ServiceName,.QuotaName,.QuotaCode,.DesiredValue,.Status]|join("|")'
 
 # update change the title bar of the terminal
 echo -ne "\033]0;`whoami`@`hostname`\007"
@@ -357,4 +359,4 @@ heLLo
 ${CFG_FILE##*/}		# gets rid of the "/" in the variable
 ${filename##*[.,~\#]}	# gets rid of the ".,~#" in the variable
 
-tags: bash
+tags: bash,jq
