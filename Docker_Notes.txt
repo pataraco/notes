@@ -91,6 +91,7 @@ rm        - remove container
    docker rm CONTAINER-ID | NAME
 rmi       - remove one or more images
    docker rmi -f 2cde513e9c25
+docker image prune --all --force
 run [-it] - load image into container and run it (create & start)
    docker run [-it] USER/PROJECT:TAG CMD
    docker run [-d] USER/PROJECT:TAG [CMD]  # run in background

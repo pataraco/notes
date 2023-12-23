@@ -18,10 +18,25 @@ Use
 ---
 az --help
 az extension list-available --output table
-az extension list-available --output table|grep devops
+az extension list-available --output table | grep devops
 az extension add --name azure-devops
 az pipelines variable-group list
 az pipelines variable-group list | jq .[].name
+az pipelines pool list --pool-name NAME
+az pipelines agent list --pool-id ID | jq '.[]|[.name,.id,.status]|join("|")'
+az account show
+az account list -o table
+az account set -s $SUB_ID   # set the default/active subscription
+az acr check-health --name $COMPANY
+az acr check-health --name $COMPANY --yes
+az acr login --name $COMPANY
+az acr repository show-tags -n $COMPANY --repository $REPO --orderby time_desc --output table
+az devops configure --defaults organization=https://dev.azure.com/MyOrg/
+az devops configure --defaults project=PROJ
+az devops configure --list
+az devops user show --user EMAIL
+az devops login --organization https://dev.azure.com/innovyze/
+az artifacts universal download --organization $ORG --project $PROJECT --scope project --feed $FEED --name $NAME --version $VERSION --path .
 
 ADO_ARTIFACTS_TOKEN=$(keyring -b artifacts_keyring.ArtifactsKeyringBackend get https://pkgs.dev.azure.com/COMPANY/PROJECT/_packaging/FEED/pypi/simple/ VssSessionToken 2> /dev/null)
 

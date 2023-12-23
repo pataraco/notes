@@ -8,7 +8,7 @@ git branch [-a|-d|-r] [<BRANCH_NAME>]	# list|create|delete branches & current
    git branch -a			# list both remote and local branches
    git branch -r			# list remote branches
    git branch -d [-r]			# delete local[remote] branch
-      # git branch -d -r origin/nubranch  # deletes remote-tracking
+      # git branch -d -r origin/nubranch	# deletes remote-tracking
    # using branches to make then merge changes in a new branch on to master
      1. git checkout -b NEW_BRANCH	# create and checkout new branch
        (or `git branch NEW_BRANCH; git checkout NEW_BRANCH)
@@ -34,7 +34,7 @@ git checkout [-b] <BRANCH>|<TAG> [<FILE>]	# checkout a git reference
    git checkout --track origin/existing_branch		# dev from known branch
    git checkout origin/master -- path/to/file		# get one file
 git clone <REMOTE_LOC> [<CLONE_NAME>]	# git clone a repo
-git commit -m "message"			# commit changes in staging area
+git commit [--allow-empty] -m "message"	# commit changes in staging area
 git config [<file-option>]		# man git-config
    file-options
    --system (/etc/gitconfig)
@@ -78,7 +78,7 @@ git rebase -i HEAD~n			# change commit messages
       git commit --continue
    b) (editor opens with list of commits, change "pick" to "reword")
       git push --force
-git reset --soft HEAD~1                 # revert last commit
+git reset --soft HEAD~1			# revert last commit
 git reset [HEAD] <FILE>			# revert changes | unstage a file
 git reset <SHA>				# revert back to a SHA (can use first 7 chars)
 git remote -v				# see a list of Git project's remotes
@@ -100,9 +100,9 @@ git tag					# create, list, del, verify tag object
    git tag -f vm-1605-rc-1
    git push origin --tags
    git tag -l vm-1517*			# list remote tags
-   git fetch --all --tags --prune       # fetch all remotes/tags
-   git tag -d TAG                       # delete local tag
-   git push origin --delete TAG         # delete remote tag
+   git fetch --all --tags --prune	# fetch all remotes/tags
+   git tag -d TAG	# delete local tag
+   git push origin --delete TAG	# delete remote tag
 # check if need to pull
 $ git remote update
 $ git status -uno
