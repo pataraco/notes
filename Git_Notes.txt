@@ -20,8 +20,11 @@ git branch [-a|-d|-r] [<BRANCH_NAME>]	# list|create|delete branches & current
 
 # rename a branch locally and remotely and reset upstream
 git branch -m [OLD_NAME] NEW_NAME       # use OLD_NAME if not on branch
-git push origin :OLD_NAME NEW_NAME      # delete OLD from remote and push NEW
-git push origin -u NEW_NAME             # reset uptream to NEW
+git push origin -u NEW_NAME             # push local branch and reset upstream branch
+git push origin --delete OLD_NAME       # delete the OLD from remote
+
+git branch -m <newname>                 # To rename the current branch:
+git branch -m <oldname> <newname>       # To rename a branch while pointed to any branch:
 
 git checkout [-b] <BRANCH>|<TAG> [<FILE>]	# checkout a git reference
    git checkout <BRANCH> <FILE>		# revert changes to <FILE>
