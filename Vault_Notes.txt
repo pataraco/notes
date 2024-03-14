@@ -16,5 +16,40 @@ set/export VAULT_ADDR or use '-address=<string>'
 - vault auth help github
 - vault status
 - vault list secret
+- vault login
+- vault token lookup
+- vault namespace list [-namespace=admin/education]
+- vault namespace create [-ns=admin/education] training
+- vault secrets enable -path=secrets kv-v2
+- vault secrets list [-detailed]
+- vault kv enable-versioning secrets/  # if version not 2
+- vault kv put secrets/hello foo=world
+- vault kv put secrets/test/webapp api-key="ABC0DEFG9876" [key2=value2, ...]
+- vault kv patch secrets/test/webapp email="first.last@example.com"
+- vault kv get secrets/hello
+- vault kv get [-field=KEY] [-version=N] PATH
+- vault kv get -mount secrets test/webapp
+- vault kv metadata put -custom-metadata=region="us-west-2" secrets/test/webapp
+- vault kv metadata put -delete-version-after=40s PATH
+- vault kv metadata get PATH  # shows versions
+- vault policy write my-policy /tmp/my-policy.hcl
+- vault policy list
+- vault policy read my-policy
+- vault write SECRET/config max_versions=N
+- vault read SECRET/config
+- vault kv delete -versions="N[,M]" PATH
+- vault kv destroy -versions="N[,M]" PATH
+- vault write SECRET/config cas_required=true
+- vault kv metadata put -cas-required=true PATH
+
+
+Environment Variables
+---------------------
+VAULT_ADDR
+VAULT_NAMESPACE
+
+Terraform
+---------
+terraform import hcp_vault_cluster.<RESOURCE_NAME> vault-cluster
 
 tags: vault
