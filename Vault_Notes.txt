@@ -10,6 +10,8 @@ Commands
 --------
 
 set/export VAULT_ADDR or use '-address=<string>'
+# e.g. 
+#  export VAULT_ADDR='https://vault-cluster-public-vault-3f585373.32989fe3.z1.hashicorp.cloud:8200'
 
 - vault login -method=github token=$TOKEN
    ( check out 'vl' alias )

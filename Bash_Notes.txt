@@ -1,7 +1,7 @@
 --------------------
 Bash Tips and Tricks
 --------------------
-	
+
 # remember this
 no : result=$(echo $variable | grep $pattern)
 yes: result=$(grep $pattern <<< $variable)
@@ -43,8 +43,8 @@ tac $file | sed -n 2p  # of file
 sort -r | sed -n 2p    # of sort output
 
 # each of these adds 1 to i
-i=`expr $i + 1` 	# All Bourne shells
-let i=i+1			# Bash
+i=`expr $i + 1` # All Bourne shells
+let i=i+1       # Bash
 let "i = i + 1"
 $(( i = i + 1 ))
 $(( i += 1 ))
@@ -55,9 +55,9 @@ $(( BASE#NUMBER_IN_BASE )) (ex: echo $((36#1x587kv2)) => 150514102622)
 $ echo "foo bar" | \
      exec bash -c '
         echo "0=($0) | *=($*) | @=($@)"
-	for a; do
-	   echo "a=($a)"
-	done
+        for a; do
+           echo "a=($a)"
+        done
      ' _ arg2 $(xargs)
 0=(_) | *=(arg2 foo bar) | @=(arg2 foo bar)
 a=(arg2)
@@ -67,9 +67,9 @@ a=(bar)
 # find examples
 TODO: put find examples here
 
-declare -a array=()		# declare an array and init to ''
-array+=("val1")			# pop on a value into the array
-array+=("val2")			# pop on another value into the array
+declare -a array=()   # declare an array and init to ''
+array+=("val1")       # pop on a value into the array
+array+=("val2")       # pop on another value into the array
 
 echo "STDOUT and STDERR to /dev/null" &> /dev/null
 
@@ -101,13 +101,13 @@ humanize () {
 
 # Source global definitions
 if [ -f /etc/bashrc ]; then
-	. /etc/bashrc
+  . /etc/bashrc
 fi
 
 # User specific aliases and functions
 
 function function_name () {
-	...
+  ...
 }
 
 alias a="alias"
@@ -124,7 +124,7 @@ $ echo $$ | while read line; do echo $line $$ $BASHPID; done
 11656 11656 31497
 ----------------
 if $bool -a [ $x -ne $y ]; then echo y; else echo n; fi
-	(bool=[true|false] - if statement uses value of $?)
+  (bool=[true|false] - if statement uses value of $?)
 -------------------
 $ IFS=':'
 $ array=(one two three)
@@ -182,20 +182,20 @@ $ echo $new_mac
 hello
 ------------
 printf "Surname: %s\nName: %s\n" "$SURNAME" "$LASTNAME"
-printf '%d\n' $size		# signed decimal
-printf '%i\n' $size		# signed decimal
-printf '%u\n' $size		# unsigned decimal
-printf '%f\n' $size		# floating point
-printf '%e\n' $size		# double <N>+/-e<N> format
-printf '%E\n' $size		# double <N>+/-E<N> format
-printf '%g\n' $size		# double <N>+/-e<N> short format
-printf '%G\n' $size		# double <N>+/-E<N> short format
-printf '%c\n' $size		# character
-printf '%s\n' $size		# string
-printf '%.Ns\n' $size	# string
-printf '%Ns\n' $size	# string
+printf '%d\n' $size    # signed decimal
+printf '%i\n' $size    # signed decimal
+printf '%u\n' $size    # unsigned decimal
+printf '%f\n' $size    # floating point
+printf '%e\n' $size    # double <N>+/-e<N> format
+printf '%E\n' $size    # double <N>+/-E<N> format
+printf '%g\n' $size    # double <N>+/-e<N> short format
+printf '%G\n' $size    # double <N>+/-E<N> short format
+printf '%c\n' $size    # character
+printf '%s\n' $size    # string
+printf '%.Ns\n' $size  # string
+printf '%Ns\n' $size   # string
 
-	(formats: <N> . * # 0 <space>)
+   (formats: <N> . * # 0 <space>)
 --------------------
 [praco@jump2 ~]$ length=50
 [praco@jump2 ~]$ printf -v line "%*s" $length
@@ -223,22 +223,22 @@ echo "#!/bin/sh
 " > $outputfile
 ----------------
 tput [blink|bold|sgr0]
-	blink=`tput blink`
-	echo -e "${blink}This text should be blinking" 
+   blink=`tput blink`
+   echo -e "${blink}This text should be blinking"
 ----------------
 su "user" <<ENDOFSU
-	ls
-	whoami
+  ls
+  whoami
 ENDOFSU
 -----------------
-grep			- grep, egrep, fgrep - print lines matching a pattern
-	# grep "-q" = no - "-q" option not portable
-	# grep -qE '[[:space:]]lm([[:space:]]|$)'
-	# grep -vE '^[[:space:]]*(#|$)'
+grep      - grep, egrep, fgrep - print lines matching a pattern
+  # grep "-q" = no - "-q" option not portable
+  # grep -qE '[[:space:]]lm([[:space:]]|$)'
+  # grep -vE '^[[:space:]]*(#|$)'
 ------------------
-getopts			- bash built-in; parse positional parameters
-	# while getopts ":ab:c" opt; do
-	# case $opt in
+getopts      - bash built-in; parse positional parameters
+  # while getopts ":ab:c" opt; do
+  # case $opt in
 ------------------
 ((count++))
 ((variable=value/amt))
@@ -249,7 +249,7 @@ find RPMS/ -type f -name '*.rpm' | while read file; do; echo $file; done
 
 
 --------------
-Immutable global variables 
+Immutable global variables
 •Try to keep globals to minimum
 •UPPER_CASE naming
 •readonly decleration
@@ -295,60 +295,60 @@ echo "str: $str"
 echo ${str##*/} == $(basename $str)
 echo ${str%/*} == $(dirname $str)
 
-set -- one two		# set values to $1 and $2
+set -- one two    # set values to $1 and $2
 
 PROCESS SUBSTITUTION
 ---------------------
 https://www.gnu.org/software/bash/manual/html_node/Process-Substitution.html#Process-Substitution
 Runs process list and refer to input/output as a filename similar to using pipes
 
-<(list)  
+<(list)
   or
 >(list)
 
 VARIABLE SUBSTITUTION
 ---------------------
-	No spaces should be used in the following expressions.
-	The colon (:) is optional; if it’s included, var must be nonnull as well as set.
-${var}			Use value of var; They are required for array variables.
-${var:-value}		Use var if set; otherwise, use value.
-${var:=value}		Use var if set; otherwise, use value and assign value to var.
-${var:?value}		Use var if set; otherwise, print value and exit (if not interactive).
-			If value isn’t supplied, print the phrase "parameter null or not set"
-${var:+value}		Use value if var is set; otherwise, use nothing.
-${#var}			Use the length of var.
-${#*}			Use the number of positional parameters.
-${#@}			Use the number of positional parameters.
-${var#pattern}		Use value of var after removing text matching pattern from the left.
-			Remove the shortest matching piece.
-${var##pattern} 	Same as #pattern, but remove the longest matching piece.
-${var%pattern}		Use value of var after removing text matching pattern from the right.
-			Remove the shortest matching piece.
-${var%%pattern}		Same as %pattern, but remove the longest matching piece.
-${var^pattern}		Convert the case of var to uppercase.
-			The pattern is expanded similar to filename expansion.
-			If first letter of var matches pattern, it is converted to uppercase.
-			var can be * or @, in which case positional parameters are modified.
-			var can also be an array subscripted by * or @ to apply to all elements
-${var^^pattern}		Same as ^pattern, but apply the match to every letter in the string.
-${var,pattern}		Convert matching characters to lower case. only the first character
-${var,,pattern}		Same as ,pattern, but apply the match to every letter in the string.
+  No spaces should be used in the following expressions.
+  The colon (:) is optional; if it’s included, var must be nonnull as well as set.
+${var}           # Use value of var; They are required for array variables.
+${var:-value}    # Use var if set; otherwise, use value.
+${var:=value}    # Use var if set; otherwise, use value and assign value to var.
+${var:?value}    # Use var if set; otherwise, print value and exit (if not interactive).
+                 # If value isn’t supplied, print the phrase "parameter null or not set"
+${var:+value}    # Use value if var is set; otherwise, use nothing.
+${#var}          # Use the length of var.
+${#*}            # Use the number of positional parameters.
+${#@}            # Use the number of positional parameters.
+${var#pattern}   # Use value of var after removing text matching pattern from the left.
+                 # Remove the shortest matching piece.
+${var##pattern}  # Same as #pattern, but remove the longest matching piece.
+${var%pattern}   # Use value of var after removing text matching pattern from the right.
+                 # Remove the shortest matching piece.
+${var%%pattern}  #  Same as %pattern, but remove the longest matching piece.
+${var^pattern}   # Convert the case of var to uppercase.
+                 # The pattern is expanded similar to filename expansion.
+                 # If first letter of var matches pattern, it is converted to uppercase.
+                 # var can be * or @, in which case positional parameters are modified.
+                 # var can also be an array subscripted by * or @ to apply to all elements
+${var^^pattern}  # Same as ^pattern, but apply the match to every letter in the string.
+${var,pattern}   # Convert matching characters to lower case. only the first character
+${var,,pattern}  # Same as ,pattern, but apply the match to every letter in the string.
 ${!prefix*},
-${!prefix@}		List of variables whose names begin with prefix.
+${!prefix@}      # List of variables whose names begin with prefix.
 ${var:pos},
-${var:pos:len}		Starting at position pos (0-based) in var, extract len characters,
-			or extract rest of string if no len. pos & len may be expressions.
-			When var is * or @, expansion is performed on positional parameters.
-			If pos is zero, then $0 is included in the resulting list.
-			Similarly, var can be an array indexed by * or @.
-${var/pat/repl}		Use value of var, with first match of pat replaced with repl.
-${var/pat}		Use value of var, with first match of pat deleted.
-${var//pat/repl}	Use value of var, with every match of pat replaced with repl.
-${var/#pat/repl}	Use value of var, with match of pat replaced with repl.
-			Match must occur at beg of the value.
-${var/%pat/repl}	Use value of var, with match of pat replaced with repl.
-			Match must occur at end of the value.
-${!var}			Use value of var as name of variable to use (indirect reference).
+${var:pos:len}   # Starting at position pos (0-based) in var, extract len characters,
+                 # or extract rest of string if no len. pos & len may be expressions.
+                 # When var is * or @, expansion is performed on positional parameters.
+                 # If pos is zero, then $0 is included in the resulting list.
+                 # Similarly, var can be an array indexed by * or @.
+${var/pat/repl}  # Use value of var, with first match of pat replaced with repl.
+${var/pat}       # Use value of var, with first match of pat deleted.
+${var//pat/repl} # Use value of var, with every match of pat replaced with repl.
+${var/#pat/repl} # Use value of var, with match of pat replaced with repl.
+                 # Match must occur at beg of the value.
+${var/%pat/repl} # Use value of var, with match of pat replaced with repl.
+                 # Match must occur at end of the value.
+${!var}          # Use value of var as name of variable to use (indirect reference).
 
 EXAMPLES
 --------
@@ -356,7 +356,8 @@ $ z=hello
 $ echo ${z/ll/LL}
 heLLo
 ---
-${CFG_FILE##*/}		# gets rid of the "/" in the variable
-${filename##*[.,~\#]}	# gets rid of the ".,~#" in the variable
+${CFG_FILE##*/}       # gets rid of the "/" in the variable
+${filename##*[.,~\#]} # gets rid of the ".,~#" in the variable
+${var//$'\r'/}"       # remove carriage returns
 
 tags: bash,jq
